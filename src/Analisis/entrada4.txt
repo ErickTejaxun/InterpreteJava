@@ -1,0 +1,13 @@
+{
+     int a = 5+2*3;
+     char b = a==11? 'J': 'H';
+     while(true)
+     {
+          if(a==0)
+          {
+               break;
+          }
+          println(a);
+          a--;
+     }     
+}

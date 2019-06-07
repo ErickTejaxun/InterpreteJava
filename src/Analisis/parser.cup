@@ -1,0 +1,258 @@
+package Analisis;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import AST.*;
+import Utilidades.ErrorC;
+import AST.Instruccion.*;
+import AST.Exp.*;
+import AST.Ent.*;
+import AST.Exp.Aritmetica.*;
+import AST.Exp.Relacional.*;
+import AST.Exp.Logica.*;
+
+parser code
+{:	   	
+	public ArrayList<ErrorC> listaErrores = new ArrayList();	
+	public ArrayList<Instruccion> ast = new ArrayList<Instruccion>();
+
+	public Instruccion raiz = null;
+
+	/*@Override
+	public void syntax_error(Symbol cur_token) 
+	{        
+		List<Integer> listaIdTokens = expected_token_ids();
+		LinkedList<String> listaNombres = new LinkedList<String>();
+		for (Integer expected : listaIdTokens) 
+		{			
+			listaNombres.add(symbl_name_from_id(expected));
+		}		
+		Utilidades.Singlenton.registrarError(String.valueOf(cur_token.value), 
+			String.valueOf(cur_token.value) + ". Se esperaba :"+listaNombres.toString(), ErrorC.TipoError.LEXICO, cur_token.right+1, cur_token.left+1);
+		/*listaErrores.add(
+					listaErrores.add(new ErrorC(ErrorC.TipoError.SINTACTICO,
+								String.valueOf(cur_token.value) + ". Se esperaba :"+listaNombres.toString(),
+								cur_token.right+1,
+								cur_token.left+1));
+                
+	}*/
+
+
+    public void report_error(String message, Object info) 
+    {
+        int linea = 0;
+        int columna = 0;
+        java_cup.runtime.Symbol s = null;
+        StringBuilder m = new StringBuilder("Error Sintactico");
+
+        if (info instanceof java_cup.runtime.Symbol) 
+        {
+            s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) 
+            {                
+                columna = s.left+1;
+                if (s.right>= 0)
+                {
+                    linea = s.right+ 1;
+                }                    
+            }
+        }
+
+        m.append(" Se esperaba: "+message);
+        //System.err.println(m.toString());
+        //System.out.println("Error");
+        //System.out.println("Error linea:"+linea+", col:"+columna);
+        LinkedList<String> toks = new LinkedList();
+
+        if(!expected_token_ids().isEmpty())
+        {
+            Imprimir("No esta vacia "+ expected_token_ids().size());		  
+            for(int w=0; w<expected_token_ids().size(); w++)
+            { 
+                if(expected_token_ids().get(w) !=sym.error)
+                {
+                    int tok = (int)expected_token_ids().get(w);                        
+                    toks.add( symbol_name_from_id(tok) );
+                }
+            }
+        }
+
+        Imprimir(expected_token_ids().size());
+      
+        for(int w=0; w<expected_token_ids().size(); w++)
+        { 
+            if(expected_token_ids().get(w)!=sym.error)
+            {
+                int tok = (int)expected_token_ids().get(w);
+                toks.add( symbol_name_from_id(tok) );
+            }
+        }
+        String esperados = "";
+        for(String id : toks)
+        {
+            if(!esperados.equals(""))
+            {
+                esperados += ", ";
+            }
+            esperados += id;
+            
+        }        
+        Utilidades.Singlenton.registrarError(s.value.toString(), "Se esperaba .. " +esperados, ErrorC.TipoError.SINTACTICO, linea, columna);		                  
+    }	
+
+    public String symbol_name_from_id(int id){
+        return sym.terminalNames[id];
+    }
+
+	/*public void addError(Symbol s)
+	{
+		listaErrores.add(new ErrorC("Sintactico",s.rights.right+1,ConvertirObjectToString(s.value)));
+	}*/
+	public void Imprimir(Object cad)
+	{
+		System.out.println(cad.toString());
+	}	
+:}
+
+
+terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, igual, print;
+terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual;
+terminal String mientras, romper, interrogante, dospuntos, aumento, decremento;
+terminal String not, and, or, si, sinosi, sino;
+terminal String suma, menos, multi, div, potencia, printable, modulo;
+terminal String cadena;
+terminal char caracter;
+terminal int entero;
+terminal double decimal;
+terminal boolean booleano;
+
+non terminal Bloque BLOQUE;
+non terminal ArrayList<Nodo> LINST;
+non terminal Nodo INST;
+non terminal Declaracion DECLARACION;
+non terminal Expresion EXP, AUMENTO, DECREMENTO;
+non terminal INICIO;
+non terminal Tipo TIPO;
+non terminal Imprimir PRINT;
+non terminal ImprimirT PRINTABLE;
+non terminal Asignacion ASIG;
+non terminal While WHILE;
+non terminal Break BREAK;
+non terminal If IF;
+non terminal Ternario TER;
+
+
+
+/* Precedencia 
+precedence left suma, resta;
+precedence left multi, div;*/
+/*
+precedence left suma, menos ;
+precedence left div, multi;
+precedence left potencia;
+precedence left or;
+precedence left and;
+precedence left not;
+*/
+precedence left interrogante;
+precedence left or;
+precedence left and;
+precedence left igualigual, desigual;
+precedence left menor, mayor, mayorigual, menorigual;
+precedence left suma, menos;
+precedence left multi, div, modulo;
+precedence left potencia;
+precedence left not;
+precedence right aumento, decremento;
+
+start with INICIO;
+
+INICIO ::= BLOQUE:inst {: Imprimir("Correcto"); raiz = inst; :}
+		
+		;
+
+BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
+		;
+
+LINST::= LINST:lista INST:inst {: lista.add(inst); RESULT = lista;:}
+	   |INST:inst {: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(inst); RESULT = l;:} ;
+
+INST ::= 
+	  DECLARACION:inst{: RESULT = inst; :}
+	| BLOQUE:inst {: RESULT = inst; :}
+	| PRINT:inst{: RESULT = inst; :}
+    | PRINTABLE:inst{:RESULT = inst;:}
+    | ASIG:inst {:RESULT = inst;:}
+    | WHILE:inst {:RESULT = inst;:}
+    | BREAK:inst {:RESULT = inst;:}
+    | IF:inst{:RESULT = inst;:}
+    | AUMENTO:inst puntocoma {:RESULT = inst;:}
+    | DECREMENTO:inst puntocoma {:RESULT = inst;:}
+	;
+
+IF::= si:si pari EXP:condicion pard BLOQUE:bloque{:RESULT = new If(condicion, bloque, siright, sileft);:}
+;
+
+BREAK::= romper:inst puntocoma {: RESULT = new Break(instright, instleft);:}
+;
+WHILE::= mientras:inst pari EXP:condicion pard BLOQUE:bloque {: RESULT = new While(condicion,bloque,instright, instleft);:}
+;
+
+PRINTABLE::= printable:p pari pard puntocoma {:RESULT = new ImprimirT(pright,pleft); :}
+;
+
+PRINT::= print:p pari EXP:valor pard puntocoma {:RESULT = new Imprimir(valor, pright,pleft); :}
+;
+
+ASIG::= id:id igual EXP:valor  puntocoma {: RESULT = new Asignacion(id, valor, idright,idleft);:}
+;
+
+DECLARACION::=  
+	    TIPO:t id:id puntocoma {: RESULT = new Declaracion(t, id , tright,tleft); :}
+	   |TIPO:t id:id  igual EXP:valor puntocoma {: RESULT = new Declaracion(t, id, valor, tright,tleft); :}
+	   ;
+
+
+EXP::= 
+         EXP:opi and EXP:opd {: RESULT = new And(opi, opd, opiright,opileft);:}
+        |EXP:opi or EXP:opd {: RESULT = new Or(opi, opd, opiright,opileft);:}
+        |not EXP:op {: RESULT = new Not(op, opright,opleft);:}        
+        |EXP:opi igualigual EXP:opd {:RESULT = new Igual(opi,opd,opiright,opileft);:}
+        |EXP:opi desigual EXP:opd {:RESULT = new Desigual(opi,opd,opiright,opileft);:}
+        |EXP:opi mayor EXP:opd {:RESULT = new Mayor(opi,opd,opiright,opileft);:}
+        |EXP:opi mayorigual EXP:opd {:RESULT = new MayorIgual(opi,opd,opiright,opileft);:}
+        |EXP:opi menor EXP:opd {:RESULT = new Menor(opi,opd,opiright,opileft);:}
+        |EXP:opi menorigual EXP:opd {:RESULT = new MenorIgual(opi,opd,opiright,opileft);:}        
+        |EXP:opi suma EXP:opd {: RESULT = new Suma(opi,opd,opiright,opileft);:}       
+        |EXP:opi menos EXP:opd {: RESULT = new Resta(opi,opd,opiright,opileft);:}  
+        |EXP:opi potencia EXP:opd {: RESULT = new Potencia(opi,opd,opiright,opileft);:} 
+        |EXP:opi multi EXP:opd {: RESULT = new Multiplicacion(opi,opd,opiright,opileft);:}  
+        |EXP:opi div EXP:opd {: RESULT = new Division(opi,opd,opiright,opileft);:}  
+        |EXP:opi modulo EXP:opd {: RESULT = new Modulo(opi,opd,opiright,opileft);:}  
+        |TER:op {:RESULT = op;:}                
+        |menos EXP:op {: RESULT = new Menos(op, opright,opleft);:}      
+        |pari EXP:op pard {: RESULT = op;:}
+        |AUMENTO:op {:RESULT = op;:}
+        |DECREMENTO:op {:RESULT = op;:}
+        |entero:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.INT), v, vright,vleft);:}
+        |decimal:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.DOUBLE), v, vright,vleft);:}
+        |booleano:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.BOOL), v, vright,vleft);:}
+        |cadena:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.STRING), v, vright,vleft);:}
+        |caracter:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.CHAR), v, vright,vleft);:}
+        |id:v {: RESULT = new Variable(v, vright,vleft);:}
+;
+
+AUMENTO::= EXP:op aumento {:RESULT = new Aumento(op, opright, opleft);:};
+DECREMENTO::= EXP:op decremento {:RESULT = new Decremento(op, opright, opleft);:};
+
+TER::= EXP:c interrogante EXP:v dospuntos EXP:f{:RESULT = new Ternario(c,v,f,cright,cleft);:}
+;
+
+TIPO ::=   tint:t {:RESULT = new Tipo(Tipo.TypePrimitive.INT);:}
+		|tchar:t {:RESULT =  new Tipo(Tipo.TypePrimitive.CHAR);:}
+        |tdouble:t {:RESULT = new Tipo(Tipo.TypePrimitive.DOUBLE);:}
+		|tbool:t {:RESULT = new Tipo(Tipo.TypePrimitive.BOOL);:}
+		|tstring:t {:RESULT = new Tipo(Tipo.TypePrimitive.STRING);:}
+		|id:t {:RESULT = new Tipo(Tipo.TypePrimitive.OBJETO,t);:}
+		;

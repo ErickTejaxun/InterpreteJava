@@ -1,0 +1,16 @@
+{
+     int x;
+     int a =4;
+     {
+          char b = 'J';
+          int d;
+          {
+               int c;
+               int b;
+               {
+                    char z;                    
+               }
+               printable();
+          }
+     }
+}

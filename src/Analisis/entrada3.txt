@@ -1,0 +1,6 @@
+{
+     bool flag1 = 10>10;
+     bool flag2 = 10==10;
+     bool flag3 = flag1 && flag2;
+     println(flag3);
+}

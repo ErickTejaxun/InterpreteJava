@@ -1,0 +1,55 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package AST.Exp;
+import AST.Ent.Entorno;
+import AST.Ent.Simbolo;
+import AST.Ent.Tipo;
+import Utilidades.ErrorC;
+/**
+ *
+ * @author erick
+ */
+public class Variable implements Expresion
+{
+    public String id;
+    public int linea, columna;
+    public Tipo tipo;
+    public Variable(String id, int l, int c)
+    {
+        this.id = id;
+        this.linea = l;
+        this.columna = c;
+    }
+    
+    @Override
+    public Object getValor(Entorno ent) 
+    {
+        Simbolo s = ent.obtener(this.id);
+        if(s!=null)
+        {
+            this.tipo = s.tipo;
+            return s.valor;
+        }
+        Utilidades.Singlenton.registrarError(this.id, "La variable no existe en la tabla de símbolos. ", ErrorC.TipoError.SEMANTICO, linea, columna);
+        return null;
+    }
+
+    @Override
+    public Tipo getTipo() {
+        return this.tipo;
+    }
+
+    @Override
+    public int linea() {
+        return linea;
+    }
+
+    @Override
+    public int columna() {
+        return columna;
+    }
+    
+}
