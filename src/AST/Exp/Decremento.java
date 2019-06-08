@@ -8,7 +8,6 @@ package AST.Exp;
 import AST.Ent.Entorno;
 import AST.Ent.Simbolo;
 import AST.Ent.Tipo;
-import AST.Instruccion.Instruccion;
 import Utilidades.ErrorC;
 
 /**
@@ -64,6 +63,7 @@ public class Decremento implements Expresion
                         tmp = (char)tmp - 1;                        
                 }
                 simbolo.valor = tmp;
+                entorno.actualizar(simbolo);
                 return tmp;
             }
             else

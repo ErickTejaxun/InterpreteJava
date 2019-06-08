@@ -16,8 +16,8 @@ public class Interprete {
      */
     public static void main(String[] args) 
     {
-        //Interfaz ventana = new Interfaz();
-        Ventana ventana = new Ventana();
+        Interfaz ventana = new Interfaz();
+        //Ventana ventana = new Ventana();
         ventana.show();
     }
 }

@@ -14,59 +14,52 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class If implements Instruccion
+public class For implements Instruccion
 {
     int linea, columna;
-    public Bloque instrucciones;
+    public Instruccion Inicio;
     public Expresion condicion;
-    public Instruccion elseIf;
+    public Expresion Actualizacion;
+    public Bloque instrucciones;    
     
-    
-    public If(Expresion e, Bloque b, int l, int c)
+    public For(Instruccion i, Expresion cond, Expresion act, Bloque inst, int l, int c)
     {
-        this.condicion = e;
-        this.instrucciones = b;
+        this.Inicio = i;
+        this.condicion = cond;
+        this.Actualizacion = act;
         this.linea = l;
-        this.columna = c;                 
-    }
-    
-    public If(Expresion e, Bloque b, Instruccion elseIf, int l, int c)
-    {
-        this.condicion = e;
-        this.instrucciones = b;
-        this.linea = l;
-        this.columna = c;                 
-        this.elseIf = elseIf;
-    }    
-    
-    
-    
+        this.columna = c;
+        this.instrucciones = inst;
+    }        
     
     @Override    
     public Object ejectuar(Entorno entorno) 
     {
         Entorno local = new Entorno(entorno,entorno.ventana);
-        Object condicional = condicion.getValor(entorno);             
+//        int i = 0;
+//        for(int i = 10; i <100; i++)
+//        {
+//        }
+        /*Se genera la declaración o asignación*/
+        Inicio.ejectuar(entorno);
+        
+        /*Se realiza la verificación de la condición*/
+        Object condicional = condicion.getValor(entorno);                     
         if(condicion.getTipo().typeprimitive== BOOL)
-        {
-            if((boolean)condicional)
+        {            
+            while((boolean)condicional)
             {
                 Object resultado = instrucciones.ejectuar(local);
                 if(resultado instanceof Break)
                 {
-                    return resultado;
-                }                
-            }
-            else
-            {
-                if(elseIf != null)
-                {
-                    Object resultado = elseIf.ejectuar(entorno);
-                    if(resultado instanceof Break)
-                    {
-                        return resultado;
-                    }                    
+                    break;
                 }
+                if(resultado instanceof Continuar)
+                {
+                    continue;
+                }
+                Actualizacion.getValor(entorno);
+                condicional = condicion.getValor(entorno);
             }
         }
         else

@@ -10,6 +10,7 @@ import AST.Ent.Entorno;
 import AST.Exp.Expresion;
 import AST.Instruccion.Instruccion;
 import AST.Nodo;
+import interprete.Interfaz;
 import interprete.Ventana;
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public class AST
     }
     
     
-    public Object ejecutar(Ventana v)
+    public Object ejecutar(Interfaz v)
     {
         Entorno global = new Entorno(null,v);
         for(Nodo nodo: nodos)

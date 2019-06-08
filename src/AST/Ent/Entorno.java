@@ -6,6 +6,7 @@
 package AST.Ent;
 
 import Utilidades.ErrorC;
+import interprete.Interfaz;
 import interprete.Ventana;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -18,7 +19,7 @@ public class Entorno
 {
     public Entorno anterior;
     public Hashtable<String, Simbolo> tabla;
-    public Ventana ventana;
+    public Interfaz ventana;
     
     public Entorno(Entorno entorno)
     {
@@ -26,7 +27,7 @@ public class Entorno
         this.tabla = new Hashtable<String, Simbolo>();
     }
     
-    public Entorno(Entorno entorno, Ventana v)
+    public Entorno(Entorno entorno, Interfaz v)
     {
         this.ventana = v;
         this.anterior = entorno;

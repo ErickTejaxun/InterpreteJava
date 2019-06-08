@@ -55,7 +55,8 @@ public class Bloque implements Instruccion
             }
             else if (nodo instanceof Expresion)
             {
-                return ((Expresion) nodo).getValor(global);
+                //return ((Expresion) nodo).getValor(global);
+                ((Expresion)nodo).getValor(global);
             }            
         }
         return null;

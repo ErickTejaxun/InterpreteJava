@@ -176,7 +176,7 @@ public class Ventana extends javax.swing.JFrame {
         ArrayList<Nodo> l = new ArrayList<Nodo>();
         l.add(r);
         AST raiz = new AST(l);
-        raiz.ejecutar(this);
+        //raiz.ejecutar(this);
         //r.ejectuar(new Entorno(new Entorno(null),this));
     }
 

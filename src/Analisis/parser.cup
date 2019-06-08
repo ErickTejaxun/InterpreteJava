@@ -118,7 +118,7 @@ parser code
 
 terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, igual, print;
 terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual;
-terminal String mientras, romper, interrogante, dospuntos, aumento, decremento;
+terminal String mientras, para, romper, continuar ,interrogante, dospuntos, aumento, decremento;
 terminal String not, and, or, si, sinosi, sino;
 terminal String suma, menos, multi, div, potencia, printable, modulo;
 terminal String cadena;
@@ -139,8 +139,11 @@ non terminal ImprimirT PRINTABLE;
 non terminal Asignacion ASIG;
 non terminal While WHILE;
 non terminal Break BREAK;
-non terminal If IF;
+non terminal Continuar CONTINUE;
+non terminal If IF, ELSE;
 non terminal Ternario TER;
+non terminal For FOR;
+non terminal Expresion ACTUALIZACION;
 
 
 
@@ -154,7 +157,9 @@ precedence left potencia;
 precedence left or;
 precedence left and;
 precedence left not;
+precedence aumento, decremento;
 */
+
 precedence left interrogante;
 precedence left or;
 precedence left and;
@@ -179,24 +184,44 @@ LINST::= LINST:lista INST:inst {: lista.add(inst); RESULT = lista;:}
 	   |INST:inst {: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(inst); RESULT = l;:} ;
 
 INST ::= 
-	  DECLARACION:inst{: RESULT = inst; :}
+	  DECLARACION:inst puntocoma {: RESULT = inst; :}    
+    | ASIG:inst  puntocoma {:RESULT = inst;:}      
 	| BLOQUE:inst {: RESULT = inst; :}
 	| PRINT:inst{: RESULT = inst; :}
-    | PRINTABLE:inst{:RESULT = inst;:}
-    | ASIG:inst {:RESULT = inst;:}
+    | PRINTABLE:inst{:RESULT = inst;:}    
     | WHILE:inst {:RESULT = inst;:}
+    | FOR:inst{:RESULT = inst;:}
     | BREAK:inst {:RESULT = inst;:}
+    | CONTINUE:inst {:RESULT = inst;:}
     | IF:inst{:RESULT = inst;:}
     | AUMENTO:inst puntocoma {:RESULT = inst;:}
     | DECREMENTO:inst puntocoma {:RESULT = inst;:}
 	;
 
-IF::= si:si pari EXP:condicion pard BLOQUE:bloque{:RESULT = new If(condicion, bloque, siright, sileft);:}
+ACTUALIZACION::= AUMENTO :inst {:RESULT =inst;:}
+                |DECREMENTO :inst {:RESULT =inst;:}
+;
+
+IF::= si:si pari EXP:condicion pard BLOQUE:bloque {:RESULT = new If(condicion, bloque, siright, sileft);:}
+    | si:si pari EXP:condicion pard BLOQUE:bloque sino ELSE:inst2 {: RESULT= new If(condicion,bloque,inst2,siright, sileft);:}
+;
+
+ELSE::= IF:inst  {:RESULT = inst;:}
+      | BLOQUE:bloque {: RESULT = new If(new Literal(new Tipo(Tipo.TypePrimitive.BOOL), true, bloqueright,bloqueleft),bloque, bloqueright, bloqueleft); :}
+;
+
+CONTINUE::= continuar:inst puntocoma {: RESULT = new Continuar(instright, instleft);:}
 ;
 
 BREAK::= romper:inst puntocoma {: RESULT = new Break(instright, instleft);:}
 ;
+
 WHILE::= mientras:inst pari EXP:condicion pard BLOQUE:bloque {: RESULT = new While(condicion,bloque,instright, instleft);:}
+;
+
+FOR::= 
+      para:para pari DECLARACION:dec puntocoma EXP:condicion puntocoma ACTUALIZACION:act  pard BLOQUE:bloque{: RESULT = new For(dec,condicion,act,bloque, paraleft,pararight);:}
+    | para:para pari ASIG:dec puntocoma EXP:condicion puntocoma ACTUALIZACION:act  pard BLOQUE:bloque{: RESULT = new For(dec,condicion,act,bloque,paraleft,pararight);:}
 ;
 
 PRINTABLE::= printable:p pari pard puntocoma {:RESULT = new ImprimirT(pright,pleft); :}
@@ -205,14 +230,13 @@ PRINTABLE::= printable:p pari pard puntocoma {:RESULT = new ImprimirT(pright,ple
 PRINT::= print:p pari EXP:valor pard puntocoma {:RESULT = new Imprimir(valor, pright,pleft); :}
 ;
 
-ASIG::= id:id igual EXP:valor  puntocoma {: RESULT = new Asignacion(id, valor, idright,idleft);:}
+ASIG::= id:id igual EXP:valor   {: RESULT = new Asignacion(id, valor, idright,idleft);:}
 ;
 
 DECLARACION::=  
-	    TIPO:t id:id puntocoma {: RESULT = new Declaracion(t, id , tright,tleft); :}
-	   |TIPO:t id:id  igual EXP:valor puntocoma {: RESULT = new Declaracion(t, id, valor, tright,tleft); :}
+	    TIPO:t id:id  {: RESULT = new Declaracion(t, id , tright,tleft); :}
+	   |TIPO:t id:id  igual EXP:valor  {: RESULT = new Declaracion(t, id, valor, tright,tleft); :}
 	   ;
-
 
 EXP::= 
          EXP:opi and EXP:opd {: RESULT = new And(opi, opd, opiright,opileft);:}
@@ -243,8 +267,12 @@ EXP::=
         |id:v {: RESULT = new Variable(v, vright,vleft);:}
 ;
 
-AUMENTO::= EXP:op aumento {:RESULT = new Aumento(op, opright, opleft);:};
-DECREMENTO::= EXP:op decremento {:RESULT = new Decremento(op, opright, opleft);:};
+AUMENTO::= EXP:op aumento {:RESULT = new Aumento(op, opright, opleft);:}
+          |aumento EXP:op {:RESULT = new Aumento(op, opright, opleft);:}       
+            ;
+DECREMENTO::= EXP:op decremento {:RESULT = new Decremento(op, opright, opleft);:}
+              |decremento EXP:op {:RESULT = new Decremento(op, opright, opleft);:}
+;
 
 TER::= EXP:c interrogante EXP:v dospuntos EXP:f{:RESULT = new Ternario(c,v,f,cright,cleft);:}
 ;

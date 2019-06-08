@@ -51,8 +51,8 @@ direccionWindows= ("\"" ({letra}":"("\\"({id}|{espacio}|"_"|"-"|{numero})+)+"."{
 comentario = {TraditionalComment} | {EndOfLineComment} | 
           {DocumentationComment}
 
-TraditionalComment = "$*" [^*] ~"*$" | "$*" "*"+ "$"
-EndOfLineComment = "$$" {InputCharacter}* {LineTerminator}?
+TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
 DocumentationComment = "/*" "*"+ [^/*] ~"*/"
 si = ("if")
 sino = ("else")
@@ -116,23 +116,27 @@ sinosi={sino}({comentario}|{espacio})*(si)
 "while"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.mientras, yychar, yyline, yytext());
-            }   
+            } 
+"for"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.para, yychar, yyline, yytext());
+            }              
 "break"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.romper, yychar, yyline, yytext());
-            }       
+            }  
+"continue"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.continuar, yychar, yyline, yytext());
+            }                             
 {si}  {
         addLexema("reservada", yytext(), yyline, yychar);
         return  new Symbol(sym.si, yychar, yyline, yytext());
       }                                         
 {sino}  {
         addLexema("reservada", yytext(), yyline, yychar);
-        return  new Symbol(sym.si, yychar, yyline, yytext());
-      }             
-{sinosi}  {
-        addLexema("reservada", yytext(), yyline, yychar);
-        return  new Symbol(sym.si, yychar, yyline, yytext());
-      }      
+        return  new Symbol(sym.sino, yychar, yyline, yytext());
+      }                   
 "++"  {  
             addLexema("simbolo", yytext(), yyline, yychar);  	        
             return new Symbol(sym.aumento, yychar, yyline, yytext());             

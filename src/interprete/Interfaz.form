@@ -30,9 +30,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+N"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Nuevo Archivo (nueva Tab)"/>
               </Properties>
               <Events>
@@ -49,9 +46,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuGuardar">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+S"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
               <Events>
@@ -61,7 +55,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="guardarComo">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="G"/>
+                  <KeyStroke key="Ctrl+G"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Guardar como"/>
               </Properties>
@@ -384,6 +378,9 @@
                       <SubComponents>
                         <Component class="javax.swing.JTable" name="tablaErrores">
                           <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Consolas" size="14" style="0"/>
+                            </Property>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="5" rowCount="4">
                                 <Column editable="false" title="Id" type="java.lang.Object"/>
@@ -438,7 +435,16 @@
                       <SubComponents>
                         <Component class="javax.swing.JTextArea" name="textAreaConsola">
                           <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="0" green="0" red="0" type="rgb"/>
+                            </Property>
                             <Property name="columns" type="int" value="20"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Consolas" size="14" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                            </Property>
                             <Property name="rows" type="int" value="5"/>
                           </Properties>
                         </Component>
@@ -485,6 +491,9 @@
                       <SubComponents>
                         <Component class="javax.swing.JTable" name="tabladeSimbolos">
                           <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Consolas" size="14" style="0"/>
+                            </Property>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="4" rowCount="4">
                                 <Column editable="true" title="Title 1" type="java.lang.Object"/>

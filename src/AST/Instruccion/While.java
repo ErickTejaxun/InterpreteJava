@@ -46,7 +46,7 @@ public class While implements Instruccion
                 }
                 if(resultado instanceof Continuar)
                 {
-                    
+                    continue;
                 }
                 condicional = condicion.getValor(entorno);
             }

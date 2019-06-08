@@ -9,6 +9,8 @@ import Utilidades.ErrorC;
 import AST.Ent.Entorno;
 import AST.Instruccion.Instruccion;
 import AST.Ent.Simbolo;
+import AST.Instruccion.AST;
+import AST.Nodo;
 import Analisis.*;
 import java.awt.Color;
 import java.awt.Component;
@@ -52,7 +54,7 @@ public class Interfaz extends javax.swing.JFrame {
     ArrayList<ErrorC> todosErrores= new ArrayList();    
     public String salida = "";
    
-    String pathProyectos = "C:\\Compilador";
+    String pathProyectos = "C:\\Users\\erick\\Desktop";
     
     
     
@@ -245,6 +247,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
 
+        tablaErrores.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
         tablaErrores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -270,7 +273,10 @@ public class Interfaz extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Errores", jPanel3);
 
+        textAreaConsola.setBackground(new java.awt.Color(0, 0, 0));
         textAreaConsola.setColumns(20);
+        textAreaConsola.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
+        textAreaConsola.setForeground(new java.awt.Color(255, 255, 255));
         textAreaConsola.setRows(5);
         jScrollPane4.setViewportView(textAreaConsola);
 
@@ -293,6 +299,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Consola", jPanel4);
 
+        tabladeSimbolos.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
         tabladeSimbolos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -369,7 +376,6 @@ public class Interfaz extends javax.swing.JFrame {
         });
         menuArchivo.add(abrirCarpeta);
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem1.setText("Nuevo Archivo (nueva Tab)");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -386,7 +392,6 @@ public class Interfaz extends javax.swing.JFrame {
         });
         menuArchivo.add(jMenuItem2);
 
-        menuGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuGuardar.setText("Guardar");
         menuGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -395,7 +400,7 @@ public class Interfaz extends javax.swing.JFrame {
         });
         menuArchivo.add(menuGuardar);
 
-        guardarComo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, 0));
+        guardarComo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         guardarComo.setText("Guardar como");
         guardarComo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -700,13 +705,6 @@ public class Interfaz extends javax.swing.JFrame {
             Gutter gutter = sp.getGutter();                                
             gutter.setBookmarkIcon(new ImageIcon(getClass().getResource("/breakpoint.png")));            
             gutter.setBookmarkingEnabled(true);
-            
-            
-            
-            
- 
- 
-                  
             
             panel.add(sp);    
             contenedorPaneles.add("Nuevo-"+contadorNuevos, panel);                        
@@ -1041,6 +1039,30 @@ public class Interfaz extends javax.swing.JFrame {
     }
     
     
+    public void mostrarErrores()
+    {
+        DefaultTableModel filasErrores = new DefaultTableModel();        
+        filasErrores.addColumn("Archivo");        
+        filasErrores.addColumn("Id");
+        filasErrores.addColumn("Descripción");
+        filasErrores.addColumn("Linea"); 
+        filasErrores.addColumn("Columna");                 
+        filasErrores.addColumn("Tipo");                 
+        tablaErrores.setModel(filasErrores);        
+                
+        Utilidades.Singlenton.listaErrores.forEach((error) -> 
+        {
+            filasErrores.addRow(new Object[]
+            {raizActual,
+                error.id,
+                error.getDescripcion(),
+                error.getLinea() +1,
+                error.getColumna(),
+                error.getTipo()}                    
+            );
+        });                       
+    }    
+    
     public void agregarError(ErrorC.TipoError tipo, String descripcion, int linea, int columna)
     {
         listaErrores.add(new ErrorC(tipo, descripcion, linea, columna));        
@@ -1059,7 +1081,7 @@ public class Interfaz extends javax.swing.JFrame {
         }               
         /*Guardar-------*/
         String actual = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());                
-        if(actual.contains(".gcc"))
+        if(actual.contains("."))
         {
             guardarArchivoSinGrafo(true);
         }
@@ -1071,10 +1093,11 @@ public class Interfaz extends javax.swing.JFrame {
         
         String nombreArchivo = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
         String pathArchivo = direcciones.get(nombreArchivo);
-        if(actual.contains(".gcc"))
+        if(actual.contains("."))
         {
             try 
             { 
+                Utilidades.Singlenton.pilaArchivos.add(pathArchivo);
                 lexico=new scanner(new java.io.FileReader(pathArchivo));                                             
                 sintactico = new parser(lexico);                              
                 sintactico.parse();         
@@ -1082,19 +1105,19 @@ public class Interfaz extends javax.swing.JFrame {
             catch (Exception ex) 
             {
                 System.out.println(ex.getMessage());                
-            }
-            imprimirTokens(lexico.listaLexemas);
-            todosErrores = lexico.listaErrores;
-            for(ErrorC er : sintactico.listaErrores)
-            { 
-                todosErrores.add(er);
-            }
-            mostrarErrores(todosErrores);              
+            }            
             // Interpretamos
-            interpretar(sintactico.ast);
+            interpretar(sintactico.raiz);
+            //imprimirTokens(lexico.listaLexemas);
+            mostrarErrores();              
             
         }                 
     }
+    
+    public void Imprimir(String m)
+    {        
+        this.textAreaConsola.setText(textAreaConsola.getText() + "\n" + m);
+    }    
     public void imprimirTokens(ArrayList<lexema> lexemas)
     {
         System.out.println("Id\tLinea\tColumna");
@@ -1480,13 +1503,13 @@ public class Interfaz extends javax.swing.JFrame {
     * @params ast es una arrayList de instrucciones
     */
     
-    public void interpretar(ArrayList<Instruccion> ast)
-    {
-        /*Instruccion global = new Instruccion(null, this) {};
-        for(Instruccion ins : ast)
-        {            
-            ins.ejectuar(new Entorno(null));
-        }*/
+    public void interpretar(Instruccion r)
+    {        
+        ArrayList<Nodo> l = new ArrayList<Nodo>();
+        l.add(r);
+        AST raiz = new AST(l);
+        raiz.ejecutar(this);
+        //r.ejectuar(new Entorno(new Entorno(null),this));
     }
     
     public void prueba()
