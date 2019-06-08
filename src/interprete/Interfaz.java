@@ -20,7 +20,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Scanner;
@@ -53,8 +56,8 @@ public class Interfaz extends javax.swing.JFrame {
     parser sintactico;    
     ArrayList<ErrorC> todosErrores= new ArrayList();    
     public String salida = "";
-   
-    String pathProyectos = "C:\\Users\\erick\\Desktop";
+    public String fechaHora = "";
+    String pathProyectos = "C:\\Users\\erick\\Desktop\\Java";
     
     
     
@@ -101,6 +104,9 @@ public class Interfaz extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaErrores = new javax.swing.JTable();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        reporteCompilacion = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         textAreaConsola = new javax.swing.JTextArea();
@@ -245,7 +251,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("DASM", jPanel2);
 
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
         tablaErrores.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
         tablaErrores.setModel(new javax.swing.table.DefaultTableModel(
@@ -270,6 +276,32 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tablaErrores);
 
         jPanel3.add(jScrollPane2);
+
+        reporteCompilacion.setBackground(new java.awt.Color(0, 0, 0));
+        reporteCompilacion.setColumns(20);
+        reporteCompilacion.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
+        reporteCompilacion.setForeground(new java.awt.Color(255, 255, 255));
+        reporteCompilacion.setRows(5);
+        jScrollPane5.setViewportView(reporteCompilacion);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1029, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(168, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        jPanel3.add(jPanel6);
 
         jTabbedPane1.addTab("Errores", jPanel3);
 
@@ -535,7 +567,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void menuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGuardarActionPerformed
         try {
-            guardarArchivo();
+            save();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -813,7 +845,8 @@ public class Interfaz extends javax.swing.JFrame {
     
     public void guardarArchivoNuevo() throws FileNotFoundException
     {        
-        String tipo = "";       
+        String tipo = ".java";       
+        /*
         String[] options = {".gcc", ".3d","cancelar"};
         int x = -1;
         
@@ -829,6 +862,7 @@ public class Interfaz extends javax.swing.JFrame {
         
         if(tipo.equals("1")){tipo=".gcc";}
         if(tipo.equals("2")){tipo=".3d";}        
+        */
         String seleccionado = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
         String texto = "";
         String nombre = "";
@@ -883,6 +917,21 @@ public class Interfaz extends javax.swing.JFrame {
         {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }                       
+    }    
+    
+    
+    public void save() throws FileNotFoundException
+    {        
+        String seleccionado = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
+        String directorio=direcciones.get(seleccionado);  
+        if(directorio!=null)
+        {
+            guardarArchivo();   
+        }        
+        else
+        {
+            guardarArchivoNuevo();
+        }        
     }    
     
     public void guardarArchivo() throws FileNotFoundException
@@ -1073,6 +1122,9 @@ public class Interfaz extends javax.swing.JFrame {
     
     public void compilar() 
     {
+	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	Date date = new Date();        
+        fechaHora = dateFormat.format(date);
         todosErrores.clear();
         if(lexico!=null && sintactico!=null)
         {
@@ -1108,10 +1160,12 @@ public class Interfaz extends javax.swing.JFrame {
             }            
             // Interpretamos
             interpretar(sintactico.raiz);
-            //imprimirTokens(lexico.listaLexemas);
-            mostrarErrores();              
-            
         }                 
+        //imprimirTokens(lexico.listaLexemas);
+        mostrarErrores();                          
+        if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "No se han encontrado errores durante la ejecución.";}
+        else{fechaHora+= "Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
+        reporteCompilacion.setText(fechaHora);        
     }
     
     public void Imprimir(String m)
@@ -1544,10 +1598,12 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuEjecucion;
@@ -1555,6 +1611,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JPanel panelDirectorio;
     private javax.swing.JPanel panelEdicion;
     private javax.swing.JPanel panelEditor;
+    private javax.swing.JTextArea reporteCompilacion;
     private javax.swing.JTable tablaErrores;
     private javax.swing.JTable tabladeSimbolos;
     private javax.swing.JTextArea textAreaConsola;

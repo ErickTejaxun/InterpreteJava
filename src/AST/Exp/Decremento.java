@@ -8,6 +8,7 @@ package AST.Exp;
 import AST.Ent.Entorno;
 import AST.Ent.Simbolo;
 import AST.Ent.Tipo;
+import static AST.Ent.Tipo.TypePrimitive.*;
 import Utilidades.ErrorC;
 
 /**
@@ -39,7 +40,9 @@ public class Decremento implements Expresion
     }
 
     @Override
-    public Object getValor(Entorno entorno) {
+    public Object getValor(Entorno entorno) 
+    {
+        tipo = new Tipo(INT);
         if(exp instanceof Variable)
         {            
             String nombre = ((Variable)exp).id;
@@ -62,6 +65,7 @@ public class Decremento implements Expresion
                     case CHAR:
                         tmp = (char)tmp - 1;                        
                 }
+                tipo = exp.getTipo();
                 simbolo.valor = tmp;
                 entorno.actualizar(simbolo);
                 return tmp;

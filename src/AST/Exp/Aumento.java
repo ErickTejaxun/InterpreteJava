@@ -8,7 +8,7 @@ package AST.Exp;
 import AST.Ent.Entorno;
 import AST.Ent.Simbolo;
 import AST.Ent.Tipo;
-import AST.Instruccion.Instruccion;
+import static AST.Ent.Tipo.TypePrimitive.*;
 import Utilidades.ErrorC;
 
 /**
@@ -40,7 +40,9 @@ public class Aumento implements Expresion
     }
 
     @Override
-    public Object getValor(Entorno entorno) {
+    public Object getValor(Entorno entorno) 
+    {
+        tipo = new Tipo(INT);
         if(exp instanceof Variable)
         {            
             String nombre = ((Variable)exp).id;
@@ -58,9 +60,11 @@ public class Aumento implements Expresion
                         tmp = (int)tmp + 1;
                         break;
                     case DOUBLE:
+                        tipo.typeprimitive = DOUBLE;
                         tmp = (Double)tmp + 1;                        
                         break;
                     case CHAR:
+                        tipo.typeprimitive = CHAR;
                         tmp = (char)tmp + 1;                        
                 }
                 simbolo.valor = tmp;
@@ -70,12 +74,12 @@ public class Aumento implements Expresion
             {
                 Utilidades.Singlenton.registrarError("++", "Esta operación solo puede aplicarse a tipos numericos" , ErrorC.TipoError.SEMANTICO, linea, columna);    
             }
-            return null;
+            return 0;
         }
         else
         {
             Utilidades.Singlenton.registrarError("++", "Esta operación solo puede aplicarse sobre variables" , ErrorC.TipoError.SEMANTICO, linea, columna);
-            return null;
+            return 0;
         }        
     }
 

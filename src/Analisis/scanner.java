@@ -1423,7 +1423,7 @@ public class scanner implements java_cup.runtime.Scanner {
           case 164: break;
           case 81: 
             { addLexema("simbolo", yytext(), yyline, yychar);
-            return new Symbol(sym.instanciade, yychar, yyline, yytext());
+            return new Symbol(sym.instanceof_, yychar, yyline, yytext());
             }
           case 165: break;
           case 82: 

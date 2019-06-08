@@ -119,7 +119,7 @@ parser code
 terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, corchetei, corcheted, igual, print;
 terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual;
 terminal String abstracto, caso, cat, clase, defecto, hacer, extiende, final_, graph;
-terminal String importar, instanciade, nuevo, privado, protegido, publico, retorno;
+terminal String importar, instanceof_, nuevo, privado, protegido, publico, retorno;
 terminal String leerarchivo,estatico, super_, switch_, este, tochar, todouble, toint, try_, escribir;
 terminal String mientras, para, romper, continuar ,interrogante, dospuntos, aumento, decremento, punto;
 terminal String not, and, or, si, sinosi, sino, tostring, tolower, touper;
@@ -168,7 +168,7 @@ precedence left or;
 precedence left and;
 precedence left xor;
 precedence left igualigual, desigual;
-precedence left menor, mayor, mayorigual, menorigual;
+precedence left menor, mayor, mayorigual, menorigual, instanceof_;
 precedence left suma, menos;
 precedence left multi, div, modulo;
 precedence left not;
@@ -261,6 +261,7 @@ EXP::=
         |menos EXP:op {: RESULT = new Menos(op, opright,opleft);:}      
         |pari EXP:op pard {: RESULT = op;:}
         |AUMENTO:op {:RESULT = op;:}
+        |EXP:op instanceof_ id:tipo {:RESULT = new InstanceOf(op,tipo, opright, opleft);:}
         |DECREMENTO:op {:RESULT = op;:}
         |EXP:op punto id:t pari pard {:RESULT = new Llamada(op,t, opright,opleft);:}
         |EXP:op punto tostring pari pard {:RESULT = new ToString(op,opright,opleft);:}

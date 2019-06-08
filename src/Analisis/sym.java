@@ -64,7 +64,6 @@ public class sym {
   public static final int publico = 37;
   public static final int corchetei = 13;
   public static final int touper = 66;
-  public static final int instanciade = 33;
   public static final int multi = 69;
   public static final int interrogante = 53;
   public static final int error = 1;
@@ -81,6 +80,7 @@ public class sym {
   public static final int pard = 11;
   public static final int para = 50;
   public static final int tdouble = 3;
+  public static final int instanceof_ = 33;
   public static final int modulo = 73;
   public static final int not = 58;
   public static final int final_ = 30;
@@ -121,7 +121,7 @@ public class sym {
   "final_",
   "graph",
   "importar",
-  "instanciade",
+  "instanceof_",
   "nuevo",
   "privado",
   "protegido",

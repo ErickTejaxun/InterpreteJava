@@ -332,7 +332,7 @@ sinosi={sino}({comentario}|{espacio})*(si)
         }  
 "instanceof"  {
             addLexema("simbolo", yytext(), yyline, yychar);
-            return new Symbol(sym.instanciade, yychar, yyline, yytext());
+            return new Symbol(sym.instanceof_, yychar, yyline, yytext());
         }  
 "new"  {
             addLexema("simbolo", yytext(), yyline, yychar);
