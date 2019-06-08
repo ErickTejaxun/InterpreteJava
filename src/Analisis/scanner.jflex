@@ -8,7 +8,8 @@ import Utilidades.ErrorC;
 %{	    
     public ArrayList<ErrorC> listaErrores = new ArrayList(); // Lista para almacenar errores.
     public ArrayList<lexema> listaLexemas = new ArrayList(); // Lista para almacenar el flujo de palabras (tokens).
-
+    public String cadena ="";
+    public int linea=0,columna = 0;
     public void adderror(int linea, int columna, String valor)
     {        
         listaErrores.add(new ErrorC(ErrorC.TipoError.LEXICO,valor, linea, columna));
@@ -31,8 +32,7 @@ import Utilidades.ErrorC;
 %cup  /*Implementación con CUP*/
 %full
 %line   /*Almacenar el número de linea actual.*/
-%char   /* Contador de caracteres.*/
-%ignorecase /*Indiferente entre mayusculas y minusculas*/
+%char   /* Contador de caracteres.%ignorecase Indiferente entre mayusculas y minusculas*/
 %eofval{ // Genera el simbolo de cierre.
 	return new Symbol(sym.EOF);    
 %eofval}
@@ -44,7 +44,8 @@ letra = ([a-zA-Z]|"ñ"|"á"|"é"|"í"|"ó"|"ú")
 InputCharacter = [^\r\n]
 LineTerminator = \r|\n|\r\n
 id = (({letra}|"_")({letra}|{numero}|"_")*)
-cadena = (("\"" [^*] ~"\"") | ("\“" [^*] ~"\”"))
+/*cadena = (("\"" [^*] ~"\"") | ("\“" [^*] ~"\”") | ("\"\""))*/
+comilla = ("\"")
 cadCaracter = ("'" [^*] ~"'")
 direccionWindows= ("\"" ({letra}":"("\\"({id}|{espacio}|"_"|"-"|{numero})+)+"."{id}) "\"")
 
@@ -57,12 +58,81 @@ DocumentationComment = "/*" "*"+ [^/*] ~"*/"
 si = ("if")
 sino = ("else")
 sinosi={sino}({comentario}|{espacio})*(si)
-%state comentarioSimple, comentarioMulti
+%state cad1, cad2
 
 %%
+
+<cad1>
+{
+    [^]
+    {  
+        switch(yytext())
+        {
+            case "\\":          
+                yybegin(cad2);
+            break;
+            case "\"":      
+                yybegin(YYINITIAL);
+                return new Symbol(sym.cadena, columna, linea ,cadena);             
+            default:
+                cadena += yytext();
+            break;                
+        }                  
+    } 
+}
+
+<cad2>
+{
+    [^]
+    {
+        switch(yytext())
+        {
+            case "\'":
+                cadena += "\'";
+            break;            
+            case "\"":
+                cadena += "\"";
+            break;  
+            case "?":
+                cadena += "?";
+            break;
+            case "\\":
+                cadena += "\\";
+            break;  
+            case "0":                
+            break;  
+            case "a":                
+            break;   
+            case "b":                
+                cadena = cadena.substring(0, cadena.length()-1);
+            break; 
+            case "n":                
+                cadena = cadena + "\n";
+            break; 
+            case "t":                
+                cadena = cadena + "\t";
+            break;             
+            case "r":       
+                String partes[] = cadena.split("\n");
+                String subcadena = "";
+                for(int i = 0 ; i < partes.length-1; i++)
+                {
+                    subcadena += partes[i];
+                }                                       
+                cadena = subcadena;
+            break;                                                                                                       
+            default:
+                Utilidades.Singlenton.registrarError("\\"+yytext(), "Carácter ilegal. Ha sido eliminado.", ErrorC.TipoError.SEMANTICO,yyline, yychar);
+            break;                
+        }
+        yybegin(cad1);                  
+    }
+}
+
 <YYINITIAL>
 {
 [\n] { yychar=0;}
+
 {espacio}
 {
     //Imprimir("Salto de linea");
@@ -120,7 +190,19 @@ sinosi={sino}({comentario}|{espacio})*(si)
 "for"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.para, yychar, yyline, yytext());
-            }              
+            }    
+"toString"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.tostring, yychar, yyline, yytext());
+            }
+"toLowerCase"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.tolower, yychar, yyline, yytext());
+            }
+"toUpperCase"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.touper, yychar, yyline, yytext());
+            }                                                
 "break"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.romper, yychar, yyline, yytext());
@@ -136,7 +218,11 @@ sinosi={sino}({comentario}|{espacio})*(si)
 {sino}  {
         addLexema("reservada", yytext(), yyline, yychar);
         return  new Symbol(sym.sino, yychar, yyline, yytext());
-      }                   
+      } 
+"."  {  
+            addLexema("simbolo", yytext(), yyline, yychar);  	        
+            return new Symbol(sym.punto, yychar, yyline, yytext());             
+        }                        
 "++"  {  
             addLexema("simbolo", yytext(), yyline, yychar);  	        
             return new Symbol(sym.aumento, yychar, yyline, yytext());             
@@ -203,7 +289,115 @@ sinosi={sino}({comentario}|{espacio})*(si)
 "{"  {  
             addLexema("simbolo", yytext(), yyline, yychar);  	        
             return new Symbol(sym.llavei, yychar, yyline, yytext());             
-        }           
+        } 
+"abstract"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.abstracto, yychar, yyline, yytext());
+        }   
+"case"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.caso, yychar, yyline, yytext());
+        }                         
+"catch"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.cat, yychar, yyline, yytext());
+        }  
+"class"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.clase, yychar, yyline, yytext());
+        }                 
+"default"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.defecto, yychar, yyline, yytext());
+        } 
+"do"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.hacer, yychar, yyline, yytext());
+        } 
+"extends"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.extiende, yychar, yyline, yytext());
+        }                           
+"final"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.final_, yychar, yyline, yytext());
+        }         
+"graph"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.graph, yychar, yyline, yytext());
+        }    
+"import"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.importar, yychar, yyline, yytext());
+        }  
+"instanceof"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.instanciade, yychar, yyline, yytext());
+        }  
+"new"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.nuevo, yychar, yyline, yytext());
+        } 
+"private"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.privado, yychar, yyline, yytext());
+        }                                
+"protected"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.protegido, yychar, yyline, yytext());
+        }  
+"public"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.publico, yychar, yyline, yytext());
+        }   
+"return"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.retorno, yychar, yyline, yytext());
+        }     
+"read_file"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.leerarchivo, yychar, yyline, yytext());
+        }  
+"static"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.estatico, yychar, yyline, yytext());
+        }  
+"str"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.tstring, yychar, yyline, yytext());
+        } 
+"super"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.super_, yychar, yyline, yytext());
+        } 
+"switch"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.switch_, yychar, yyline, yytext());
+        }  
+"this"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.este, yychar, yyline, yytext());
+        }  
+"toChar"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.tochar, yychar, yyline, yytext());
+        }   
+"toDouble"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.todouble, yychar, yyline, yytext());
+        } 
+"toInt"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.toint, yychar, yyline, yytext());
+        }  
+"try"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.try_, yychar, yyline, yytext());
+        } 
+"write_file"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.escribir, yychar, yyline, yytext());
+        }                                                                                                     
 "="  {  
             addLexema("simbolo", yytext(), yyline, yychar);  	        
             return new Symbol(sym.igual, yychar, yyline, yytext());             
@@ -216,6 +410,14 @@ sinosi={sino}({comentario}|{espacio})*(si)
             addLexema("simbolo", yytext(), yyline, yychar);  	        
             return new Symbol(sym.llaved, yychar, yyline, yytext());             
         }
+"["  {  
+            addLexema("simbolo", yytext(), yyline, yychar);  	        
+            return new Symbol(sym.corchetei, yychar, yyline, yytext());             
+        }  
+"]"  {  
+            addLexema("simbolo", yytext(), yyline, yychar);  	        
+            return new Symbol(sym.corcheted, yychar, yyline, yytext());             
+        }               
 "%"  {  
             addLexema("simbolo", yytext(), yyline, yychar);  	        
             return new Symbol(sym.modulo, yychar, yyline, yytext());             
@@ -238,8 +440,14 @@ sinosi={sino}({comentario}|{espacio})*(si)
         }     
 "^"  {  
             addLexema("simbolo", yytext(), yyline, yychar);  	        
-            return new Symbol(sym.potencia, yychar, yyline, yytext());             
-        }                                            
+            return new Symbol(sym.xor, yychar, yyline, yytext());             
+        }   
+{comilla}  {  
+            cadena = "";                    
+            yybegin(cad1);
+            linea = yyline;
+            columna = yychar;
+        }                                                  
 {id}  {  
             
             addLexema("Identificador", yytext(), yyline, yychar);  	        
@@ -251,16 +459,22 @@ sinosi={sino}({comentario}|{espacio})*(si)
             addLexema("Identificador", yytext(), yyline, yychar);  	        
             return new Symbol(sym.caracter, yychar, yyline,yytext().substring(1, yytext().length()-1).charAt(0));             
         }
-{cadena}  
+/*{cadena}  
         {  
             
             addLexema("Identificador", yytext(), yyline, yychar);  	        
-            return new Symbol(sym.cadena, yychar, yyline,yytext().substring(1, yytext().length()-1));             
+            return new Symbol(sym.cadena, yychar, yyline,yytext().substring(1, yytext().length()-1));
         }                   
+*/        
 {numero}  {  
             
-            addLexema("Identificador", yytext(), yyline, yychar);  	        
-            return new Symbol(sym.entero, yychar, yyline,Integer.parseInt(yytext()));             
+            addLexema("Identificador", yytext(), yyline, yychar);  	  
+            if(Long.parseLong(yytext())> Utilidades.Singlenton.maxInt && Long.parseLong(yytext()) < Utilidades.Singlenton.minInt )
+            {
+                Utilidades.Singlenton.registrarError("Entero", "Número entero demasiado grande", ErrorC.TipoError.SEMANTICO,yyline, yychar);
+                return new Symbol(sym.entero, yychar, yyline,0);             
+            }   
+            return new Symbol(sym.entero, yychar, yyline,Integer.parseInt(yytext()));                            
         }  
 {decimal}  {  
             
@@ -270,15 +484,7 @@ sinosi={sino}({comentario}|{espacio})*(si)
 .		{
             System.out.println("Caracter ilegal: " + yytext()+" Linea : "+yyline +" Columna: "+yychar); 
             adderror(yyline, yychar, yytext());
-        }
-<comentarioMulti> "*/"  
-                {yybegin(YYINITIAL);} 
-<comentarioMulti> . 
-                { /**/}
-<comentarioSimple> "\n"
-                {yybegin(YYINITIAL);}
-<comentarioSimple> .
-                    {/**/}            	
+        }           	
 }
 
 

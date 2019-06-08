@@ -18,6 +18,8 @@ public class Singlenton
     public static ArrayList<ErrorC> listaErrores = new ArrayList<ErrorC>();
     public static LinkedList<String> pilaArchivos = new LinkedList<String>(); 
     public static LinkedList<Instruccion> pilaCiclos = new LinkedList<Instruccion>();
+    public static long maxInt = 2147483647;
+    public static long minInt = -2147483648;
     
     
     

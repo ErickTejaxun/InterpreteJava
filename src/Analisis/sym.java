@@ -8,53 +8,85 @@ package Analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int continuar = 24;
-  public static final int igualigual = 15;
-  public static final int suma = 35;
-  public static final int romper = 23;
-  public static final int printable = 40;
-  public static final int interrogante = 25;
-  public static final int igual = 13;
-  public static final int llavei = 8;
-  public static final int tbool = 5;
-  public static final int sinosi = 33;
-  public static final int caracter = 43;
-  public static final int llaved = 9;
-  public static final int tint = 2;
-  public static final int si = 32;
-  public static final int mientras = 21;
-  public static final int pari = 10;
-  public static final int menos = 36;
-  public static final int menor = 18;
-  public static final int EOF = 0;
-  public static final int aumento = 27;
-  public static final int pard = 11;
-  public static final int para = 22;
-  public static final int error = 1;
-  public static final int mayor = 17;
-  public static final int tstring = 6;
-  public static final int entero = 44;
-  public static final int or = 31;
-  public static final int menorigual = 19;
-  public static final int dospuntos = 26;
-  public static final int desigual = 16;
-  public static final int potencia = 39;
-  public static final int id = 12;
-  public static final int multi = 37;
-  public static final int mayorigual = 20;
-  public static final int and = 30;
-  public static final int decremento = 28;
-  public static final int not = 29;
-  public static final int booleano = 46;
-  public static final int puntocoma = 7;
-  public static final int print = 14;
-  public static final int tdouble = 3;
-  public static final int div = 38;
-  public static final int decimal = 45;
-  public static final int modulo = 41;
-  public static final int cadena = 42;
-  public static final int sino = 34;
+  public static final int menos = 68;
+  public static final int menor = 20;
+  public static final int punto = 57;
+  public static final int booleano = 78;
+  public static final int decremento = 56;
+  public static final int leerarchivo = 39;
+  public static final int print = 16;
   public static final int tchar = 4;
+  public static final int importar = 32;
+  public static final int suma = 67;
+  public static final int tochar = 44;
+  public static final int aumento = 55;
+  public static final int div = 70;
+  public static final int romper = 51;
+  public static final int cadena = 74;
+  public static final int dospuntos = 54;
+  public static final int menorigual = 21;
+  public static final int mientras = 49;
+  public static final int abstracto = 23;
+  public static final int privado = 35;
+  public static final int sino = 63;
+  public static final int tint = 2;
+  public static final int toint = 46;
+  public static final int decimal = 77;
+  public static final int caso = 24;
+  public static final int try_ = 47;
+  public static final int sinosi = 62;
+  public static final int llavei = 8;
+  public static final int or = 60;
+  public static final int caracter = 75;
+  public static final int llaved = 9;
+  public static final int extiende = 29;
+  public static final int mayorigual = 22;
+  public static final int nuevo = 34;
+  public static final int tolower = 65;
+  public static final int id = 12;
+  public static final int retorno = 38;
+  public static final int estatico = 40;
+  public static final int desigual = 18;
+  public static final int cat = 25;
+  public static final int protegido = 36;
+  public static final int puntocoma = 7;
+  public static final int and = 59;
+  public static final int mayor = 19;
+  public static final int printable = 72;
+  public static final int xor = 71;
+  public static final int tbool = 5;
+  public static final int EOF = 0;
+  public static final int escribir = 48;
+  public static final int super_ = 41;
+  public static final int tstring = 6;
+  public static final int este = 43;
+  public static final int tostring = 64;
+  public static final int publico = 37;
+  public static final int corchetei = 13;
+  public static final int touper = 66;
+  public static final int instanciade = 33;
+  public static final int multi = 69;
+  public static final int interrogante = 53;
+  public static final int error = 1;
+  public static final int switch_ = 42;
+  public static final int corcheted = 14;
+  public static final int continuar = 52;
+  public static final int si = 61;
+  public static final int entero = 76;
+  public static final int graph = 31;
+  public static final int pari = 10;
+  public static final int hacer = 28;
+  public static final int defecto = 27;
+  public static final int igualigual = 17;
+  public static final int pard = 11;
+  public static final int para = 50;
+  public static final int tdouble = 3;
+  public static final int modulo = 73;
+  public static final int not = 58;
+  public static final int final_ = 30;
+  public static final int igual = 15;
+  public static final int todouble = 45;
+  public static final int clase = 26;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -69,6 +101,8 @@ public class sym {
   "pari",
   "pard",
   "id",
+  "corchetei",
+  "corcheted",
   "igual",
   "print",
   "igualigual",
@@ -77,6 +111,32 @@ public class sym {
   "menor",
   "menorigual",
   "mayorigual",
+  "abstracto",
+  "caso",
+  "cat",
+  "clase",
+  "defecto",
+  "hacer",
+  "extiende",
+  "final_",
+  "graph",
+  "importar",
+  "instanciade",
+  "nuevo",
+  "privado",
+  "protegido",
+  "publico",
+  "retorno",
+  "leerarchivo",
+  "estatico",
+  "super_",
+  "switch_",
+  "este",
+  "tochar",
+  "todouble",
+  "toint",
+  "try_",
+  "escribir",
   "mientras",
   "para",
   "romper",
@@ -85,17 +145,21 @@ public class sym {
   "dospuntos",
   "aumento",
   "decremento",
+  "punto",
   "not",
   "and",
   "or",
   "si",
   "sinosi",
   "sino",
+  "tostring",
+  "tolower",
+  "touper",
   "suma",
   "menos",
   "multi",
   "div",
-  "potencia",
+  "xor",
   "printable",
   "modulo",
   "cadena",

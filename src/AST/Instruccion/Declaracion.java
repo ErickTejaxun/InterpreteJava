@@ -58,8 +58,18 @@ public class Declaracion implements Instruccion
                         {
                             if(expresion.getTipo().isInt())
                             {
-                                int a = (int)valor;                                
-                                valor = (char)a;
+                                int a = (int)valor;
+                                if(0<=a && a <=255)
+                                {
+                                    valor = (char)a;   
+                                }   
+                                else
+                                {
+                                    valor = 0;
+                                    Utilidades.Singlenton.registrarError(id, 
+                                            "Valor no válido para caracter, debe ser positivo y menor a 255. ", 
+                                            ErrorC.TipoError.SEMANTICO,linea, columna);
+                                }
                             }
                             else
                             {

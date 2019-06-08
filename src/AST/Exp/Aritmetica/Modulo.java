@@ -43,14 +43,14 @@ public class Modulo implements Expresion
             case DOUBLE:
                 if((int)valord == 0)
                 {
-                    Utilidades.Singlenton.registrarError("Modulo", "Modulo sobre cero no está definida. ", ErrorC.TipoError.SEMANTICO, linea, linea);
+                    Utilidades.Singlenton.registrarError("Modulo", "Modulo sobre cero no está definida. ", ErrorC.TipoError.SEMANTICO, linea, columna);
                     return valori;
                 }                
                 break;
             case CHAR:
                 if(valord.toString().charAt(0)==0)
                 {
-                    Utilidades.Singlenton.registrarError("Modulo", "Modulo sobre cero no está definida. ", ErrorC.TipoError.SEMANTICO, linea, linea);
+                    Utilidades.Singlenton.registrarError("Modulo", "Modulo sobre cero no está definida. ", ErrorC.TipoError.SEMANTICO, linea, columna);
                     return valori;                    
                 }
                 break;
@@ -99,7 +99,7 @@ public class Modulo implements Expresion
         }
         else
         {
-            Utilidades.Singlenton.registrarError("Divisón", "No se puede operar tipos " + operadori.getTipo() + " % " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);
+            Utilidades.Singlenton.registrarError("Divisón", "No se puede operar tipos " + operadori.getTipo() + " % " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
         return valor;
     }

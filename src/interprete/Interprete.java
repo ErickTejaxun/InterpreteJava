@@ -15,8 +15,11 @@ public class Interprete {
      * @param args the command line arguments
      */
     public static void main(String[] args) 
-    {
+    {        
         Interfaz ventana = new Interfaz();
+        String cadena = "";
+
+        System.out.print(cadena);                
         //Ventana ventana = new Ventana();
         ventana.show();
     }

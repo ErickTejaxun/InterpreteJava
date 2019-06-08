@@ -38,7 +38,7 @@ public class Or implements Expresion
         tipo = new Tipo(BOOL);
         if(opi.getTipo().typeprimitive!= tipo.typeprimitive  || opd.getTipo().typeprimitive != tipo.typeprimitive)
         {
-            Utilidades.Singlenton.registrarError("Relacional Or", "Tipos no válidos" + opi.getTipo() + " and " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);            
+            Utilidades.Singlenton.registrarError("Relacional Or", "Tipos no válidos" + opi.getTipo() + " and " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
             return false;            
         }        
         

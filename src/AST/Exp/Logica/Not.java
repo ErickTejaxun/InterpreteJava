@@ -35,7 +35,7 @@ public class Not implements Expresion
         tipo = new Tipo(BOOL);
         if(expresion.getTipo().typeprimitive!= tipo.typeprimitive)
         {
-            Utilidades.Singlenton.registrarError("Relacional Not", "Operación válida sólo para tipo " + tipo , ErrorC.TipoError.SEMANTICO, linea, linea);            
+            Utilidades.Singlenton.registrarError("Relacional Not", "Operación válida sólo para tipo " + tipo , ErrorC.TipoError.SEMANTICO, linea, columna);            
             return false;            
         }        
         return !(Boolean)derecha;

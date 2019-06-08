@@ -116,11 +116,14 @@ parser code
 :}
 
 
-terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, igual, print;
+terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, corchetei, corcheted, igual, print;
 terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual;
-terminal String mientras, para, romper, continuar ,interrogante, dospuntos, aumento, decremento;
-terminal String not, and, or, si, sinosi, sino;
-terminal String suma, menos, multi, div, potencia, printable, modulo;
+terminal String abstracto, caso, cat, clase, defecto, hacer, extiende, final_, graph;
+terminal String importar, instanciade, nuevo, privado, protegido, publico, retorno;
+terminal String leerarchivo,estatico, super_, switch_, este, tochar, todouble, toint, try_, escribir;
+terminal String mientras, para, romper, continuar ,interrogante, dospuntos, aumento, decremento, punto;
+terminal String not, and, or, si, sinosi, sino, tostring, tolower, touper;
+terminal String suma, menos, multi, div, xor, printable, modulo;
 terminal String cadena;
 terminal char caracter;
 terminal int entero;
@@ -153,21 +156,21 @@ precedence left multi, div;*/
 /*
 precedence left suma, menos ;
 precedence left div, multi;
-precedence left potencia;
+precedence left xor;
 precedence left or;
 precedence left and;
 precedence left not;
 precedence aumento, decremento;
 */
 
-precedence left interrogante;
+precedence left interrogante, punto;
 precedence left or;
 precedence left and;
+precedence left xor;
 precedence left igualigual, desigual;
 precedence left menor, mayor, mayorigual, menorigual;
 precedence left suma, menos;
 precedence left multi, div, modulo;
-precedence left potencia;
 precedence left not;
 precedence right aumento, decremento;
 
@@ -250,7 +253,7 @@ EXP::=
         |EXP:opi menorigual EXP:opd {:RESULT = new MenorIgual(opi,opd,opiright,opileft);:}        
         |EXP:opi suma EXP:opd {: RESULT = new Suma(opi,opd,opiright,opileft);:}       
         |EXP:opi menos EXP:opd {: RESULT = new Resta(opi,opd,opiright,opileft);:}  
-        |EXP:opi potencia EXP:opd {: RESULT = new Potencia(opi,opd,opiright,opileft);:} 
+        |EXP:opi xor EXP:opd {: RESULT = new Xor(opi,opd,opiright,opileft);:} 
         |EXP:opi multi EXP:opd {: RESULT = new Multiplicacion(opi,opd,opiright,opileft);:}  
         |EXP:opi div EXP:opd {: RESULT = new Division(opi,opd,opiright,opileft);:}  
         |EXP:opi modulo EXP:opd {: RESULT = new Modulo(opi,opd,opiright,opileft);:}  
@@ -259,6 +262,10 @@ EXP::=
         |pari EXP:op pard {: RESULT = op;:}
         |AUMENTO:op {:RESULT = op;:}
         |DECREMENTO:op {:RESULT = op;:}
+        |EXP:op punto id:t pari pard {:RESULT = new Llamada(op,t, opright,opleft);:}
+        |EXP:op punto tostring pari pard {:RESULT = new ToString(op,opright,opleft);:}
+        |EXP:op punto tolower pari pard {:RESULT = new ToLower(op,opright,opleft);:}
+        |EXP:op punto touper pari pard {:RESULT = new ToUper(op,opright,opleft);:}
         |entero:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.INT), v, vright,vleft);:}
         |decimal:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.DOUBLE), v, vright,vleft);:}
         |booleano:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.BOOL), v, vright,vleft);:}

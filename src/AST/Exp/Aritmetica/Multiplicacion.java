@@ -76,7 +76,7 @@ public class Multiplicacion implements Expresion
         }
         else
         {
-            Utilidades.Singlenton.registrarError("Multiplicación", "No se puede operar tipos " + operadori.getTipo() + " * " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);
+            Utilidades.Singlenton.registrarError("Multiplicación", "No se puede operar tipos " + operadori.getTipo() + " * " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
         return valor;
     }

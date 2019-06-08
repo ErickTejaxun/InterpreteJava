@@ -48,7 +48,7 @@ public class MenorIgual implements Expresion
                     case CHAR:
                         return (int)izquierda <= derecha.toString().charAt(0);
                     default:
-                        Utilidades.Singlenton.registrarError("Relacional <=", "Tipos no válidos: " + opi.getTipo() + " <= " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);            
+                        Utilidades.Singlenton.registrarError("Relacional <=", "Tipos no válidos: " + opi.getTipo() + " <= " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
                         break;
                 }
                 break;  
@@ -62,7 +62,7 @@ public class MenorIgual implements Expresion
                     case CHAR:
                         return (Double)izquierda <= derecha.toString().charAt(0);
                     default:
-                        Utilidades.Singlenton.registrarError("Relacional <=", "Tipos no válidos: " + opi.getTipo() + " <= " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);            
+                        Utilidades.Singlenton.registrarError("Relacional <=", "Tipos no válidos: " + opi.getTipo() + " <= " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
                         break;
                 }
                 break;   
@@ -76,7 +76,7 @@ public class MenorIgual implements Expresion
                     case CHAR:
                         return izquierda.toString().charAt(0) <= derecha.toString().charAt(0);
                     default:
-                        Utilidades.Singlenton.registrarError("Relacional <=", "Tipos no válidos: " + opi.getTipo() + " <= " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);            
+                        Utilidades.Singlenton.registrarError("Relacional <=", "Tipos no válidos: " + opi.getTipo() + " <= " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
                         break;
                 }
                 break;                

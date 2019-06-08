@@ -45,7 +45,7 @@ public class Igual implements Expresion
             }
             else
             {
-                Utilidades.Singlenton.registrarError("Relacional Igual", "No se puede operar entre tipos distintos. " + opi.getTipo() + " == " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);            
+                Utilidades.Singlenton.registrarError("Relacional Igual", "No se puede operar entre tipos distintos. " + opi.getTipo() + " == " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
                 return false;                            
             }
         }        

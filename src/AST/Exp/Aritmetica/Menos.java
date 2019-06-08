@@ -47,7 +47,7 @@ public class Menos implements Expresion
                 tipo.typeprimitive = INT;
                 break;
             default:
-                Utilidades.Singlenton.registrarError("Operación menos (-)", "No se puede operar tipo " + tipo.typeprimitive + " tipo " , ErrorC.TipoError.SEMANTICO, linea, linea);
+                Utilidades.Singlenton.registrarError("Operación menos (-)", "No se puede operar tipo " + tipo.typeprimitive + " tipo " , ErrorC.TipoError.SEMANTICO, linea, columna);
                 break;
             
         }        

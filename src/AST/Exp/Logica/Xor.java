@@ -5,7 +5,6 @@
  */
 package AST.Exp.Logica;
 
-
 import AST.Ent.Entorno;
 import AST.Ent.Tipo;
 import static AST.Ent.Tipo.TypePrimitive.*;
@@ -16,13 +15,13 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class And implements Expresion
+public class Xor implements Expresion
 {
     int linea, columna;
     Tipo tipo;
     Expresion opi, opd;
     
-    public And(Expresion i, Expresion d, int l, int c)
+    public Xor(Expresion i, Expresion d, int l, int c)
     {
         this.opi = i;
         this.opd = d;
@@ -39,18 +38,11 @@ public class And implements Expresion
         tipo = new Tipo(BOOL);
         if(opi.getTipo().typeprimitive!= tipo.typeprimitive  || opd.getTipo().typeprimitive != tipo.typeprimitive)
         {
-            Utilidades.Singlenton.registrarError("Relacional And", "Tipos no válidos " + opi.getTipo() + " and " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
+            Utilidades.Singlenton.registrarError("Relacional Xor", "Tipos no válidos" + opi.getTipo() + " Xor " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
             return false;            
         }        
         
-        if((Boolean)derecha && (Boolean) izquierda)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }                
+        return (Boolean)derecha ^ (Boolean) izquierda;                
     }
 
     @Override

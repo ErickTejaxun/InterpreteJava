@@ -83,7 +83,7 @@ public class Suma implements Expresion
         }
         else
         {
-            Utilidades.Singlenton.registrarError("Suma", "No se puede operar tipos " + operadori.getTipo() + " + " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);
+            Utilidades.Singlenton.registrarError("Suma", "No se puede operar tipos " + operadori.getTipo() + " + " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
         return valor;
     }

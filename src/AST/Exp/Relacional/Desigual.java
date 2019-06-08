@@ -39,7 +39,7 @@ public class Desigual implements Expresion
         tipo.typeprimitive = BOOL;
         if( opi.getTipo().typeprimitive != opd.getTipo().typeprimitive)
         {
-            Utilidades.Singlenton.registrarError("Relacional Desigual", "No se puede operar entre tipos distintos. " + opi.getTipo() + " == " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);            
+            Utilidades.Singlenton.registrarError("Relacional Desigual", "No se puede operar entre tipos distintos. " + opi.getTipo() + " == " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
             return false;            
         }        
         

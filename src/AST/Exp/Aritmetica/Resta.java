@@ -76,7 +76,7 @@ public class Resta implements Expresion
         }
         else
         {
-            Utilidades.Singlenton.registrarError("Resta", "No se puede operar tipos " + operadori.getTipo() + " - " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, linea);
+            Utilidades.Singlenton.registrarError("Resta", "No se puede operar tipos " + operadori.getTipo() + " - " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
         return valor;
     }
