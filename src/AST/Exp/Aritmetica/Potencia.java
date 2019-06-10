@@ -36,7 +36,7 @@ public class Potencia implements Expresion
     {
         Object valori = operadori.getValor(ent);
         Object valord = operadord.getValor(ent);
-        tipo = new Tipo("");
+        tipo = new Tipo(DOUBLE);
         tipo.typeprimitive = determinarTipo(operadori.getTipo().typeprimitive, operadord.getTipo().typeprimitive);
         if(tipo!=null)
         {
@@ -61,16 +61,17 @@ public class Potencia implements Expresion
                 case CHAR:                      
                     if(operadori.getTipo().typeprimitive == CHAR)
                     {
-                        valor = (int)Math.pow((char)valori , (int)valord);                        
+                        //valor = (int)Math.pow((char)valori , (int)valord);                        
+                        valor = Math.pow((operadori.getTipo().isInt()? (int)valori:(char)valori),(operadord.getTipo().isInt()? (int)valord:(char)valord));
                     }
                     else
                     if(operadord.getTipo().typeprimitive == CHAR)
                     {
-                        valor = (int)Math.pow((int)valori , (char)valord);
+                        valor = Math.pow((int)valori , (char)valord);
                     }
                     else
                     {
-                        valor = (int)Math.pow((int)valori , (int)valord);
+                        valor = Math.pow((int)valori , (int)valord);
                     }                                         
                 break;
             } 
@@ -80,7 +81,8 @@ public class Potencia implements Expresion
         {
             Utilidades.Singlenton.registrarError("Potencia", "No se puede operar tipos " + operadori.getTipo() + " ^ " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
-        return valor;
+        return (tipo.isDouble())? (Double)valor:valor;
+        //return valor;
     }
 
     

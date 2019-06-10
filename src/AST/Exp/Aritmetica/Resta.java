@@ -58,7 +58,9 @@ public class Resta implements Expresion
                 break;
                 case INT:
                 case CHAR:  
-                    if(operadori.getTipo().typeprimitive == CHAR)
+                    valor = (operadori.getTipo().isInt()? (int)valori:(char)valori) +
+                            (operadord.getTipo().isInt()? (int)valord:(char)valord) ;
+                    /*if(operadori.getTipo().typeprimitive == CHAR)
                     {
                         valor = (char)valori - (int)valord;
                     }
@@ -70,7 +72,7 @@ public class Resta implements Expresion
                     else
                     {
                         valor = (int)valori - (int)valord;
-                    }    
+                    }*/    
                 break;
             }            
         }

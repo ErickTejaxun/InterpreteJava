@@ -8,85 +8,87 @@ package Analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int menos = 68;
-  public static final int menor = 20;
-  public static final int punto = 57;
-  public static final int booleano = 78;
-  public static final int decremento = 56;
-  public static final int leerarchivo = 39;
+  public static final int menos = 70;
+  public static final int menor = 21;
+  public static final int punto = 59;
+  public static final int booleano = 80;
+  public static final int decremento = 58;
+  public static final int leerarchivo = 41;
   public static final int print = 16;
   public static final int tchar = 4;
-  public static final int importar = 32;
-  public static final int suma = 67;
-  public static final int tochar = 44;
-  public static final int aumento = 55;
-  public static final int div = 70;
-  public static final int romper = 51;
-  public static final int cadena = 74;
-  public static final int dospuntos = 54;
-  public static final int menorigual = 21;
-  public static final int mientras = 49;
-  public static final int abstracto = 23;
-  public static final int privado = 35;
-  public static final int sino = 63;
+  public static final int importar = 34;
+  public static final int suma = 69;
+  public static final int tochar = 46;
+  public static final int aumento = 57;
+  public static final int div = 72;
+  public static final int romper = 53;
+  public static final int cadena = 76;
+  public static final int dospuntos = 56;
+  public static final int menorigual = 22;
+  public static final int mientras = 51;
+  public static final int abstracto = 25;
+  public static final int privado = 37;
+  public static final int sino = 65;
   public static final int tint = 2;
-  public static final int toint = 46;
-  public static final int decimal = 77;
-  public static final int caso = 24;
-  public static final int try_ = 47;
-  public static final int sinosi = 62;
+  public static final int toint = 48;
+  public static final int decimal = 79;
+  public static final int caso = 26;
+  public static final int try_ = 49;
+  public static final int sinosi = 64;
   public static final int llavei = 8;
-  public static final int or = 60;
-  public static final int caracter = 75;
+  public static final int or = 62;
+  public static final int caracter = 77;
   public static final int llaved = 9;
-  public static final int extiende = 29;
-  public static final int mayorigual = 22;
-  public static final int nuevo = 34;
-  public static final int tolower = 65;
+  public static final int extiende = 31;
+  public static final int mayorigual = 23;
+  public static final int nuevo = 36;
+  public static final int tolower = 67;
   public static final int id = 12;
-  public static final int retorno = 38;
-  public static final int estatico = 40;
-  public static final int desigual = 18;
-  public static final int cat = 25;
-  public static final int protegido = 36;
+  public static final int retorno = 40;
+  public static final int estatico = 42;
+  public static final int desigual = 19;
+  public static final int cat = 27;
+  public static final int protegido = 38;
   public static final int puntocoma = 7;
-  public static final int and = 59;
-  public static final int mayor = 19;
-  public static final int printable = 72;
-  public static final int xor = 71;
+  public static final int and = 61;
+  public static final int mayor = 20;
+  public static final int printable = 74;
+  public static final int xor = 73;
   public static final int tbool = 5;
   public static final int EOF = 0;
-  public static final int escribir = 48;
-  public static final int super_ = 41;
+  public static final int escribir = 50;
+  public static final int super_ = 43;
   public static final int tstring = 6;
-  public static final int este = 43;
-  public static final int tostring = 64;
-  public static final int publico = 37;
+  public static final int este = 45;
+  public static final int tostring = 66;
+  public static final int publico = 39;
+  public static final int potencia = 24;
   public static final int corchetei = 13;
-  public static final int touper = 66;
-  public static final int multi = 69;
-  public static final int interrogante = 53;
+  public static final int touper = 68;
+  public static final int multi = 71;
+  public static final int interrogante = 55;
   public static final int error = 1;
-  public static final int switch_ = 42;
+  public static final int switch_ = 44;
   public static final int corcheted = 14;
-  public static final int continuar = 52;
-  public static final int si = 61;
-  public static final int entero = 76;
-  public static final int graph = 31;
+  public static final int continuar = 54;
+  public static final int si = 63;
+  public static final int entero = 78;
+  public static final int graph = 33;
   public static final int pari = 10;
-  public static final int hacer = 28;
-  public static final int defecto = 27;
-  public static final int igualigual = 17;
+  public static final int hacer = 30;
+  public static final int defecto = 29;
+  public static final int igualigual = 18;
   public static final int pard = 11;
-  public static final int para = 50;
+  public static final int para = 52;
   public static final int tdouble = 3;
-  public static final int instanceof_ = 33;
-  public static final int modulo = 73;
-  public static final int not = 58;
-  public static final int final_ = 30;
+  public static final int coma = 17;
+  public static final int instanceof_ = 35;
+  public static final int modulo = 75;
+  public static final int not = 60;
+  public static final int final_ = 32;
   public static final int igual = 15;
-  public static final int todouble = 45;
-  public static final int clase = 26;
+  public static final int todouble = 47;
+  public static final int clase = 28;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -105,12 +107,14 @@ public class sym {
   "corcheted",
   "igual",
   "print",
+  "coma",
   "igualigual",
   "desigual",
   "mayor",
   "menor",
   "menorigual",
   "mayorigual",
+  "potencia",
   "abstracto",
   "caso",
   "cat",

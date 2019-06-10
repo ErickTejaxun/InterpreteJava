@@ -33,19 +33,20 @@ public class Igual implements Expresion
     @Override
     public Object getValor(Entorno ent) 
     {               
-        Object derecha = opi.getValor(ent);
-        Object izquierda = opd.getValor(ent);
+        Object derecha = opd.getValor(ent);
+        Object izquierda = opi.getValor(ent);
         tipo = new Tipo("");
         tipo.typeprimitive = BOOL;
         if( opi.getTipo().typeprimitive != opd.getTipo().typeprimitive)
         {
             if(isNumeric(opi) && isNumeric(opd))
             {
-                return derecha == izquierda; 
+                return (opi.getTipo().isChar()? (char)izquierda: opi.getTipo().isInt() ? (int)izquierda:(Double)izquierda) == 
+                        (opd.getTipo().isChar()? (char)derecha: opd.getTipo().isInt() ? (int)derecha:(Double)derecha);                
             }
             else
             {
-                Utilidades.Singlenton.registrarError("Relacional Igual", "No se puede operar entre tipos distintos. " + opi.getTipo() + " == " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
+                Utilidades.Singlenton.registrarError("Relacional Igual", "No se puede operar entre tipos distintos. " + opi.getTipo().nombreTipo() + " == " +opd.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
                 return false;                            
             }
         }        

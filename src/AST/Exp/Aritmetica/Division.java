@@ -41,7 +41,7 @@ public class Division implements Expresion
         {
             case INT:
             case DOUBLE:
-                if((int)valord == 0)
+                if((operadord.getTipo().isInt()? (int)valord :(Double)valord )== 0)
                 {
                     Utilidades.Singlenton.registrarError("División", "División sobre cero no está definida. ", ErrorC.TipoError.SEMANTICO, linea, columna);
                     return valori;

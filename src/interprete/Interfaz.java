@@ -1122,6 +1122,8 @@ public class Interfaz extends javax.swing.JFrame {
     
     public void compilar() 
     {
+        Utilidades.Singlenton.listaErrores.clear();
+        Utilidades.Singlenton.pilaArchivos.clear();
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	Date date = new Date();        
         fechaHora = dateFormat.format(date);

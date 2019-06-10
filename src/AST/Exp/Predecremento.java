@@ -15,13 +15,13 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class Aumento implements Expresion
+public class Predecremento implements Expresion
 {
     int linea, columna;
     Expresion exp;
     Tipo tipo;
     
-    public Aumento(Expresion e, int l, int c)
+    public Predecremento(Expresion e, int l, int c)
     {
         this.exp = e;
         this.linea = l;
@@ -58,29 +58,29 @@ public class Aumento implements Expresion
                 {
                     case INT:
                         tipo = new Tipo(INT);
-                        simbolo.valor = (int)tmp + 1;
+                        simbolo.valor = (int)tmp - 1;
                         break;
                     case DOUBLE:
-                        tipo.typeprimitive = DOUBLE;
-                        simbolo.valor = (Double)tmp + 1;                        
+                        tipo = new Tipo(DOUBLE);
+                        simbolo.valor = (Double)tmp - 1;                        
                         break;
                     case CHAR:
-                        tipo.typeprimitive = INT;
-                        simbolo.valor = (char)tmp + 1;                        
-                }
-                //simbolo.valor = tmp;
-                return tmp;
+                        tipo = new Tipo(INT);
+                        simbolo.valor = (char)tmp - 1;                        
+                }                                
+                entorno.actualizar(simbolo);
+                return simbolo.valor;
             }
             else
             {
                 Utilidades.Singlenton.registrarError("++", "Esta operación solo puede aplicarse a tipos numericos" , ErrorC.TipoError.SEMANTICO, linea, columna);    
             }
-            return 0;
+            return null;
         }
         else
         {
             Utilidades.Singlenton.registrarError("++", "Esta operación solo puede aplicarse sobre variables" , ErrorC.TipoError.SEMANTICO, linea, columna);
-            return 0;
+            return null;
         }        
     }
 

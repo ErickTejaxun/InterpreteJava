@@ -46,10 +46,10 @@ LineTerminator = \r|\n|\r\n
 id = (({letra}|"_")({letra}|{numero}|"_")*)
 /*cadena = (("\"" [^*] ~"\"") | ("\“" [^*] ~"\”") | ("\"\""))*/
 comilla = ("\"")
-cadCaracter = ("'" [^*] ~"'")
+cadCaracter = ("'" [^*] ~"'")|("‘" [^*] ~"’")
 direccionWindows= ("\"" ({letra}":"("\\"({id}|{espacio}|"_"|"-"|{numero})+)+"."{id}) "\"")
 
-comentario = {TraditionalComment} | {EndOfLineComment} | 
+comentario = {TraditionalComment} | {EndOfLineComment} | n
           {DocumentationComment}
 
 TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
@@ -106,6 +106,20 @@ sinosi={sino}({comentario}|{espacio})*(si)
             case "b":                
                 cadena = cadena.substring(0, cadena.length()-1);
             break; 
+            case "v":   
+                String partes[] = cadena.split("\n");
+                String subcadena = "";
+                for(int i = 0 ; i < partes.length-1; i++)
+                {
+                    subcadena += partes[i];
+                }         
+                String tabulaciones[] = partes[partes.length].split("\t");
+                for(int i = 0; i< tabulaciones.length; i++)
+                {
+                    subcadena += "\t";
+                }
+                cadena = subcadena;                                                       
+            break;             
             case "n":                
                 cadena = cadena + "\n";
             break; 
@@ -113,8 +127,8 @@ sinosi={sino}({comentario}|{espacio})*(si)
                 cadena = cadena + "\t";
             break;             
             case "r":       
-                String partes[] = cadena.split("\n");
-                String subcadena = "";
+                partes = cadena.split("\n");
+                subcadena = "";
                 for(int i = 0 ; i < partes.length-1; i++)
                 {
                     subcadena += partes[i];
@@ -210,7 +224,15 @@ sinosi={sino}({comentario}|{espacio})*(si)
 "continue"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.continuar, yychar, yyline, yytext());
-            }                             
+            }    
+"pow"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.potencia, yychar, yyline, yytext());
+            }  
+","  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.coma, yychar, yyline, yytext());
+            }                                                
 {si}  {
         addLexema("reservada", yytext(), yyline, yychar);
         return  new Symbol(sym.si, yychar, yyline, yytext());

@@ -15,13 +15,13 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class Aumento implements Expresion
+public class Preaumento implements Expresion
 {
     int linea, columna;
     Expresion exp;
     Tipo tipo;
     
-    public Aumento(Expresion e, int l, int c)
+    public Preaumento(Expresion e, int l, int c)
     {
         this.exp = e;
         this.linea = l;
@@ -57,18 +57,18 @@ public class Aumento implements Expresion
                 switch(exp.getTipo().typeprimitive)
                 {
                     case INT:
-                        tipo = new Tipo(INT);
-                        simbolo.valor = (int)tmp + 1;
+                        tipo.typeprimitive =INT;
+                        tmp = (int)tmp + 1;
                         break;
                     case DOUBLE:
                         tipo.typeprimitive = DOUBLE;
-                        simbolo.valor = (Double)tmp + 1;                        
+                        tmp = (Double)tmp + 1;                        
                         break;
                     case CHAR:
-                        tipo.typeprimitive = INT;
-                        simbolo.valor = (char)tmp + 1;                        
+                        tipo.typeprimitive =INT;
+                        tmp = (char)tmp + 1;                        
                 }
-                //simbolo.valor = tmp;
+                simbolo.valor = tmp;
                 return tmp;
             }
             else

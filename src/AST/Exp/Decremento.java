@@ -57,16 +57,15 @@ public class Decremento implements Expresion
                 switch(exp.getTipo().typeprimitive)
                 {
                     case INT:
-                        tmp = (int)tmp - 1;
+                        simbolo.valor = (int)tmp - 1;
                         break;
                     case DOUBLE:
-                        tmp = (Double)tmp - 1;                        
+                        simbolo.valor = (Double)tmp - 1;                        
                         break;
                     case CHAR:
-                        tmp = (char)tmp - 1;                        
+                        simbolo.valor = (char)tmp - 1;                        
                 }
-                tipo = exp.getTipo();
-                simbolo.valor = tmp;
+                tipo = exp.getTipo();                
                 entorno.actualizar(simbolo);
                 return tmp;
             }

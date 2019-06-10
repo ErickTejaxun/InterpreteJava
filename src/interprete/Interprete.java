@@ -15,12 +15,17 @@ public class Interprete {
      * @param args the command line arguments
      */
     public static void main(String[] args) 
-    {        
-        Interfaz ventana = new Interfaz();
-        String cadena = "";
-
-        System.out.print(cadena);                
+    {                              
+        Interfaz ventana = new Interfaz();  
+	char a = 'a';
+	int b = ++a; 
+	println(b);
         //Ventana ventana = new Ventana();
         ventana.show();
+    }
+    
+    public static void println(Object v)
+    {
+        System.out.println(v);
     }
 }

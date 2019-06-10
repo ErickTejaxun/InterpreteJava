@@ -116,8 +116,8 @@ parser code
 :}
 
 
-terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, corchetei, corcheted, igual, print;
-terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual;
+terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, corchetei, corcheted, igual, print, coma;
+terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual, potencia;
 terminal String abstracto, caso, cat, clase, defecto, hacer, extiende, final_, graph;
 terminal String importar, instanceof_, nuevo, privado, protegido, publico, retorno;
 terminal String leerarchivo,estatico, super_, switch_, este, tochar, todouble, toint, try_, escribir;
@@ -172,8 +172,21 @@ precedence left menor, mayor, mayorigual, menorigual, instanceof_;
 precedence left suma, menos;
 precedence left multi, div, modulo;
 precedence left not;
-precedence right aumento, decremento;
+precedence left aumento, decremento;
 
+/*
+precedence left interrogante, punto;
+precedence left igualigual, desigual;
+precedence left suma, menos;
+precedence left multi, div, modulo;
+precedence left menor, mayor, mayorigual, menorigual, instanceof_;
+precedence left igualigual;
+precedence left desigual;
+precedence left xor;
+precedence left and;
+precedence left or;
+precedence right interrogante, dospuntos;
+*/
 start with INICIO;
 
 INICIO ::= BLOQUE:inst {: Imprimir("Correcto"); raiz = inst; :}
@@ -181,6 +194,7 @@ INICIO ::= BLOQUE:inst {: Imprimir("Correcto"); raiz = inst; :}
 		;
 
 BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
+        | llavei:l  llaved {:RESULT = new Bloque(new ArrayList<Nodo>(),lright,lleft);:}
 		;
 
 LINST::= LINST:lista INST:inst {: lista.add(inst); RESULT = lista;:}
@@ -261,12 +275,15 @@ EXP::=
         |menos EXP:op {: RESULT = new Menos(op, opright,opleft);:}      
         |pari EXP:op pard {: RESULT = op;:}
         |AUMENTO:op {:RESULT = op;:}
+        |potencia:pot pari EXP:opi coma EXP:opd pard {:RESULT = new Potencia(opi,opd,potright,potleft);:}
         |EXP:op instanceof_ id:tipo {:RESULT = new InstanceOf(op,tipo, opright, opleft);:}
         |DECREMENTO:op {:RESULT = op;:}
         |EXP:op punto id:t pari pard {:RESULT = new Llamada(op,t, opright,opleft);:}
         |EXP:op punto tostring pari pard {:RESULT = new ToString(op,opright,opleft);:}
         |EXP:op punto tolower pari pard {:RESULT = new ToLower(op,opright,opleft);:}
         |EXP:op punto touper pari pard {:RESULT = new ToUper(op,opright,opleft);:}
+        |pari:t TIPO:t pard EXP:op {:RESULT = new Casteo(op,t, tright, tleft);:}
+        |pari:t id:id pard EXP:op {:RESULT = new Casteo(op,new Tipo(id), tright, tleft);:}
         |entero:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.INT), v, vright,vleft);:}
         |decimal:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.DOUBLE), v, vright,vleft);:}
         |booleano:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.BOOL), v, vright,vleft);:}
@@ -276,10 +293,10 @@ EXP::=
 ;
 
 AUMENTO::= EXP:op aumento {:RESULT = new Aumento(op, opright, opleft);:}
-          |aumento EXP:op {:RESULT = new Aumento(op, opright, opleft);:}       
+          |aumento EXP:op {:RESULT = new Preaumento(op, opright, opleft);:}       
             ;
 DECREMENTO::= EXP:op decremento {:RESULT = new Decremento(op, opright, opleft);:}
-              |decremento EXP:op {:RESULT = new Decremento(op, opright, opleft);:}
+              |decremento EXP:op {:RESULT = new Predecremento(op, opright, opleft);:}
 ;
 
 TER::= EXP:c interrogante EXP:v dospuntos EXP:f{:RESULT = new Ternario(c,v,f,cright,cleft);:}
