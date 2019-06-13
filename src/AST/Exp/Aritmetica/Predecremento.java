@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Exp;
+package AST.Exp.Aritmetica;
 
 import AST.Ent.Entorno;
 import AST.Ent.Simbolo;
 import AST.Ent.Tipo;
+import AST.Exp.Expresion;
+import AST.Exp.Variable;
 import static AST.Ent.Tipo.TypePrimitive.*;
 import Utilidades.ErrorC;
 
@@ -15,13 +17,13 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class Decremento implements Expresion
+public class Predecremento implements Expresion
 {
     int linea, columna;
     Expresion exp;
     Tipo tipo;
     
-    public Decremento(Expresion e, int l, int c)
+    public Predecremento(Expresion e, int l, int c)
     {
         this.exp = e;
         this.linea = l;
@@ -57,17 +59,19 @@ public class Decremento implements Expresion
                 switch(exp.getTipo().typeprimitive)
                 {
                     case INT:
+                        tipo = new Tipo(INT);
                         simbolo.valor = (int)tmp - 1;
                         break;
                     case DOUBLE:
+                        tipo = new Tipo(DOUBLE);
                         simbolo.valor = (Double)tmp - 1;                        
                         break;
                     case CHAR:
+                        tipo = new Tipo(INT);
                         simbolo.valor = (char)tmp - 1;                        
-                }
-                tipo = exp.getTipo();                
+                }                                
                 entorno.actualizar(simbolo);
-                return tmp;
+                return simbolo.valor;
             }
             else
             {

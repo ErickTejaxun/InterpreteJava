@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Exp;
+package AST.Exp.Casteo;
 
 import AST.Ent.Entorno;
 import AST.Ent.Tipo;
+import AST.Exp.Expresion;
 import static AST.Ent.Tipo.TypePrimitive.STRING;
 import Utilidades.ErrorC;
 
@@ -14,13 +15,13 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class ToUper implements Expresion
+public class ToLower implements Expresion
 {
     int linea, columna;
     Tipo tipo;
     Expresion expresion;
     
-    public ToUper(Expresion e, int l, int c)
+    public ToLower(Expresion e, int l, int c)
     {
         this.columna = c;
         this.linea = l;
@@ -34,9 +35,9 @@ public class ToUper implements Expresion
         if(valor !=null)
         {
             if(expresion.getTipo().isString())
-            {       
+            {                
                 tipo = new Tipo(STRING);
-                return valor.toString().toUpperCase();  
+                return valor.toString().toLowerCase();  
             }
             else
             {

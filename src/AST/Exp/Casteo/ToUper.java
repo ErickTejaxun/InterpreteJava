@@ -3,23 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Exp;
+package AST.Exp.Casteo;
 
 import AST.Ent.Entorno;
 import AST.Ent.Tipo;
+import AST.Exp.Expresion;
+import static AST.Ent.Tipo.TypePrimitive.STRING;
 import Utilidades.ErrorC;
 
 /**
  *
  * @author erick
  */
-public class ToString implements Expresion
+public class ToUper implements Expresion
 {
     int linea, columna;
     Tipo tipo;
     Expresion expresion;
     
-    public ToString(Expresion e, int l, int c)
+    public ToUper(Expresion e, int l, int c)
     {
         this.columna = c;
         this.linea = l;
@@ -32,12 +34,20 @@ public class ToString implements Expresion
         Object valor = expresion.getValor(ent);
         if(valor !=null)
         {
-            tipo = new Tipo(Tipo.TypePrimitive.STRING);
-            return valor.toString();
+            if(expresion.getTipo().isString())
+            {       
+                tipo = new Tipo(STRING);
+                return valor.toString().toUpperCase();  
+            }
+            else
+            {
+                Utilidades.Singlenton.registrarError("ToLower()", "No se puede aplicar esta función a valores de tipo "+expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
+            }
+            
         }
         else
         {
-            Utilidades.Singlenton.registrarError("ToString()", "No es posible aplicar el método a un valor nulo." , ErrorC.TipoError.SEMANTICO, linea, columna);
+            Utilidades.Singlenton.registrarError("ToLower()", "No es posible aplicar el método a un valor nulo." , ErrorC.TipoError.SEMANTICO, linea, columna);
         }        
         return null;
     }

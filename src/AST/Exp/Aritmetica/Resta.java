@@ -58,21 +58,8 @@ public class Resta implements Expresion
                 break;
                 case INT:
                 case CHAR:  
-                    valor = (operadori.getTipo().isInt()? (int)valori:(char)valori) +
+                    valor = (operadori.getTipo().isInt()? (int)valori:(char)valori) -
                             (operadord.getTipo().isInt()? (int)valord:(char)valord) ;
-                    /*if(operadori.getTipo().typeprimitive == CHAR)
-                    {
-                        valor = (char)valori - (int)valord;
-                    }
-                    else
-                    if(operadord.getTipo().typeprimitive == CHAR)
-                    {
-                        valor = (int)valori - (char)valord;
-                    }
-                    else
-                    {
-                        valor = (int)valori - (int)valord;
-                    }*/    
                 break;
             }            
         }

@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Exp;
+package AST.Exp.Aritmetica;
 
 import AST.Ent.Entorno;
 import AST.Ent.Simbolo;
 import AST.Ent.Tipo;
+import AST.Exp.Expresion;
+import AST.Exp.Variable;
 import static AST.Ent.Tipo.TypePrimitive.*;
 import Utilidades.ErrorC;
 
@@ -15,13 +17,13 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class Aumento implements Expresion
+public class Decremento implements Expresion
 {
     int linea, columna;
     Expresion exp;
     Tipo tipo;
     
-    public Aumento(Expresion e, int l, int c)
+    public Decremento(Expresion e, int l, int c)
     {
         this.exp = e;
         this.linea = l;
@@ -57,30 +59,29 @@ public class Aumento implements Expresion
                 switch(exp.getTipo().typeprimitive)
                 {
                     case INT:
-                        tipo = new Tipo(INT);
-                        simbolo.valor = (int)tmp + 1;
+                        simbolo.valor = (int)tmp - 1;                        
                         break;
                     case DOUBLE:
-                        tipo.typeprimitive = DOUBLE;
-                        simbolo.valor = (Double)tmp + 1;                        
+                        simbolo.valor = (Double)tmp - 1;                        
                         break;
-                    case CHAR:
-                        tipo.typeprimitive = INT;
-                        simbolo.valor = (char)tmp + 1;                        
+                    case CHAR:                        
+                        simbolo.valor = (char)tmp - 1;                                               
+                        break;
                 }
-                //simbolo.valor = tmp;
+                tipo = exp.getTipo();                
+                entorno.actualizar(simbolo);
                 return tmp;
             }
             else
             {
-                Utilidades.Singlenton.registrarError("++", "Esta operación solo puede aplicarse a tipos numericos" , ErrorC.TipoError.SEMANTICO, linea, columna);    
+                Utilidades.Singlenton.registrarError("--", "Esta operación solo puede aplicarse a tipos numericos" , ErrorC.TipoError.SEMANTICO, linea, columna);    
             }
-            return 0;
+            return null;
         }
         else
         {
-            Utilidades.Singlenton.registrarError("++", "Esta operación solo puede aplicarse sobre variables" , ErrorC.TipoError.SEMANTICO, linea, columna);
-            return 0;
+            Utilidades.Singlenton.registrarError("--", "Esta operación solo puede aplicarse sobre variables" , ErrorC.TipoError.SEMANTICO, linea, columna);
+            return null;
         }        
     }
 

@@ -17,9 +17,8 @@ public class Interprete {
     public static void main(String[] args) 
     {                              
         Interfaz ventana = new Interfaz();  
-	char a = 'a';
-	int b = ++a; 
-	println(b);
+        Object a=null;
+        println(a);
         //Ventana ventana = new Ventana();
         ventana.show();
     }

@@ -10,6 +10,8 @@ import AST.Exp.Expresion;
 import AST.Ent.Entorno;
 import AST.Ent.Tipo;
 import static AST.Ent.Tipo.TypePrimitive.CHAR;
+import AST.Exp.Arreglo.Arreglo;
+import AST.Exp.Arreglo.ExpresionArreglo;
 
 import Utilidades.ErrorC;
 
@@ -23,6 +25,26 @@ public class Declaracion implements Instruccion
     public String id;
     public Expresion expresion;
     public int linea, columna;
+    public int dimensiones;
+    
+    public Declaracion(Tipo t, String id, int d, int l,int c)
+    {
+        this.tipo = t;
+        this.id = id;
+        this.linea = l;
+        this.columna = c;
+        this.dimensiones = d;
+    }  
+    
+    public Declaracion(Tipo t, String id, int d, Expresion e, int l,int c)
+    {
+        this.tipo = t;
+        this.id = id;
+        this.linea = l;
+        this.columna = c;
+        this.dimensiones = d;
+        this.expresion = e;
+    }    
     
     public Declaracion(Tipo t, String id, int l,int c)
     {
@@ -30,6 +52,7 @@ public class Declaracion implements Instruccion
         this.id = id;
         this.linea = l;
         this.columna = c;
+        this.dimensiones = 0;
     }
     
     public Declaracion(Tipo t, String id, Expresion e, int l, int c)
@@ -48,7 +71,15 @@ public class Declaracion implements Instruccion
         /*Verificamos si se le ha asignado un valor inicial.*/
         if(expresion!=null)
         {
-            valor = expresion.getValor(entorno);
+            if(expresion instanceof ExpresionArreglo)
+            {
+                if(((ExpresionArreglo)expresion).tipo == null)
+                {
+                    ((ExpresionArreglo)expresion).tipo = tipo;
+                }
+            }            
+            valor = expresion.getValor(entorno);     
+            if(valor instanceof Arreglo){((Arreglo)valor).tipo = expresion.getTipo();}
             if(expresion.getTipo().typeprimitive != tipo.typeprimitive)
             {
                 switch(this.tipo.typeprimitive)
@@ -115,6 +146,7 @@ public class Declaracion implements Instruccion
         }  
         /*Si no se le asigna un valor de inicio, hay que inicializar */
         else
+        if(this.dimensiones ==0)
         {                            
             switch(this.tipo.typeprimitive)
             {
@@ -135,7 +167,20 @@ public class Declaracion implements Instruccion
                     break;                    
             }             
         }
-        Simbolo s = new Simbolo(tipo,id,valor,linea,columna);
+        
+        if(valor instanceof Arreglo)
+        {
+            Arreglo arregloTmp = (Arreglo)valor;
+            System.out.println(arregloTmp.getCadena());
+            if(arregloTmp.sizes.size() != dimensiones)
+            {
+                Utilidades.Singlenton.registrarError(id, "No coincide el número de las dimensiones del valor a asignar", ErrorC.TipoError.SEMANTICO,linea, columna);
+                return this;
+            }            
+        }
+        
+        
+        Simbolo s = this.dimensiones == 0 ? new Simbolo(tipo,id,valor,linea,columna):new Simbolo(tipo,id,valor,dimensiones ,linea,columna);
         if(!entorno.insertar(s))
         {
             //System.out.println("Error, variable " +s.id + " ya declarada.");

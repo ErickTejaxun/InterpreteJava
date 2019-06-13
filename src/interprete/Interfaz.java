@@ -249,7 +249,7 @@ public class Interfaz extends javax.swing.JFrame {
             .addGap(0, 449, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("DASM", jPanel2);
+        jTabbedPane1.addTab("Reportes", jPanel2);
 
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
@@ -1105,7 +1105,7 @@ public class Interfaz extends javax.swing.JFrame {
             {raizActual,
                 error.id,
                 error.getDescripcion(),
-                error.getLinea() +1,
+                error.getLinea(),
                 error.getColumna(),
                 error.getTipo()}                    
             );

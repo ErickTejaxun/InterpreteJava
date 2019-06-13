@@ -3,43 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Instruccion;
+package AST.Exp.Metodos;
 
 import AST.Ent.Entorno;
+import AST.Ent.Simbolo;
+import AST.Ent.Tipo;
+import AST.Instruccion.Instruccion;
 
 /**
  *
  * @author erick
  */
-public class ImprimirT implements Instruccion
+public class Funcion extends Simbolo implements Instruccion
 {
-    int linea, columna;
-
-    public ImprimirT(int l, int c) 
+    
+    public Funcion(Tipo t, String id, int dim, int l, int c) 
     {
-        this.linea = l;
-        this.columna = c;
+        super(t, id, dim, l, c);
     }
-    
-    
 
     @Override
     public Object ejectuar(Entorno entorno) 
     {
-        entorno.ventana.Imprimir("ID\tTIPO\tVALOR\tROL\tDIMENSIONES\tLINEA\tCOLUMNA");
-        entorno.ventana.Imprimir(entorno.Tabla());
         return this;
     }
 
     @Override
-    public int linea() 
-    {
+    public int linea() {
         return linea;
     }
 
     @Override
-    public int columna() 
-    {
+    public int columna() {
         return columna;
     }
     

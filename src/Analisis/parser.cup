@@ -11,6 +11,9 @@ import AST.Ent.*;
 import AST.Exp.Aritmetica.*;
 import AST.Exp.Relacional.*;
 import AST.Exp.Logica.*;
+import AST.Exp.Arreglo.*;
+import AST.Exp.Casteo.*;
+
 
 parser code
 {:	   	
@@ -147,46 +150,40 @@ non terminal If IF, ELSE;
 non terminal Ternario TER;
 non terminal For FOR;
 non terminal Expresion ACTUALIZACION;
-
-
-
-/* Precedencia 
-precedence left suma, resta;
-precedence left multi, div;*/
+non terminal Integer NDIM;
+non terminal ArrayList<Expresion> LEXP;
+non terminal AsignacionVector ASIGV;
+non terminal NodoNario ITEM,LITEM,ARR,LARR;
 /*
-precedence left suma, menos ;
-precedence left div, multi;
-precedence left xor;
+precedence left interrogante, punto;
 precedence left or;
 precedence left and;
+precedence left xor;
+precedence left igualigual, desigual;
+precedence left menor, mayor, mayorigual, menorigual, instanceof_;
+precedence left suma, menos;
+precedence left multi, div, modulo;
 precedence left not;
-precedence aumento, decremento;
+precedence left aumento, decremento ;
 */
 
-precedence left interrogante, punto;
-precedence left or;
-precedence left and;
-precedence left xor;
-precedence left igualigual, desigual;
-precedence left menor, mayor, mayorigual, menorigual, instanceof_;
-precedence left suma, menos;
-precedence left multi, div, modulo;
-precedence left not;
-precedence left aumento, decremento;
-
-/*
-precedence left interrogante, punto;
-precedence left igualigual, desigual;
-precedence left suma, menos;
-precedence left multi, div, modulo;
-precedence left menor, mayor, mayorigual, menorigual, instanceof_;
-precedence left igualigual;
-precedence left desigual;
-precedence left xor;
-precedence left and;
-precedence left or;
 precedence right interrogante, dospuntos;
-*/
+precedence left or;
+precedence left and;
+precedence left xor;
+precedence left igualigual, desigual;
+precedence left menor, menorigual, mayor, mayorigual, instanceof_;
+precedence left suma, menos;
+precedence left div, multi, modulo;
+precedence left not;
+precedence right nuevo;
+precedence nonassoc aumento, decremento, not;
+precedence nonassoc pard , pari;
+precedence nonassoc corcheted , corchetei;
+precedence left punto;
+
+
+
 start with INICIO;
 
 INICIO ::= BLOQUE:inst {: Imprimir("Correcto"); raiz = inst; :}
@@ -213,6 +210,7 @@ INST ::=
     | IF:inst{:RESULT = inst;:}
     | AUMENTO:inst puntocoma {:RESULT = inst;:}
     | DECREMENTO:inst puntocoma {:RESULT = inst;:}
+    | ASIGV:inst puntocoma {:RESULT = inst;:}
 	;
 
 ACTUALIZACION::= AUMENTO :inst {:RESULT =inst;:}
@@ -247,14 +245,33 @@ PRINTABLE::= printable:p pari pard puntocoma {:RESULT = new ImprimirT(pright,ple
 PRINT::= print:p pari EXP:valor pard puntocoma {:RESULT = new Imprimir(valor, pright,pleft); :}
 ;
 
-ASIG::= id:id igual EXP:valor   {: RESULT = new Asignacion(id, valor, idright,idleft);:}
+ASIG::= id:id igual EXP:valor   {: RESULT = new Asignacion(id, valor, idright,idleft);:};
+
+ASIGV::=id:id LEXP:coordenas igual EXP:valor {: RESULT = new AsignacionVector(id, coordenas, valor,  idright,idleft);:}
 ;
 
 DECLARACION::=  
 	    TIPO:t id:id  {: RESULT = new Declaracion(t, id , tright,tleft); :}
 	   |TIPO:t id:id  igual EXP:valor  {: RESULT = new Declaracion(t, id, valor, tright,tleft); :}
+       |id:t id:id  igual EXP:valor  {: RESULT = new Declaracion(new Tipo(Tipo.TypePrimitive.OBJETO,t), id, valor, tright,tleft); :}
+       |id:t id:id {:RESULT = new Declaracion(new Tipo(Tipo.TypePrimitive.OBJETO,t), id , tright,tleft);:}
+       /*Arreglos.*/
+       |TIPO:t id:id NDIM:n {: RESULT = new Declaracion(t, id , n, tright,tleft); :}    
+       |TIPO:t id:id NDIM:n igual EXP:valor {: RESULT = new Declaracion(t, id , n, valor, tright,tleft); :}
+       |id:t id:id NDIM:n {: RESULT = new Declaracion(new Tipo(t) , id , n, tright,tleft); :}    
+       |id:t id:id NDIM:n igual ARR:valor {: RESULT = new Declaracion(new Tipo(t), id , n, new ExpresionArreglo(valor, valorright, valorleft), tright,tleft); :}       
+       |TIPO:t id:id NDIM:n igual ARR:valor {: RESULT = new Declaracion(t, id , n, new ExpresionArreglo(valor, valorright, valorleft), tright,tleft); :}
+       /*	    
+	   |TIPO:t id:id  igual EXP:valor  {: RESULT = new Declaracion(t, id, valor, tright,tleft); :}
+       |id:t id:id  igual EXP:valor  {: RESULT = new Declaracion(new Tipo(Tipo.TypePrimitive.OBJETO,t), id, valor, tright,tleft); :}
+       |id:t id:id {:RESULT = new Declaracion(new Tipo(Tipo.TypePrimitive.OBJETO,t), id , tright,tleft);:}       
+       */
 	   ;
 
+/*Dimensiones*/
+NDIM::= NDIM:n corchetei corcheted {:RESULT = n+1;:}
+        |corchetei corcheted {: RESULT = 1;:}
+;        
 EXP::= 
          EXP:opi and EXP:opd {: RESULT = new And(opi, opd, opiright,opileft);:}
         |EXP:opi or EXP:opd {: RESULT = new Or(opi, opd, opiright,opileft);:}
@@ -272,8 +289,7 @@ EXP::=
         |EXP:opi div EXP:opd {: RESULT = new Division(opi,opd,opiright,opileft);:}  
         |EXP:opi modulo EXP:opd {: RESULT = new Modulo(opi,opd,opiright,opileft);:}  
         |TER:op {:RESULT = op;:}                
-        |menos EXP:op {: RESULT = new Menos(op, opright,opleft);:}      
-        |pari EXP:op pard {: RESULT = op;:}
+        |menos EXP:op {: RESULT = new Menos(op, opright,opleft);:}              
         |AUMENTO:op {:RESULT = op;:}
         |potencia:pot pari EXP:opi coma EXP:opd pard {:RESULT = new Potencia(opi,opd,potright,potleft);:}
         |EXP:op instanceof_ id:tipo {:RESULT = new InstanceOf(op,tipo, opright, opleft);:}
@@ -282,14 +298,33 @@ EXP::=
         |EXP:op punto tostring pari pard {:RESULT = new ToString(op,opright,opleft);:}
         |EXP:op punto tolower pari pard {:RESULT = new ToLower(op,opright,opleft);:}
         |EXP:op punto touper pari pard {:RESULT = new ToUper(op,opright,opleft);:}
-        |pari:t TIPO:t pard EXP:op {:RESULT = new Casteo(op,t, tright, tleft);:}
-        |pari:t id:id pard EXP:op {:RESULT = new Casteo(op,new Tipo(id), tright, tleft);:}
+        |pari:t TIPO:tipo pard EXP:op {:RESULT = new Casteo(op,tipo, tright, tleft);:} 
+        |pari:t id:tipo pard EXP:op {:RESULT = new Casteo(op,tipo, tright, tleft);:}
         |entero:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.INT), v, vright,vleft);:}
         |decimal:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.DOUBLE), v, vright,vleft);:}
         |booleano:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.BOOL), v, vright,vleft);:}
         |cadena:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.STRING), v, vright,vleft);:}
         |caracter:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.CHAR), v, vright,vleft);:}
         |id:v {: RESULT = new Variable(v, vright,vleft);:}
+        |nuevo:n TIPO:tipo LEXP:l {: RESULT = new ExpresionArreglo(tipo,l,nright,nleft);:}
+        |nuevo:n id:tipo LEXP:l {: RESULT = new ExpresionArreglo(new Tipo(tipo), l,nright,nleft);:}
+        |pari EXP:op pard {: RESULT = op;:}
+        |EXP:id LEXP:coor {: RESULT = new AccesoVector(id, coor , idright, idleft);:}
+        
+;
+
+LEXP::= LEXP:l corchetei EXP:exp corcheted{:l.add(exp); RESULT = l;:}
+        | corchetei EXP:exp corcheted {: ArrayList<Expresion> l = new ArrayList<Expresion>(); l.add(exp); RESULT = l;:}
+;
+
+ARR::= llavei LITEM:nodo llaved {: RESULT = nodo;:}
+;
+
+LITEM::= LITEM:nodo coma ITEM:item {: nodo.addHijo(item); RESULT = nodo; :}
+        |ITEM:item  {: NodoNario nodo = new NodoNario(); nodo.addHijo(item); RESULT = nodo;:}
+;
+ITEM::= EXP:exp {: RESULT = new NodoNario(exp);:} 
+        |ARR:exp {: RESULT = exp;:} 
 ;
 
 AUMENTO::= EXP:op aumento {:RESULT = new Aumento(op, opright, opleft);:}
@@ -306,6 +341,5 @@ TIPO ::=   tint:t {:RESULT = new Tipo(Tipo.TypePrimitive.INT);:}
 		|tchar:t {:RESULT =  new Tipo(Tipo.TypePrimitive.CHAR);:}
         |tdouble:t {:RESULT = new Tipo(Tipo.TypePrimitive.DOUBLE);:}
 		|tbool:t {:RESULT = new Tipo(Tipo.TypePrimitive.BOOL);:}
-		|tstring:t {:RESULT = new Tipo(Tipo.TypePrimitive.STRING);:}
-		|id:t {:RESULT = new Tipo(Tipo.TypePrimitive.OBJETO,t);:}
+		|tstring:t {:RESULT = new Tipo(Tipo.TypePrimitive.STRING);:}		
 		;

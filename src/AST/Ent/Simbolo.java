@@ -5,6 +5,8 @@
  */
 package AST.Ent;
 
+import static AST.Ent.Simbolo.Rol.*;
+
 /**
  *
  * @author erick
@@ -14,8 +16,20 @@ public class Simbolo
     String id;        
     public Tipo tipo;
     public Object valor;
-    String rol;
-    public int linea, columna;            
+    public enum Rol{VAR, FUNCION, METODO, OBJETO, CLASE, ARREGLO};
+    public Rol rol= VAR;
+    public int linea, columna;     
+    public int dimensiones;
+    
+    public Simbolo(Tipo t, String id, int dim, int l, int c)
+    {
+        this.tipo = t;
+        this.id = id;
+        this.dimensiones = dim;
+        this.linea = l;
+        this.columna = c;
+    }
+    
     public Simbolo(Tipo t, String id, Object v )
     {
         this.id = id;
@@ -25,6 +39,17 @@ public class Simbolo
         linea = 0 ; 
         columna = 0;
     }        
+
+    public Simbolo(Tipo t, String id, Object v ,int dim, int l, int col)
+    {
+        this.id = id;
+        this.tipo = t;
+        this.valor = v;
+        this.dimensiones = dim;
+        this.rol = ARREGLO;
+        this.linea = l;
+        this.columna = col;
+    }            
     
     public Simbolo(Tipo t, String id, Object v , int l, int col)
     {
@@ -48,15 +73,16 @@ public class Simbolo
         return valor;
     }
 
-    public String getRol() {
+    public Simbolo.Rol getRol() {
         return rol;
     }
     
     public String getMessage()
     {
-        return  tipo.typeClass.equals("")?             
-                id +"\t"+tipo.typeprimitive+"\t"+valor+"\t"+linea+"\t"+columna:
-                id +"\t"+tipo.typeClass+"\t"+valor+"\t"+linea+"\t"+columna;
+        return  dimensiones==0?    
+                id +"\t"+tipo.nombreTipo()+"\t"+valor+"\t"+this.rol+"\t\t"+linea+"\t"+columna:
+                id +"\t"+tipo.nombreTipo()+"\t"+valor+"\t"+this.rol+"\t"+dimensiones+"\t"+linea+"\t"+columna;
+                
     }
     
     

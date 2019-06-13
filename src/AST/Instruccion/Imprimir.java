@@ -6,6 +6,7 @@
 package AST.Instruccion;
 
 import AST.Ent.Entorno;
+import AST.Exp.Arreglo.Arreglo;
 import AST.Exp.Expresion;
 
 /**
@@ -33,7 +34,16 @@ public class Imprimir implements Instruccion
         {
             if(exp!=null)
             {
-                entorno.ventana.Imprimir(exp.toString());
+                Object valor = exp;//.toString()
+                if(valor instanceof Arreglo)
+                {
+                    entorno.ventana.Imprimir(((Arreglo)valor).getCadena());
+                }
+                else
+                {
+                    entorno.ventana.Imprimir(valor.toString());
+                }
+                
             }                           
             else
             {

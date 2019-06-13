@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Exp;
+package AST.Exp.Aritmetica;
 
 import AST.Ent.Entorno;
 import AST.Ent.Simbolo;
 import AST.Ent.Tipo;
+import AST.Exp.Expresion;
+import AST.Exp.Variable;
 import static AST.Ent.Tipo.TypePrimitive.*;
 import Utilidades.ErrorC;
 
@@ -15,13 +17,13 @@ import Utilidades.ErrorC;
  *
  * @author erick
  */
-public class Preaumento implements Expresion
+public class Aumento implements Expresion
 {
     int linea, columna;
     Expresion exp;
     Tipo tipo;
     
-    public Preaumento(Expresion e, int l, int c)
+    public Aumento(Expresion e, int l, int c)
     {
         this.exp = e;
         this.linea = l;
@@ -57,18 +59,18 @@ public class Preaumento implements Expresion
                 switch(exp.getTipo().typeprimitive)
                 {
                     case INT:
-                        tipo.typeprimitive =INT;
-                        tmp = (int)tmp + 1;
+                        tipo = new Tipo(INT);
+                        simbolo.valor = (int)tmp + 1;
                         break;
                     case DOUBLE:
                         tipo.typeprimitive = DOUBLE;
-                        tmp = (Double)tmp + 1;                        
+                        simbolo.valor = (Double)tmp + 1;                        
                         break;
                     case CHAR:
-                        tipo.typeprimitive =INT;
-                        tmp = (char)tmp + 1;                        
+                        tipo.typeprimitive = INT;
+                        simbolo.valor = (char)tmp + 1;                        
                 }
-                simbolo.valor = tmp;
+                //simbolo.valor = tmp;
                 return tmp;
             }
             else
