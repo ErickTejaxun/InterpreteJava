@@ -5,11 +5,11 @@
  */
 package AST.Instruccion;
 
-import AST.Ent.Simbolo;
-import AST.Exp.Expresion;
-import AST.Ent.Entorno;
-import static AST.Ent.Tipo.TypePrimitive.*;
-import AST.Exp.Arreglo.Arreglo;
+import AST.Entorno.Simbolo;
+import AST.Expresion.Expresion;
+import AST.Entorno.Entorno;
+import static AST.Entorno.Tipo.TypePrimitive.*;
+import AST.Expresion.Arreglo.Arreglo;
 import Utilidades.ErrorC;
 import java.util.ArrayList;
 

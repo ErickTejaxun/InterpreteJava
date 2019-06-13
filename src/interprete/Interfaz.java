@@ -6,9 +6,9 @@
 package interprete;
 
 import Utilidades.ErrorC;
-import AST.Ent.Entorno;
+import AST.Entorno.Entorno;
 import AST.Instruccion.Instruccion;
-import AST.Ent.Simbolo;
+import AST.Entorno.Simbolo;
 import AST.Instruccion.AST;
 import AST.Nodo;
 import Analisis.*;
@@ -1172,8 +1172,14 @@ public class Interfaz extends javax.swing.JFrame {
     
     public void Imprimir(String m)
     {        
-        this.textAreaConsola.setText(textAreaConsola.getText() + "\n" + m);
+        this.textAreaConsola.setText(textAreaConsola.getText() + m);
     }    
+    
+    public void ImprimirLn(String m)
+    {        
+        this.textAreaConsola.setText(textAreaConsola.getText() + "\n" + m);
+    } 
+    
     public void imprimirTokens(ArrayList<lexema> lexemas)
     {
         System.out.println("Id\tLinea\tColumna");

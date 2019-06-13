@@ -184,15 +184,24 @@ sinosi={sino}({comentario}|{espacio})*(si)
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.printable, yychar, yyline, yytext());
             }
+"print"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.print, yychar, yyline, yytext());
+            }                            
+
 
 "println"  {
             addLexema("reservada", yytext(), yyline, yychar);
-            return  new Symbol(sym.print, yychar, yyline, yytext());
-            }                
+            return  new Symbol(sym.println, yychar, yyline, yytext());
+            } 
 "false"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.booleano, yychar, yyline, false);
             }     
+"void"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.tvoid, yychar, yyline, false);
+            }            
 "true"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.booleano, yychar, yyline, true);

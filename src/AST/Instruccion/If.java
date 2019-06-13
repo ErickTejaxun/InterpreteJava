@@ -5,9 +5,9 @@
  */
 package AST.Instruccion;
 
-import AST.Ent.Entorno;
-import static AST.Ent.Tipo.TypePrimitive.*;
-import AST.Exp.Expresion;
+import AST.Entorno.Entorno;
+import static AST.Entorno.Tipo.TypePrimitive.*;
+import AST.Expresion.Expresion;
 import Utilidades.ErrorC;
 
 /**
@@ -55,7 +55,11 @@ public class If implements Instruccion
                 if(resultado instanceof Break)
                 {
                     return resultado;
-                }                
+                }      
+                if(resultado instanceof Continuar)
+                {
+                    return resultado;
+                }                  
             }
             else
             {

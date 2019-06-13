@@ -1,0 +1,119 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package AST.Entorno;
+
+import Utilidades.ErrorC;
+import interprete.Interfaz;
+import interprete.Ventana;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+/**
+ *
+ * @author erick
+ */
+public class Entorno 
+{
+    public Entorno anterior;
+    public Hashtable<String, Simbolo> tabla;
+    public Interfaz ventana;
+    
+    public Entorno(Entorno entorno)
+    {
+        this.anterior = entorno;
+        this.tabla = new Hashtable<String, Simbolo>();
+    }
+    
+    public Entorno(Entorno entorno, Interfaz v)
+    {
+        this.ventana = v;
+        this.anterior = entorno;
+        this.tabla = new Hashtable<String, Simbolo>();
+    }    
+    
+    public boolean insertar(Simbolo simbolo)
+    {        
+        Simbolo tmp = tabla.get(simbolo.id); 
+        /*Error de variable ya declarada.*/
+        if(tmp !=null)
+        {
+            Utilidades.Singlenton.registrarError(simbolo.id, "Variable ya declarada. ", ErrorC.TipoError.SEMANTICO, simbolo.linea, simbolo.columna);
+            return false;
+        }
+        tabla.put(simbolo.id, simbolo);        
+        return true;
+    }
+    
+    public boolean actualizar(Simbolo simbolo)
+    {
+        Entorno tmp = this;
+        while(tmp!=null)
+        {      
+            Simbolo s = tmp.tabla.get(simbolo.id);
+            if(s!=null)
+            {
+                tmp.tabla.put(simbolo.id, simbolo);
+                return true;
+            }
+            tmp = tmp.anterior;
+        }
+        return false;
+    }
+    
+    
+    public Simbolo obtener(String id)
+    {
+        Entorno tmp = this;
+        while(tmp!=null)
+        {      
+            Simbolo s = tmp.tabla.get(id);
+            if(s!=null)
+            {
+                return s;
+            }
+            tmp = tmp.anterior;
+        }
+        return null;
+    }
+    
+    public void ReporteEntorno()
+    {
+        /*System.out.println("----------------------------------------------");
+        Enumeration num = this.tabla.keys();
+        while(num.hasMoreElements())
+        {
+            Object clave = num.nextElement();
+            Simbolo s = tabla.get(clave);
+            System.out.println(s.getMessage());            
+        }*/
+    }
+
+    public String Tabla()
+    {
+        Entorno auxiliar = this;
+        String reporte ="";
+        while(auxiliar!=null)
+        {
+            reporte += "\n" + "--------------Entorno local-----------";
+            Enumeration num = auxiliar.tabla.keys();
+            while(num.hasMoreElements())
+            {
+                Object clave = num.nextElement();
+                Simbolo s = auxiliar.tabla.get(clave);
+                if(reporte.equals(""))
+                {
+                    reporte+=s.getMessage();            
+                }            
+                else
+                {
+                    reporte+="\n"+s.getMessage();            
+                }
+            }             
+            auxiliar = auxiliar.anterior;
+        }        
+        return reporte;
+    }
+}

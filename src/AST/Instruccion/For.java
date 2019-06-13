@@ -5,9 +5,9 @@
  */
 package AST.Instruccion;
 
-import AST.Ent.Entorno;
-import static AST.Ent.Tipo.TypePrimitive.*;
-import AST.Exp.Expresion;
+import AST.Entorno.Entorno;
+import static AST.Entorno.Tipo.TypePrimitive.*;
+import AST.Expresion.Expresion;
 import Utilidades.ErrorC;
 
 /**
@@ -34,29 +34,21 @@ public class For implements Instruccion
     
     @Override    
     public Object ejectuar(Entorno entorno) 
-    {
+    {              
         Entorno local = new Entorno(entorno,entorno.ventana);
-//        int i = 0;
-//        for(int i = 10; i <100; i++)
-//        {
-//        }
         /*Se genera la declaración o asignación*/
-        Inicio.ejectuar(entorno);
-        
+        Inicio.ejectuar(entorno);        
         /*Se realiza la verificación de la condición*/
         Object condicional = condicion.getValor(entorno);                     
-        if(condicion.getTipo().typeprimitive== BOOL)
+        if(condicion.getTipo().isBoolean())
         {            
             while((boolean)condicional)
             {
+                local = new Entorno(entorno,entorno.ventana);
                 Object resultado = instrucciones.ejectuar(local);
                 if(resultado instanceof Break)
                 {
                     break;
-                }
-                if(resultado instanceof Continuar)
-                {
-                    continue;
                 }
                 Actualizacion.getValor(entorno);
                 condicional = condicion.getValor(entorno);

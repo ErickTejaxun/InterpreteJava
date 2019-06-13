@@ -7,7 +7,7 @@ package interprete;
 
 import AST.Instruccion.Instruccion;
 import AST.Instruccion.AST;
-import AST.Ent.Entorno;
+import AST.Entorno.Entorno;
 
 import AST.Nodo;
 import Analisis.parser;

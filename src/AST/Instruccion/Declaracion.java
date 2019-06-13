@@ -5,13 +5,13 @@
  */
 package AST.Instruccion;
 
-import AST.Ent.Simbolo;
-import AST.Exp.Expresion;
-import AST.Ent.Entorno;
-import AST.Ent.Tipo;
-import static AST.Ent.Tipo.TypePrimitive.CHAR;
-import AST.Exp.Arreglo.Arreglo;
-import AST.Exp.Arreglo.ExpresionArreglo;
+import AST.Entorno.Simbolo;
+import AST.Expresion.Expresion;
+import AST.Entorno.Entorno;
+import AST.Entorno.Tipo;
+import static AST.Entorno.Tipo.TypePrimitive.CHAR;
+import AST.Expresion.Arreglo.Arreglo;
+import AST.Expresion.Arreglo.ExpresionArreglo;
 
 import Utilidades.ErrorC;
 
@@ -79,7 +79,13 @@ public class Declaracion implements Instruccion
                 }
             }            
             valor = expresion.getValor(entorno);     
-            if(valor instanceof Arreglo){((Arreglo)valor).tipo = expresion.getTipo();}
+            if(valor instanceof Arreglo)
+            {
+                if(((Arreglo)valor).tipo==null)
+                {
+                    ((Arreglo)valor).tipo = expresion.getTipo();
+                }               
+            }
             if(expresion.getTipo().typeprimitive != tipo.typeprimitive)
             {
                 switch(this.tipo.typeprimitive)
@@ -172,7 +178,7 @@ public class Declaracion implements Instruccion
         {
             Arreglo arregloTmp = (Arreglo)valor;
             System.out.println(arregloTmp.getCadena());
-            if(arregloTmp.sizes.size() != dimensiones)
+            if(arregloTmp.tamaniosDimensiones.size() != dimensiones)
             {
                 Utilidades.Singlenton.registrarError(id, "No coincide el número de las dimensiones del valor a asignar", ErrorC.TipoError.SEMANTICO,linea, columna);
                 return this;

@@ -5,9 +5,9 @@
  */
 package AST.Instruccion;
 
-import AST.Exp.Retorno;
-import AST.Ent.Entorno;
-import AST.Exp.Expresion;
+import AST.Expresion.Retorno;
+import AST.Entorno.Entorno;
+import AST.Expresion.Expresion;
 import AST.Instruccion.Instruccion;
 import AST.Nodo;
 import interprete.Interfaz;

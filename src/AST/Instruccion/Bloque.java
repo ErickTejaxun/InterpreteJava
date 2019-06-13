@@ -5,9 +5,9 @@
  */
 package AST.Instruccion;
 
-import AST.Exp.Retorno;
-import AST.Ent.Entorno;
-import AST.Exp.Expresion;
+import AST.Expresion.Retorno;
+import AST.Entorno.Entorno;
+import AST.Expresion.Expresion;
 import AST.Nodo;
 import java.util.ArrayList;
 
@@ -51,11 +51,14 @@ public class Bloque implements Instruccion
                     {                        
                         return resultado;                    
                     }
+                    if(resultado instanceof Continuar)
+                    {                        
+                        return resultado;
+                    }                    
                 }
             }
             else if (nodo instanceof Expresion)
-            {
-                //return ((Expresion) nodo).getValor(global);
+            {                
                 ((Expresion)nodo).getValor(global);
             }            
         }

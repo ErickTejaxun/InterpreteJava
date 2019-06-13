@@ -5,7 +5,7 @@
  */
 package AST.Instruccion;
 
-import AST.Ent.Entorno;
+import AST.Entorno.Entorno;
 
 /**
  *

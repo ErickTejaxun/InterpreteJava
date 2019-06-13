@@ -5,9 +5,9 @@
  */
 package AST.Instruccion;
 
-import AST.Ent.Entorno;
-import AST.Exp.Arreglo.Arreglo;
-import AST.Exp.Expresion;
+import AST.Entorno.Entorno;
+import AST.Expresion.Arreglo.Arreglo;
+import AST.Expresion.Expresion;
 
 /**
  *
@@ -17,14 +17,24 @@ public class Imprimir implements Instruccion
 {
     public int linea, columna;
     public Expresion valor;
+    public boolean salto;
 
     public Imprimir(Expresion v, int l, int c)
     {
         this.valor = v;
         this.linea = l;
         this.columna = c;
+        this.salto = true;
     }
         
+    public Imprimir(Expresion v, boolean s, int l, int c)
+    {
+        this.valor = v;
+        this.linea = l;
+        this.columna = c;
+        this.salto = s;
+    }    
+    
     @Override
     public Object ejectuar(Entorno entorno) 
     {
@@ -37,20 +47,31 @@ public class Imprimir implements Instruccion
                 Object valor = exp;//.toString()
                 if(valor instanceof Arreglo)
                 {
-                    entorno.ventana.Imprimir(((Arreglo)valor).getCadena());
+                    Imprimir( entorno,((Arreglo)valor).getCadena());
                 }
                 else
                 {
-                    entorno.ventana.Imprimir(valor.toString());
-                }
-                
+                    Imprimir(entorno,valor.toString());
+                }                
             }                           
             else
             {
-                entorno.ventana.Imprimir("NULO :'v");
+                Imprimir(entorno,"NULO");
             }
         }
         return this;
+    }
+    
+    public void Imprimir(Entorno e, String c)
+    {
+        if(salto)
+        {
+            e.ventana.ImprimirLn(c);
+        }
+        else
+        {
+            e.ventana.Imprimir(c);
+        }
     }
 
     @Override
