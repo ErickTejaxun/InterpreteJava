@@ -20,6 +20,8 @@ public class NodoNario
     public ArrayList<NodoNario> hijos;
     public Object valor;
     public Tipo tipo;
+    public int linea, columna;
+    
     public NodoNario()
     {
         
@@ -231,7 +233,13 @@ public class NodoNario
             
         }        
         else
-        {
+        {   
+            if(l.get(nivel)>hijos.size())
+            {            
+                Utilidades.Singlenton.registrarError("indice", "Error de desborde de índice de acceso al arreglo." , ErrorC.TipoError.SEMANTICO,
+                        Utilidades.Singlenton.linea, Utilidades.Singlenton.columna);  
+                return null;
+            }
             NodoNario tmp = hijos.get(l.get(nivel));
             return tmp==null? null: tmp.getValor(l, nivel+1);
         }                
@@ -249,5 +257,27 @@ public class NodoNario
 
         }
         return 0;
+    }
+    
+    public ArrayList<NodoNario> getArrayLinealizado()
+    {
+        ArrayList<NodoNario> lista = new ArrayList<NodoNario>();
+        if(isHoja())
+        {
+            lista.add(this);
+            return lista;
+        }
+        else
+        {
+            for(NodoNario hijo: hijos)
+            {
+                ArrayList<NodoNario> tmp = hijo.getArrayLinealizado();
+                for(NodoNario hijo1 : tmp)
+                {
+                    lista.add(hijo1);
+                }
+            }
+        }
+        return lista;
     }
 }

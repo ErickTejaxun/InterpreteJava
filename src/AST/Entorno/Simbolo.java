@@ -13,7 +13,7 @@ import static AST.Entorno.Simbolo.Rol.*;
  */
 public class Simbolo 
 {
-    String id;        
+    public String id;        
     public Tipo tipo;
     public Object valor;
     public enum Rol{VAR, FUNCION, METODO, OBJETO, CLASE, ARREGLO};
@@ -28,6 +28,10 @@ public class Simbolo
         this.dimensiones = dim;
         this.linea = l;
         this.columna = c;
+    }
+    
+    public Simbolo()
+    {
     }
     
     public Simbolo(Tipo t, String id, Object v )

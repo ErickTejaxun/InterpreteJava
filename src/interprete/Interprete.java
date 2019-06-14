@@ -18,6 +18,17 @@ public class Interprete {
     {                              
         Interfaz ventana = new Interfaz();                      
         //Ventana ventana = new Ventana();
+        try 
+        {
+            String cadena = "a";
+            char d = (cadena).charAt(0);
+            println(d);            
+        } catch (Exception e) 
+        {
+            println("Error");
+        }
+        
+        
         ventana.show();
     }
     

@@ -33,14 +33,14 @@ public class Entorno
         this.anterior = entorno;
         this.tabla = new Hashtable<String, Simbolo>();
     }    
-    
+        
     public boolean insertar(Simbolo simbolo)
     {        
         Simbolo tmp = tabla.get(simbolo.id); 
         /*Error de variable ya declarada.*/
         if(tmp !=null)
         {
-            Utilidades.Singlenton.registrarError(simbolo.id, "Variable ya declarada. ", ErrorC.TipoError.SEMANTICO, simbolo.linea, simbolo.columna);
+            Utilidades.Singlenton.registrarError(simbolo.id, simbolo.rol +" ya declarado ", ErrorC.TipoError.SEMANTICO, simbolo.linea, simbolo.columna);
             return false;
         }
         tabla.put(simbolo.id, simbolo);        
@@ -63,6 +63,10 @@ public class Entorno
         return false;
     }
     
+    int suma()
+    {
+        return 1;
+    }
     
     public Simbolo obtener(String id)
     {

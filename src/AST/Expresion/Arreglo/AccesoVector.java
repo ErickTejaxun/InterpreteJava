@@ -40,8 +40,11 @@ public class AccesoVector implements Expresion
         {
             if(valor instanceof Arreglo)
             {
-                Arreglo arregloActual = (Arreglo)valor;                
+                Arreglo arregloActual = (Arreglo)valor;   
+                Utilidades.Singlenton.linea = linea;
+                Utilidades.Singlenton.columna= columna;
                 tipo = arregloActual.getTipo();
+                
                 /*Comprobamos que coincidan las dimensiones*/                
                 if(arregloActual.tamaniosDimensiones.size() < listaExpresiones.size())
                 {
@@ -76,11 +79,19 @@ public class AccesoVector implements Expresion
                         return null;
                     }
                 } 
-                return arregloActual.getValor(coordenasActules);
+                Object result = arregloActual.getValor(coordenasActules);
+                if(result==null && arregloActual.getTipo().isPrimitivo())
+                {
+                    Utilidades.Singlenton.registrarError("indice", "Error de desborde de índice de acceso al arreglo." , ErrorC.TipoError.SEMANTICO, linea, columna);  
+                }
+                else
+                {
+                    return result;
+                }
             }
             else
             {
-                Utilidades.Singlenton.registrarError("Error", "El valor no es un arreglo." , ErrorC.TipoError.SEMANTICO, linea, columna);  
+                Utilidades.Singlenton.registrarError("Error", "La variable no es de tipo arreglo" , ErrorC.TipoError.SEMANTICO, linea, columna);  
             }
         }
         return null;

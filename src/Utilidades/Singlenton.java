@@ -20,6 +20,8 @@ public class Singlenton
     public static LinkedList<Instruccion> pilaCiclos = new LinkedList<Instruccion>();
     public static long maxInt = 2147483647;
     public static long minInt = -2147483648;
+    public static int linea=0;
+    public static int columna=0;
     
     
     

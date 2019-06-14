@@ -200,7 +200,7 @@ sinosi={sino}({comentario}|{espacio})*(si)
             }     
 "void"  {
             addLexema("reservada", yytext(), yyline, yychar);
-            return  new Symbol(sym.tvoid, yychar, yyline, false);
+            return  new Symbol(sym.tvoid, yychar, yyline, yytext());
             }            
 "true"  {
             addLexema("reservada", yytext(), yyline, yychar);
@@ -237,7 +237,11 @@ sinosi={sino}({comentario}|{espacio})*(si)
 "pow"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.potencia, yychar, yyline, yytext());
-            }  
+            } 
+"null"  {
+            addLexema("reservada", yytext(), yyline, yychar);
+            return  new Symbol(sym.nulo, yychar, yyline, yytext());
+            }              
 ","  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.coma, yychar, yyline, yytext());
@@ -395,7 +399,7 @@ sinosi={sino}({comentario}|{espacio})*(si)
         }  
 "str"  {
             addLexema("simbolo", yytext(), yyline, yychar);
-            return new Symbol(sym.tstring, yychar, yyline, yytext());
+            return new Symbol(sym.str_, yychar, yyline, yytext());
         } 
 "super"  {
             addLexema("simbolo", yytext(), yyline, yychar);

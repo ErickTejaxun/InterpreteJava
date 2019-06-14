@@ -17,6 +17,7 @@ public class Arreglo
     public NodoNario raiz;
     public Tipo tipo;
     public ArrayList<Integer> tamaniosDimensiones;
+    public int linea, columna;
     
     public Arreglo(ArrayList<Integer> l , Tipo t)
     {
@@ -63,4 +64,11 @@ public class Arreglo
     {
         return raiz.contarElementos();
     }
+    
+    public ArrayList<NodoNario> getArrayLinealizado()
+    {
+        return raiz.getArrayLinealizado();
+    }
+    
+
 }

@@ -179,6 +179,13 @@ public class Ventana extends javax.swing.JFrame {
         //raiz.ejecutar(this);
         //r.ejectuar(new Entorno(new Entorno(null),this));
     }
+    
+    public void ejecutar(AST r)
+    {        
+        r.ejecutar(null);
+        //raiz.ejecutar(this);
+        //r.ejectuar(new Entorno(new Entorno(null),this));
+    }    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

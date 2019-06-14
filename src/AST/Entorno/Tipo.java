@@ -11,14 +11,22 @@ package AST.Entorno;
  */
 public class Tipo 
 {    
-    public enum TypePrimitive {INT,CHAR,BOOL,STRING,DOUBLE,OBJETO,CLASE};
+    public enum TypePrimitive {INT,CHAR,BOOL,STRING,DOUBLE,OBJETO,CLASE,NULO};
     public Tipo.TypePrimitive typeprimitive;
     public String typeClass ="";
+    public int linea, columna;
     
     public Tipo(Tipo.TypePrimitive t)
     {
         typeprimitive = t;
     }
+    
+    public Tipo(Tipo.TypePrimitive t , int l, int c)
+    {
+        typeprimitive = t;
+        this.linea = l;
+        this.columna = c;
+    }    
     
     public Tipo(Tipo.TypePrimitive t, String c)
     {
@@ -36,6 +44,14 @@ public class Tipo
         typeClass = clase;
         typeprimitive = Tipo.TypePrimitive.OBJETO;
     }
+    
+    public Tipo(String clase, int l, int c)
+    {
+        typeClass = clase;
+        typeprimitive = Tipo.TypePrimitive.OBJETO;
+        this.linea = l;
+        this.columna = c;
+    }    
     
     public boolean isInt()
     {
@@ -74,4 +90,9 @@ public class Tipo
     {
         return isChar()||isInt()||isDouble();
     }
+    
+    public boolean isPrimitivo()
+    {
+        return !typeClass.equals("");
+    }    
 }

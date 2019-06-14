@@ -5,6 +5,8 @@
  */
 package AST.Instruccion;
 
+import AST.Instruccion.Ciclos.Continuar;
+import AST.Instruccion.Ciclos.Break;
 import AST.Expresion.Retorno;
 import AST.Entorno.Entorno;
 import AST.Expresion.Expresion;

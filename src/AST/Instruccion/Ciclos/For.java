@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Instruccion;
+package AST.Instruccion.Ciclos;
 
 import AST.Entorno.Entorno;
 import static AST.Entorno.Tipo.TypePrimitive.*;
 import AST.Expresion.Expresion;
+import AST.Instruccion.Bloque;
+import AST.Instruccion.Instruccion;
 import Utilidades.ErrorC;
 
 /**

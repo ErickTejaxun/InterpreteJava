@@ -3,23 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Instruccion;
+package AST.Instruccion.Ciclos;
 
 import AST.Entorno.Entorno;
 import static AST.Entorno.Tipo.TypePrimitive.*;
 import AST.Expresion.Expresion;
+import AST.Instruccion.Bloque;
+import AST.Instruccion.Instruccion;
 import Utilidades.ErrorC;
 
 /**
  *
  * @author erick
  */
-public class While implements Instruccion
+public class DoWhile implements Instruccion
 {
     int linea, columna;
     public Bloque instrucciones;
     public Expresion condicion;
-    public While(Expresion e, Bloque b, int l, int c)
+    public DoWhile(Expresion e, Bloque b, int l, int c)
     {
         this.condicion = e;
         this.instrucciones = b;
@@ -37,7 +39,8 @@ public class While implements Instruccion
         Object condicional = condicion.getValor(entorno);             
         if(condicion.getTipo().typeprimitive== BOOL)
         {
-            while((boolean)condicional)
+            /**/
+            do 
             {
                 Object resultado = instrucciones.ejectuar(local);
                 if(resultado instanceof Break)
@@ -48,8 +51,9 @@ public class While implements Instruccion
                 {
                     continue;
                 }
-                condicional = condicion.getValor(entorno);
+                condicional = condicion.getValor(entorno);                
             }
+            while((boolean)condicional);
         }
         else
         {

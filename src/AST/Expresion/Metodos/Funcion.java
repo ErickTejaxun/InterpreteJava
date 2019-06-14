@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package AST.Expresion.Metodos;
 
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
-import AST.Expresion.Expresion;
 import AST.Instruccion.Instruccion;
 import java.util.ArrayList;
 
@@ -18,16 +13,45 @@ import java.util.ArrayList;
  */
 public class Funcion extends Simbolo implements Instruccion
 {
-    ArrayList<Parametro> parametros;
+    ArrayList<ParametroFormal> parametrosFormales;
+    ArrayList<String> modificadores;
+    public String nombre;
+    public Instruccion instrucciones;
+    
     
     public Funcion(Tipo t, String id, int dim, int l, int c) 
     {
         super(t, id, dim, l, c);
     }
+    
+    public Funcion(ArrayList<String> mod, Tipo t, String id, ArrayList<ParametroFormal> lpf , int l, int c)
+    {
+        super();
+        this.id = id;
+        this.nombre =id;        
+        /*]Generamos la firma del metodo*/        
+        for(ParametroFormal i:parametrosFormales)
+        {   
+            this.id+="$"+i.tipo.nombreTipo();
+        }        
+        this.rol = Simbolo.Rol.FUNCION; 
+        this.modificadores = mod;
+        this.tipo = t;        
+        this.parametrosFormales = lpf;
+        this.linea =l;
+        this.columna = c;
+    }
+    
+    
+    public void setInstrucciones(Instruccion ins)
+    {
+        this.instrucciones = ins;
+    }
 
     @Override
     public Object ejectuar(Entorno entorno) 
     {
+        entorno.insertar(this);
         return this;
     }
 

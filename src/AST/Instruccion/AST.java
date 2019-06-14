@@ -8,10 +8,8 @@ package AST.Instruccion;
 import AST.Expresion.Retorno;
 import AST.Entorno.Entorno;
 import AST.Expresion.Expresion;
-import AST.Instruccion.Instruccion;
 import AST.Nodo;
 import interprete.Interfaz;
-import interprete.Ventana;
 import java.util.ArrayList;
 
 /**
@@ -31,14 +29,20 @@ public class AST
     public Object ejecutar(Interfaz v)
     {
         Entorno global = new Entorno(null,v);
+        primerPasada(global);
+        return null;
+    }
+    
+    public Object primerPasada(Entorno entorno)
+    {             
         for(Nodo nodo: nodos)
         {
             if(nodo instanceof Instruccion)
             {
-                Entorno local = global;
+                Entorno local = entorno;
                 if(nodo instanceof Bloque)
                 {
-                    local = new Entorno(global, global.ventana);
+                    local = new Entorno(entorno, entorno.ventana);
                 }
                 Object resultado = (((Instruccion) nodo).ejectuar(local));
                 if(resultado !=null)
@@ -51,9 +55,14 @@ public class AST
             }
             else if (nodo instanceof Expresion)
             {
-                return ((Expresion) nodo).getValor(global);
+                return ((Expresion) nodo).getValor(entorno);
             }            
-        }
+        }               
+        return null;
+    }
+    
+    public Object segundaPasada()
+    {
         return null;
     }
 }

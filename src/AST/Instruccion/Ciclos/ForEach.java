@@ -3,13 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Instruccion;
+package AST.Instruccion.Ciclos;
 
 import AST.Entorno.Entorno;
+import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
 import AST.Expresion.Arreglo.Arreglo;
+import AST.Expresion.Arreglo.NodoNario;
 import AST.Expresion.Expresion;
+import AST.Instruccion.Bloque;
+import AST.Instruccion.Declaracion;
+import AST.Instruccion.Instruccion;
 import Utilidades.ErrorC;
+import java.util.ArrayList;
 
 /**
  *
@@ -21,14 +27,16 @@ public class ForEach implements Instruccion
     Tipo tipo;
     String id;
     Expresion origen;
+    public Bloque instrucciones;
     
-    public ForEach(Tipo t, String i, Expresion o, int l, int c)
+    public ForEach(Tipo t, String i, Expresion o, Bloque b, int l, int c)
     {
         this.tipo = t;
         this.id = i;
         this.origen = o;
         this.linea = l;
         this.columna = c;
+        this.instrucciones = b;
     }
     
     @Override
@@ -38,7 +46,16 @@ public class ForEach implements Instruccion
         if(resultado instanceof Arreglo)
         {
             Arreglo arregloTmp = (Arreglo)resultado;
-            
+            ArrayList<NodoNario> arrayLineal = arregloTmp.getArrayLinealizado();            
+            for(NodoNario item : arrayLineal)
+            {
+                Entorno local = new Entorno(entorno,entorno.ventana);
+                Simbolo s  = new Simbolo(tipo, id, item.valor, linea, columna);
+                local.insertar(s);
+                instrucciones.ejectuar(local);                
+                //Declaracion(Tipo t, String id, int d, Expresion e, int l,int c)
+                //Declaracion dec = new Declaracion(this.tipo,id,item.valor,linea,columna);
+            }            
         }
         else
         {

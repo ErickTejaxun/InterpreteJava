@@ -1573,7 +1573,15 @@ public class Interfaz extends javax.swing.JFrame {
         raiz.ejecutar(this);
         //r.ejectuar(new Entorno(new Entorno(null),this));
     }
-    
+
+    public void interpretar(AST r)
+    {        
+        if(r!=null)
+        {
+            r.ejecutar(this);
+        }        
+        //r.ejectuar(new Entorno(new Entorno(null),this));
+    }    
     public void prueba()
     {
         String valor = "99.00";

@@ -14,6 +14,8 @@ import AST.Expresion.Arreglo.Arreglo;
 import AST.Expresion.Arreglo.ExpresionArreglo;
 
 import Utilidades.ErrorC;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -26,6 +28,8 @@ public class Declaracion implements Instruccion
     public Expresion expresion;
     public int linea, columna;
     public int dimensiones;
+    public ArrayList<Dec> declaraciones;
+    
     
     public Declaracion(Tipo t, String id, int d, int l,int c)
     {
@@ -35,6 +39,15 @@ public class Declaracion implements Instruccion
         this.columna = c;
         this.dimensiones = d;
     }  
+    
+    public Declaracion(Tipo t, ArrayList<Dec> lista, int l, int c)
+    {
+        this.tipo = t;
+        this.declaraciones = lista;
+        this.linea = l;
+        this.columna = c;
+    }
+    
     
     public Declaracion(Tipo t, String id, int d, Expresion e, int l,int c)
     {
@@ -66,6 +79,23 @@ public class Declaracion implements Instruccion
         
     @Override
     public Object ejectuar(Entorno entorno) 
+    {        
+        if(declaraciones!=null)
+        {
+            for(Dec d:declaraciones)
+            {
+                declaraciones(entorno, d.id, d.valor, d.dimensiones);
+            }
+            return null;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    
+    public Object declaraciones(Entorno entorno, String id, Expresion expresion, int dimensiones)
     {        
         Object valor = null;
         /*Verificamos si se le ha asignado un valor inicial.*/
@@ -152,7 +182,7 @@ public class Declaracion implements Instruccion
         }  
         /*Si no se le asigna un valor de inicio, hay que inicializar */
         else
-        if(this.dimensiones ==0)
+        if(dimensiones ==0)
         {                            
             switch(this.tipo.typeprimitive)
             {
@@ -192,8 +222,9 @@ public class Declaracion implements Instruccion
             //System.out.println("Error, variable " +s.id + " ya declarada.");
         }
         return this;
+            
     }
-
+    
     @Override
     public int linea() {
         return linea;
