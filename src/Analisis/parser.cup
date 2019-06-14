@@ -167,15 +167,18 @@ non terminal Caso CASO, DEFECTO;
 non terminal ArrayList<Caso> LCASO;
 non terminal Switch SWITCH;
 non terminal ArrayList<String> LMODFICADOR;
-non terminal String MODFUNCION;
+non terminal String MODFUNCION, MODCONST;
 non terminal Tipo RESULTADO;
 non terminal ParametroFormal PARFORMAL;
 non terminal ArrayList<ParametroFormal> LPARFORMAL;
 non terminal Constructor CONSTRUCTOR;
-non terminal String MODCONST;
 non terminal Funcion FUNCION, CABECERAMET;
 non terminal ArrayList<Nodo> LFUNCION;
 non terminal Retorno RETORNO;
+non terminal DeclaracionAtributo DECATRIB;
+non terminal ArrayList<Nodo> LDECATRIB;
+non terminal String MODATRIB;
+non terminal ArrayList<String> LMODATRIB;
 /*
 precedence left interrogante, punto;
 precedence left or;
@@ -214,7 +217,8 @@ INICIO ::= LFUNCION:inst {: Imprimir("Correcto"); raiz = new AST(inst);; :}
 LFUNCION::= 
           LFUNCION:l FUNCION:f {:l.add(f); RESULT = l;:}
         | FUNCION:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}  
-        | CONSTRUCTOR:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}     
+        | CONSTRUCTOR:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}    
+        | DECATRIB:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}    
         ; 
 
 BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
@@ -222,7 +226,7 @@ BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
 		;
 
 LINST::= LINST:lista INST:inst {: lista.add(inst); RESULT = lista;:}
-	   |INST:inst {: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(inst); RESULT = l;:} ;
+	    |INST:inst {: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(inst); RESULT = l;:} ;
 
 INST ::= 
 	  DECLARACION:inst puntocoma {: RESULT = inst; :}    
@@ -431,15 +435,16 @@ FUNCION::= CABECERAMET:funcion BLOQUE:bloque {: funcion.setInstrucciones(bloque)
 CABECERAMET::= 
         LMODFICADOR:m RESULTADO:res id:nombre pari LPARFORMAL:lf pard {: Funcion f = new Funcion(m,res,nombre, lf, mright,mleft ); RESULT = f;:}
       | RESULTADO:res id:nombre pari LPARFORMAL:lf pard {: Funcion f = new Funcion( new ArrayList<String>(),res,nombre, lf, resright,resleft ); RESULT = f;:}
-      | LMODFICADOR:modificador id:nombre pari LPARFORMAL:formales pard {:RESULT = new Constructor(mod.get(0),nombre,formales,bloque, nombreright,nombreleft);:}
-      | id:nombre pari LPARFORMAL:formales pard  {:RESULT = new Constructor(new ArrayList<String>(),nombre,formales,bloque, nombreright,nombreleft);:}       
+      | LMODFICADOR:modificador id:nombre pari LPARFORMAL:formales pard {:RESULT = new Constructor(modificador,nombre,formales,nombreright,nombreleft);:}
+      | id:nombre pari LPARFORMAL:formales pard  {:RESULT = new Constructor(new ArrayList<String>(),nombre,formales, nombreright,nombreleft);:}       
+      
 
 ;
 
 LPARFORMAL::= 
          LPARFORMAL:lista coma PARFORMAL:par {:lista.add(par); RESULT = lista;:}
         |PARFORMAL:par {:ArrayList<ParametroFormal> l = new ArrayList<ParametroFormal>(); l.add(par); RESULT = l;:}
-        |{:ArrayList<ParametroFormal> l = new ArrayList<ParametroFormal>();RESULT = l;:}
+        |{: ArrayList<ParametroFormal> l = new ArrayList<ParametroFormal>();RESULT = l; :}
 ;
 
 PARFORMAL::=  
@@ -459,14 +464,37 @@ LMODFICADOR ::=
             | MODFUNCION:m {: ArrayList<String> l = new ArrayList<String>() ; if(m!=null){l.add(m);} RESULT = l;:}
 ;
 
-MODFUNCION::= 
-               MODCONST:m {:RESULT = m;:}
+MODFUNCION::=                
+               MODATRIB:m {:RESULT = m;:}
             |  abstracto:m {:RESULT = m;:}
-            |  final_:m {:RESULT = m;:}
-            |  estatico:m {:  RESULT = m;:}            
+;
+/*Fin declaración de métodos*/
+
+/*Declaración de atributos*/
+//DeclaracionAtributo(ArrayList<String> lm, Tipo t, ArrayList<Dec> lista, int l, int c)
+/*
+LDECATRIB::= LDECATRIB:l DECATRIB:dec {: l.add(dec); RESULT = l;:}
+            |DECATRIB:dec {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(dec); RESULT = l:}
+;
+*/
+DECATRIB::= LMODFICADOR:lm TIPO:tipo LDEC:lista puntocoma {: new DeclaracionAtributo(lm, tipo, lista, lmright, lmleft); :} 
 ;
 
-/*Fin declaración de métodos*/
+/*
+LMODATRIB::= 
+          LMODATRIB:lista MODATRIB:mod {:lista.add(mod); RESULT = lista;:}
+        | MODATRIB:mod {:ArrayList<String> l = new ArrayList<String>(); l.add(mod); RESULT = l;:}
+; 
+*/       
+
+MODATRIB::= 
+                final_:m {:RESULT = m;:}
+            |  estatico:m {:  RESULT = m;:}            
+            |  MODCONST:m {:RESULT = m;:}            
+;
+
+/*Fin de atributos*/
+
 
 /*Inicio constructores*/
 //Funcion(ArrayList<String> mod, String id, ArrayList<ParametroFormal> lpf , int l, int c)
@@ -508,7 +536,8 @@ DECREMENTO::= EXP:op decremento {:RESULT = new Decremento(op, opright, opleft);:
 TER::= EXP:c interrogante EXP:v dospuntos EXP:f{:RESULT = new Ternario(c,v,f,cright,cleft);:}
 ;
 
-PRIMITIVO ::=   tint:t {:RESULT = new Tipo(Tipo.TypePrimitive.INT,tright, tleft);:}
+PRIMITIVO ::=   
+        tint:t {:RESULT = new Tipo(Tipo.TypePrimitive.INT,tright, tleft);:}
 		|tchar:t {:RESULT =  new Tipo(Tipo.TypePrimitive.CHAR,tright, tleft);:}
         |tdouble:t {:RESULT = new Tipo(Tipo.TypePrimitive.DOUBLE,tright, tleft);:}
 		|tbool:t {:RESULT = new Tipo(Tipo.TypePrimitive.BOOL,tright, tleft);:}

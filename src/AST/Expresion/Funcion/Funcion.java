@@ -29,15 +29,15 @@ public class Funcion extends Simbolo implements Instruccion
         super();
         this.id = id;
         this.nombre =id;        
-        /*]Generamos la firma del metodo*/        
+        /*]Generamos la firma del metodo*/            
+        this.parametrosFormales = lpf;
         for(ParametroFormal i:parametrosFormales)
         {   
             this.id+="$"+i.tipo.nombreTipo();
         }        
         this.rol = Simbolo.Rol.FUNCION; 
         this.modificadores = mod;
-        this.tipo = t;        
-        this.parametrosFormales = lpf;
+        this.tipo = t;                
         this.linea =l;
         this.columna = c;
     }

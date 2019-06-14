@@ -21,4 +21,8 @@ public class Constructor extends Funcion
         this.instrucciones = bloque;
     }
     
+    public Constructor(ArrayList<String> mod, String id, ArrayList<ParametroFormal> lpf, int l, int c) {
+        super(mod, new Tipo(id), id, lpf, l, c);        
+    }    
+    
 }
