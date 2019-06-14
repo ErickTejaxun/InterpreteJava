@@ -15,7 +15,7 @@ import AST.Expresion.Logica.*;
 import AST.Expresion.Arreglo.*;
 import AST.Expresion.Casteo.*;
 import AST.Expresion.Casteo.Explicito.*;
-import AST.Expresion.Metodos.*;
+import AST.Expresion.Funcion.*;
 
 
 parser code
@@ -167,10 +167,12 @@ non terminal Caso CASO, DEFECTO;
 non terminal ArrayList<Caso> LCASO;
 non terminal Switch SWITCH;
 non terminal ArrayList<String> LMODFICADOR;
-non terminal String MODIFICADOR;
+non terminal String MODFUNCION;
 non terminal Tipo RESULTADO;
 non terminal ParametroFormal PARFORMAL;
 non terminal ArrayList<ParametroFormal> LPARFORMAL;
+non terminal Constructor CONSTRUCTOR;
+non terminal String MODCONST;
 non terminal Funcion FUNCION, CABECERAMET;
 non terminal ArrayList<Nodo> LFUNCION;
 non terminal Retorno RETORNO;
@@ -211,7 +213,8 @@ INICIO ::= LFUNCION:inst {: Imprimir("Correcto"); raiz = new AST(inst);; :}
 
 LFUNCION::= 
           LFUNCION:l FUNCION:f {:l.add(f); RESULT = l;:}
-        | FUNCION:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}      
+        | FUNCION:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}  
+        | CONSTRUCTOR:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}     
         ; 
 
 BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
@@ -428,17 +431,16 @@ FUNCION::= CABECERAMET:funcion BLOQUE:bloque {: funcion.setInstrucciones(bloque)
 CABECERAMET::= 
         LMODFICADOR:m RESULTADO:res id:nombre pari LPARFORMAL:lf pard {: Funcion f = new Funcion(m,res,nombre, lf, mright,mleft ); RESULT = f;:}
       | RESULTADO:res id:nombre pari LPARFORMAL:lf pard {: Funcion f = new Funcion( new ArrayList<String>(),res,nombre, lf, resright,resleft ); RESULT = f;:}
+      | LMODFICADOR:modificador id:nombre pari LPARFORMAL:formales pard {:RESULT = new Constructor(mod.get(0),nombre,formales,bloque, nombreright,nombreleft);:}
+      | id:nombre pari LPARFORMAL:formales pard  {:RESULT = new Constructor(new ArrayList<String>(),nombre,formales,bloque, nombreright,nombreleft);:}       
 
 ;
-
-
 
 LPARFORMAL::= 
          LPARFORMAL:lista coma PARFORMAL:par {:lista.add(par); RESULT = lista;:}
         |PARFORMAL:par {:ArrayList<ParametroFormal> l = new ArrayList<ParametroFormal>(); l.add(par); RESULT = l;:}
         |{:ArrayList<ParametroFormal> l = new ArrayList<ParametroFormal>();RESULT = l;:}
 ;
-
 
 PARFORMAL::=  
          TIPO:tipo id:nombre{: RESULT = new ParametroFormal(tipo, nombre, true,0, tiporight, tipoleft);:}
@@ -453,20 +455,32 @@ RESULTADO::= TIPO:t {:  RESULT = t;:}
 
 
 LMODFICADOR ::= 
-              LMODFICADOR:l MODIFICADOR:m {: l.add(m); RESULT = l; :}
-            | MODIFICADOR:m {: ArrayList<String> l = new ArrayList<String>() ; if(m!=null){l.add(m);} RESULT = l;:}
+              LMODFICADOR:l MODFUNCION:m {: l.add(m); RESULT = l; :}
+            | MODFUNCION:m {: ArrayList<String> l = new ArrayList<String>() ; if(m!=null){l.add(m);} RESULT = l;:}
 ;
 
-MODIFICADOR::= publico:m {:RESULT = m;:}
-            |  protegido:m {:RESULT = m;:}
-            |  privado:m {:RESULT = m;:}
+MODFUNCION::= 
+               MODCONST:m {:RESULT = m;:}
             |  abstracto:m {:RESULT = m;:}
             |  final_:m {:RESULT = m;:}
-            |  estatico:m {:  RESULT = m;:}
-            
+            |  estatico:m {:  RESULT = m;:}            
 ;
 
 /*Fin declaración de métodos*/
+
+/*Inicio constructores*/
+//Funcion(ArrayList<String> mod, String id, ArrayList<ParametroFormal> lpf , int l, int c)
+/*CONSTRUCTOR::= 
+        MODCONST:modificador id:nombre pari LPARFORMAL:formales pard BLOQUE:bloque {:RESULT = new Constructor(mod,nombre,formales,bloque, nombreright,nombreleft);:}
+       |id:nombre pari LPARFORMAL:formales pard BLOQUE:bloque {:RESULT = new Constructor(new ArrayList<String>(),nombre,formales,bloque, nombreright,nombreleft);:} 
+;
+*/
+MODCONST::= 
+               publico:m {:RESULT = m;:}
+            |  protegido:m {:RESULT = m;:}
+            |  privado:m {:RESULT = m;:}
+;            
+/*Fin declaración de constructores*/
 
 
 LEXP::= LEXP:l corchetei EXP:exp corcheted{:l.add(exp); RESULT = l;:}

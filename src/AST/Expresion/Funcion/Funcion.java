@@ -1,5 +1,5 @@
 
-package AST.Expresion.Metodos;
+package AST.Expresion.Funcion;
 
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;

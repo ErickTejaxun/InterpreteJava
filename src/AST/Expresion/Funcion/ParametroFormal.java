@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Expresion.Metodos;
+package AST.Expresion.Funcion;
 
 import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
