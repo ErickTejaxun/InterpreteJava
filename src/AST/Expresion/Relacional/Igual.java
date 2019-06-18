@@ -51,6 +51,16 @@ public class Igual implements Expresion
             }
         }        
         
+        switch(opi.getTipo().nombreTipo().toLowerCase())
+        {
+            case "string":
+                switch(opd.getTipo().nombreTipo().toLowerCase())
+                {
+                    case "string":                        
+                        return derecha.toString().equals(izquierda.toString());
+                }
+                break;
+        }
         return derecha == izquierda;                
     }
 

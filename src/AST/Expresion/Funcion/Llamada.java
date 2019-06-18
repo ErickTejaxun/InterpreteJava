@@ -9,6 +9,7 @@ import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
 import AST.Expresion.Expresion;
+import AST.Expresion.Variable;
 import Utilidades.ErrorC;
 import java.util.ArrayList;
 
@@ -51,14 +52,38 @@ public class Llamada implements Expresion
         String firma = nombreMetodo;
         ArrayList<Object> resultados = new ArrayList<>();
         ArrayList<Tipo> tipos = new ArrayList<>();
+        tipo = new Tipo("");
         for(Expresion e:parametros)
         {
-            Object tmp = e.getValor(entorno); 
-            if(tmp!=null)
+            if(e instanceof Variable)
             {
-                firma +="$"+e.getTipo().nombreTipo().toLowerCase();
-                resultados.add(tmp);
-            }                
+                Variable var = (Variable)e;
+                if(entorno.obtener(var.id)==null)
+                {
+                    Utilidades.Singlenton.registrarError(var.id, "Variable no declarada" , ErrorC.TipoError.SEMANTICO, var.linea, var.columna);
+                    return null;
+                }
+                else
+                {
+                    Object tmp = e.getValor(entorno); 
+                    if(tmp!=null)
+                    {
+                        firma +="$"+e.getTipo().nombreTipo().toLowerCase();
+                        resultados.add(tmp);
+                    }                     
+                }
+
+            }            
+            else
+            {
+                Object tmp = e.getValor(entorno); 
+                if(tmp!=null)
+                {
+                    firma +="$"+e.getTipo().nombreTipo().toLowerCase();
+                    resultados.add(tmp);
+                }
+            }
+
         }     
         /*En caso de que la firma sea esa, es decir no hay que realizar casteos*/    
         Simbolo f = entorno.getFuncion(firma);
@@ -82,7 +107,7 @@ public class Llamada implements Expresion
                 tipo = funcion.getTipo();
                 return resultado;
             }                
-        }             
+        }
             
             
 //            int combinaciones = combinaciones(parametros.size());

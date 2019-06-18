@@ -36,13 +36,15 @@ public class Suma implements Expresion
         Object valori = operadori.getValor(ent);
         Object valord = operadord.getValor(ent);
         tipo = new Tipo("");
-        tipo.typeprimitive = determinarTipo(operadori.getTipo().typeprimitive, operadord.getTipo().typeprimitive);
+        tipo.typeprimitive = determinarTipo(operadori.getTipo().typeprimitive, operadord.getTipo().typeprimitive);                
         if(tipo.typeprimitive!=null)
         {
             switch(tipo.typeprimitive)
             {
                 case STRING:
-                    valor = valori.toString() + valord.toString();
+                    if(valori==null){valori="Nulo";}
+                    if(valord==null){valord="Nulo";}                    
+                    valor =  valori.toString() + valord.toString();
                     break;
                 case DOUBLE:
                     if(operadori.getTipo().typeprimitive == CHAR)
@@ -91,6 +93,7 @@ public class Suma implements Expresion
     
     public Tipo.TypePrimitive determinarTipo(Tipo.TypePrimitive tipo1, Tipo.TypePrimitive tipo2)
     {
+        if(tipo1== null || tipo2==null){return null;}
         if(tipo1 == STRING || tipo2 == STRING)
         {
             return STRING;

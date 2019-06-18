@@ -4,6 +4,7 @@ package AST.Expresion.Funcion;
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
+import static AST.Entorno.Tipo.TypePrimitive.*;
 import AST.Expresion.Expresion;
 import AST.Instruccion.Instruccion;
 import java.util.ArrayList;
@@ -125,7 +126,29 @@ public class Funcion extends Simbolo implements Instruccion, Expresion
                 nuevo.valor = p.valor;
             }            
         }       
-        Object result = instrucciones.ejectuar(entorno);
+        Object result = instrucciones.ejectuar(entorno);  
+        Tipo tipoResultado = new Tipo("");
+        if(result instanceof Integer)
+        {
+            tipoResultado = new Tipo(INT);
+        }
+        if(result instanceof Double)
+        {
+            tipoResultado = new Tipo(DOUBLE);
+        }        
+        if(result instanceof Character)
+        {
+            tipoResultado = new Tipo(CHAR);
+        }        
+        if(result instanceof String)
+        {
+            tipoResultado = new Tipo(STRING);
+        }        
+        if(result instanceof Simbolo)
+        {
+            tipoResultado = ((Simbolo)result).tipo;
+        }
+        tipo = tipoResultado;
         //System.out.print(result);
         //System.out.print(")");
         return result;

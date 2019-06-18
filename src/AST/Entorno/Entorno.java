@@ -80,6 +80,7 @@ public class Entorno
             }
             tmp = tmp.anterior;
         }
+        Utilidades.Singlenton.registrarError(id,"Variable no declarada", ErrorC.TipoError.SEMANTICO, 0,0);
         return null;
     }
     

@@ -354,7 +354,7 @@ public class Interfaz extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1195,14 +1195,18 @@ public class Interfaz extends javax.swing.JFrame {
             } 
             catch (Exception ex) 
             {
-                System.out.println(ex.getMessage());                
+                System.out.println(ex.getMessage());  
+                mostrarErrores();                          
+                if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "  No se han encontrado errores durante la ejecución.";}
+                else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
+                reporteCompilacion.setText(fechaHora);                  
             }            
             // Interpretamos
             interpretar(sintactico.raiz);
         }                 
         //imprimirTokens(lexico.listaLexemas);
         mostrarErrores();                          
-        if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "No se han encontrado errores durante la ejecución.";}
+        if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "  No se han encontrado errores durante la ejecución.";}
         else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
         reporteCompilacion.setText(fechaHora);        
     }
