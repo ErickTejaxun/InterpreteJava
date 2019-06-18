@@ -18,15 +18,7 @@ public class Interprete {
     {                              
         Interfaz ventana = new Interfaz();                      
         //Ventana ventana = new Ventana();
-        try 
-        {
-            String cadena = "a";
-            char d = (cadena).charAt(0);
-            println(d);            
-        } catch (Exception e) 
-        {
-            println("Error");
-        }
+        //Hanoi(3,1,2,3);
         
         
         ventana.show();
@@ -36,4 +28,16 @@ public class Interprete {
     {
         System.out.println(v);
     }
+    
+    public static void Hanoi(int n, int origen,  int auxiliar, int destino)
+    {
+      if(n==1)
+      System.out.println("mover disco de " + origen + " a " + destino);
+      else{
+         Hanoi(n-1, origen, destino, auxiliar);
+         System.out.println("mover disco de "+ origen + " a " + destino);
+         Hanoi(n-1, auxiliar, origen, destino);
+       }
+     }
+       
 }

@@ -5,12 +5,16 @@
  */
 package AST.Instruccion;
 
-import AST.Expresion.Retorno;
+import AST.Expresion.Funcion.Retorno;
 import AST.Entorno.Entorno;
+import AST.Entorno.Simbolo;
+import static AST.Entorno.Simbolo.Rol.FUNCION;
 import AST.Expresion.Expresion;
+import AST.Expresion.Funcion.Funcion;
 import AST.Nodo;
 import interprete.Interfaz;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  *
@@ -29,7 +33,9 @@ public class AST
     public Object ejecutar(Interfaz v)
     {
         Entorno global = new Entorno(null,v);
+        v.entornoGlobal = global;
         primerPasada(global);
+        segundaPasada(global);
         return null;
     }
     
@@ -61,8 +67,26 @@ public class AST
         return null;
     }
     
-    public Object segundaPasada()
+    public Object segundaPasada(Entorno entorno)
     {
+        Entorno local = new Entorno(entorno.getGlobal(),entorno.ventana);
+        Enumeration item = entorno.tabla.keys();
+        while(item.hasMoreElements())
+        {
+            Object clave = item.nextElement();            
+            Simbolo simbolo = entorno.tabla.get(clave);
+            if(simbolo.rol ==FUNCION)
+            {
+                Funcion f = (Funcion)simbolo;
+                if(f.isPrincipal())
+                {
+                    return f.getValor(local);                    
+                }else
+                {
+                    //System.out.println("No es principal: "+f.id);
+                }
+            }            
+        }                           
         return null;
     }
 }

@@ -54,24 +54,36 @@ public class If implements Instruccion
             if((boolean)condicional)
             {
                 Object resultado = instrucciones.ejectuar(local);
-                if(resultado instanceof Break)
-                {
-                    return resultado;
-                }      
-                if(resultado instanceof Continuar)
-                {
-                    return resultado;
-                }                  
+                return resultado;
+                
+//                if(resultado!=null)
+//                {
+//                    return resultado;
+//                }
+//                if(resultado instanceof Break)
+//                {
+//                    return resultado;
+//                }      
+//                if(resultado instanceof Continuar)
+//                {
+//                    return resultado;
+//                }      
+                
             }
             else
             {
                 if(elseIf != null)
                 {
                     Object resultado = elseIf.ejectuar(entorno);
-                    if(resultado instanceof Break)
-                    {
-                        return resultado;
-                    }                    
+                    return resultado;
+//                    if(resultado!=null)
+//                    {
+//                        return resultado;
+//                    }
+//                    if(resultado instanceof Break)
+//                    {
+//                        return resultado;
+//                    }                    
                 }
             }
         }
@@ -79,7 +91,7 @@ public class If implements Instruccion
         {
             Utilidades.Singlenton.registrarError("While", "La condición debe ser una expresión de tipo booleano." , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
-        return this;
+        return null;
     }
 
     @Override

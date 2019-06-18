@@ -22,6 +22,7 @@ public class Singlenton
     public static long minInt = -2147483648;
     public static int linea=0;
     public static int columna=0;
+    public static boolean continuarEjecucion =false;
     
     
     

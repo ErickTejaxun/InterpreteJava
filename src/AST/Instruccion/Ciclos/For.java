@@ -60,7 +60,7 @@ public class For implements Instruccion
         {
             Utilidades.Singlenton.registrarError("While", "La condición debe ser una expresión de tipo booleano." , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
-        return this;
+        return null;
     }
 
     @Override

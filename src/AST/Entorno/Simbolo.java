@@ -16,7 +16,7 @@ public class Simbolo
     public String id;        
     public Tipo tipo;
     public Object valor;
-    public enum Rol{VAR, FUNCION, METODO, OBJETO, CLASE, ARREGLO};
+    public enum Rol{VAR, FUNCION, METODO, OBJETO, CLASE, ARREGLO,CONSTRUCTOR};
     public Rol rol= VAR;
     public int linea, columna;     
     public int dimensiones;
@@ -73,7 +73,8 @@ public class Simbolo
         return tipo;
     }
 
-    public Object getValor() {
+    public Object getValor() 
+    {
         return valor;
     }
 

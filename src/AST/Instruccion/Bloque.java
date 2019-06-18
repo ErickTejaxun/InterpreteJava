@@ -7,9 +7,10 @@ package AST.Instruccion;
 
 import AST.Instruccion.Ciclos.Continuar;
 import AST.Instruccion.Ciclos.Break;
-import AST.Expresion.Retorno;
+import AST.Expresion.Funcion.Retorno;
 import AST.Entorno.Entorno;
 import AST.Expresion.Expresion;
+import AST.Expresion.Funcion.Llamada;
 import AST.Nodo;
 import java.util.ArrayList;
 
@@ -29,10 +30,10 @@ public class Bloque implements Instruccion
         this.columna = c;        
     }        
     
-    @Override
+    @Override    
     public Object ejectuar(Entorno entorno) 
     {
-        Entorno global = entorno;// new Entorno(null);        
+        Entorno global = entorno;// new Entorno(null);                
         for(Nodo nodo: instrucciones)
         {
             if(nodo instanceof Instruccion)
@@ -41,7 +42,7 @@ public class Bloque implements Instruccion
                 if(nodo instanceof Bloque)
                 {
                     local = new Entorno(global, global.ventana);
-                }
+                }                
                 Object resultado = (((Instruccion) nodo).ejectuar(local));
                 if(resultado !=null)
                 {
@@ -56,14 +57,25 @@ public class Bloque implements Instruccion
                     if(resultado instanceof Continuar)
                     {                        
                         return resultado;
-                    }                    
-                }
+                    }
+                    return resultado;
+                }                
             }
             else if (nodo instanceof Expresion)
-            {                
-                ((Expresion)nodo).getValor(global);
+            {   
+                if(nodo instanceof Retorno)
+                {
+                    return ((Retorno)nodo).getValor(global);
+                }
+                
+                if(nodo instanceof Llamada)
+                {                    
+                    return ((Llamada)nodo).getValor(global);
+                }                  
+                
+                return ((Expresion)nodo).getValor(global);
             }            
-        }
+        }        
         return null;
     }
 
@@ -75,6 +87,11 @@ public class Bloque implements Instruccion
     @Override
     public int columna() {
         return columna;
+    }
+        
+    public void arreglo(int a[][])
+    {
+        
     }
     
 }

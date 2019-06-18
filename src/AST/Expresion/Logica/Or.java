@@ -40,16 +40,8 @@ public class Or implements Expresion
         {
             Utilidades.Singlenton.registrarError("Relacional Or", "Tipos no válidos" + opi.getTipo() + " and " +opd.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);            
             return false;            
-        }        
-        
-        if((Boolean)derecha || (Boolean) izquierda)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
         }                
+        return (Boolean)derecha || (Boolean) izquierda;                
     }
 
     @Override

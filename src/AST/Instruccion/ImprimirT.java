@@ -28,7 +28,7 @@ public class ImprimirT implements Instruccion
     {
         entorno.ventana.Imprimir("ID\tTIPO\tVALOR\tROL\tDIMENSIONES\tLINEA\tCOLUMNA");
         entorno.ventana.Imprimir(entorno.Tabla());
-        return this;
+        return null;
     }
 
     @Override

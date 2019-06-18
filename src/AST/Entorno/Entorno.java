@@ -19,7 +19,7 @@ public class Entorno
 {
     public Entorno anterior;
     public Hashtable<String, Simbolo> tabla;
-    public Interfaz ventana;
+    public Interfaz ventana;   
     
     public Entorno(Entorno entorno)
     {
@@ -119,5 +119,22 @@ public class Entorno
             auxiliar = auxiliar.anterior;
         }        
         return reporte;
+    }
+    
+    public Simbolo getFuncion(String firma)
+    {
+        /*Ahora ya tenemos el entorno globla*/
+        Entorno global = getGlobal();        
+        return global.tabla.get(firma);
+    }
+    
+    public Entorno getGlobal()
+    {
+        Entorno auxiliar = this;
+        while(auxiliar.anterior!=null)
+        {
+            auxiliar = auxiliar.anterior;
+        }
+        return auxiliar;
     }
 }

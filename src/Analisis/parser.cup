@@ -168,6 +168,7 @@ non terminal ArrayList<Caso> LCASO;
 non terminal Switch SWITCH;
 non terminal ArrayList<String> LMODFICADOR;
 non terminal String MODFUNCION, MODCONST;
+non terminal DeclaracionAtributo DECATRIB;
 non terminal Tipo RESULTADO;
 non terminal ParametroFormal PARFORMAL;
 non terminal ArrayList<ParametroFormal> LPARFORMAL;
@@ -175,10 +176,11 @@ non terminal Constructor CONSTRUCTOR;
 non terminal Funcion FUNCION, CABECERAMET;
 non terminal ArrayList<Nodo> LFUNCION;
 non terminal Retorno RETORNO;
-non terminal DeclaracionAtributo DECATRIB;
-non terminal ArrayList<Nodo> LDECATRIB;
+non terminal Llamada LLAMADA;
 non terminal String MODATRIB;
-non terminal ArrayList<String> LMODATRIB;
+non terminal ArrayList<Expresion> PARACTUALES,ACTUALES;
+
+/*non terminal ArrayList<String> LMODATRIB;*/
 /*
 precedence left interrogante, punto;
 precedence left or;
@@ -214,11 +216,13 @@ start with INICIO;
 INICIO ::= LFUNCION:inst {: Imprimir("Correcto"); raiz = new AST(inst);; :}		
 		;
 
+
+
 LFUNCION::= 
-          LFUNCION:l FUNCION:f {:l.add(f); RESULT = l;:}
+          LFUNCION:l FUNCION:f {:l.add(f); RESULT = l;:}          
         | FUNCION:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}  
-        | CONSTRUCTOR:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}    
-        | DECATRIB:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}    
+        | CONSTRUCTOR:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}            
+        
         ; 
 
 BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
@@ -246,6 +250,7 @@ INST ::=
     | FOREACH:inst {:RESULT = inst;:}
     | SWITCH:inst {:RESULT = inst;:}
     | RETORNO:inst {:RESULT = inst;:}
+    | LLAMADA:inst puntocoma {:RESULT = inst;:}
 	;
 
 /*Casteos Explicitos*/
@@ -356,12 +361,9 @@ DEC::=
     | id:id NDIM:dim igual ARR:valor {: RESULT = new Dec(id,dim, new ExpresionArreglo(valor, valorright, valorleft), idright, idleft);:}
 ;    
 
-
-
 TIPO::= PRIMITIVO:t{:RESULT = t;:}
       | id:id {:RESULT = new Tipo(id,idright, idleft);:}
 ;
-
 
 /*Dimensiones*/
 NDIM::= NDIM:n corchetei corcheted {:RESULT = n+1;:}
@@ -396,8 +398,7 @@ EXP::=
         |AUMENTO:op {:RESULT = op;:}
         |potencia:pot pari EXP:opi coma EXP:opd pard {:RESULT = new Potencia(opi,opd,potright,potleft);:}
         |EXP:op instanceof_ id:tipo {:RESULT = new InstanceOf(op,tipo, opright, opleft);:}
-        |DECREMENTO:op {:RESULT = op;:}
-        |EXP:op punto id:t pari pard {:RESULT = new Llamada(op,t, opright,opleft);:}
+        |DECREMENTO:op {:RESULT = op;:}        
         |EXP:op punto tostring pari pard {:RESULT = new ToString(op,opright,opleft);:}
         |EXP:op punto tolower pari pard {:RESULT = new ToLower(op,opright,opleft);:}
         |EXP:op punto id:atrib {:RESULT = new Acceso(op,atrib, opright,opleft);:}
@@ -415,10 +416,22 @@ EXP::=
         |pari EXP:op pard {: RESULT = op;:}
         |EXP:id LEXP:coor {: RESULT = new AccesoVector(id, coor , idright, idleft);:}   
         |EXPLICITCAST:exp {:RESULT = exp;:}
+        |LLAMADA:exp {:RESULT = exp;:}
 ;
 
-
+LLAMADA::= 
+             EXP:op punto id:t pari PARACTUALES:l pard {:RESULT = new Llamada(op,t,l, opright,opleft);:}
+            |id:t pari PARACTUALES:l pard {:RESULT = new Llamada(null,t,l, tright,tleft);:}
+;
 RETORNO ::= retorno:r EXPRETORNO:exp puntocoma{:RESULT = new Retorno(exp, rright, rleft);:} 
+;
+
+/*Lista de parametros actuales para llamadas a funciones*/
+PARACTUALES::= ACTUALES:l{:RESULT = l;:}
+            | {:RESULT = new ArrayList<Expresion>();:}
+;            
+ACTUALES::= ACTUALES:l coma EXP:exp {:l.add(exp);RESULT = l;:}
+              |EXP:exp {:ArrayList<Expresion> l = new ArrayList<Expresion>(); l.add(exp); RESULT = l ;:}
 ;
 
 EXPRETORNO::= 
@@ -441,6 +454,10 @@ CABECERAMET::=
 
 ;
 
+RESULTADO::= TIPO:t {:  RESULT = t;:}
+            |tvoid:t {:  RESULT = new Tipo(t);:}
+;
+
 LPARFORMAL::= 
          LPARFORMAL:lista coma PARFORMAL:par {:lista.add(par); RESULT = lista;:}
         |PARFORMAL:par {:ArrayList<ParametroFormal> l = new ArrayList<ParametroFormal>(); l.add(par); RESULT = l;:}
@@ -453,11 +470,6 @@ PARFORMAL::=
         | TIPO:tipo id:nombre NDIM:n{: RESULT = new ParametroFormal(tipo, nombre, true,n, tiporight, tipoleft);:}
         | final_:f TIPO:tipo id:nombre NDIM:n {: RESULT = new ParametroFormal(tipo, nombre, true, n, fright, fleft);:}        
 ;
-
-RESULTADO::= TIPO:t {:  RESULT = t;:}
-            |tvoid:t {:  RESULT = new Tipo(t);:}
-;
-
 
 LMODFICADOR ::= 
               LMODFICADOR:l MODFUNCION:m {: l.add(m); RESULT = l; :}
@@ -477,8 +489,9 @@ LDECATRIB::= LDECATRIB:l DECATRIB:dec {: l.add(dec); RESULT = l;:}
             |DECATRIB:dec {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(dec); RESULT = l:}
 ;
 */
-DECATRIB::= LMODFICADOR:lm TIPO:tipo LDEC:lista puntocoma {: new DeclaracionAtributo(lm, tipo, lista, lmright, lmleft); :} 
-;
+/*
+DECATRIB::= LMODFICADOR:lm DECLARACION:d {: new DeclaracionAtributo(lm, tipo, lista, lmright, lmleft); RESULT = d; :} 
+;*/
 
 /*
 LMODATRIB::= 
@@ -542,4 +555,4 @@ PRIMITIVO ::=
         |tdouble:t {:RESULT = new Tipo(Tipo.TypePrimitive.DOUBLE,tright, tleft);:}
 		|tbool:t {:RESULT = new Tipo(Tipo.TypePrimitive.BOOL,tright, tleft);:}
 		|tstring:t {:RESULT = new Tipo(Tipo.TypePrimitive.STRING,tright, tleft);:}		
-		;
+;

@@ -59,7 +59,7 @@ public class Imprimir implements Instruccion
                 Imprimir(entorno,"NULO");
             }
         }
-        return this;
+        return null;
     }
     
     public void Imprimir(Entorno e, String c)
@@ -67,10 +67,12 @@ public class Imprimir implements Instruccion
         if(salto)
         {
             e.ventana.ImprimirLn(c);
+            System.out.println(c);
         }
         else
         {
             e.ventana.Imprimir(c);
+            System.out.print(c);
         }
     }
 

@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Expresion;
+package AST.Expresion.Funcion;
 
 import AST.Entorno.Entorno;
 import AST.Entorno.Tipo;
+import AST.Expresion.Expresion;
 
 /**
  *

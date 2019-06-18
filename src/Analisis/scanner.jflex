@@ -153,7 +153,7 @@ sinosi={sino}({comentario}|{espacio})*(si)
 }
 {comentario} 
 {
-    Imprimir(yytext());
+    //Imprimir(yytext());
 }
 
 "int"   {
