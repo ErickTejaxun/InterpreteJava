@@ -42,8 +42,11 @@ public class Bloque implements Instruccion
                 if(nodo instanceof Bloque)
                 {
                     local = new Entorno(global, global.ventana);
-                }                
+                    return ((Bloque)nodo).ejectuar(local);
+                } 
+                
                 Object resultado = (((Instruccion) nodo).ejectuar(local));
+                
                 if(resultado !=null)
                 {
                     if(resultado instanceof Retorno)
@@ -70,10 +73,16 @@ public class Bloque implements Instruccion
                 
                 if(nodo instanceof Llamada)
                 {                    
-                    return ((Llamada)nodo).getValor(global);
-                }                  
-                
-                return ((Expresion)nodo).getValor(global);
+                    Object resultadoLlamada =  ((Llamada)nodo).getValor(global);
+                    if(resultadoLlamada!=null)
+                    {
+                        return resultadoLlamada;
+                    }
+                }
+                else
+                {
+                    return ((Expresion)nodo).getValor(global);
+                }                                                  
             }            
         }        
         return null;
