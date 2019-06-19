@@ -102,7 +102,7 @@ public class Llamada implements Expresion
                     cont++;
                 }                
                 /*Cremos un nuevo entorno*/
-                Entorno local = new Entorno(entorno.ventana.entornoGlobal,entorno.ventana);
+                Entorno local = new Entorno(entorno.getGlobalClase(),entorno.ventana);
                 Object resultado =  funcion.getValor(local);
                 tipo = funcion.getTipo();
                 return resultado;

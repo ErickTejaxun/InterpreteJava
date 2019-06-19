@@ -127,8 +127,21 @@ public class Entorno
         /*Ahora ya tenemos el entorno globla*/              
         return obtener(firma);
     }
-      
-    public Entorno getGlobal()
+    
+    public Entorno getGlobalClase()
+    {
+        Entorno auxiliar = this;
+        Entorno auxiliar2 = this;
+        while(auxiliar2.anterior!=null)
+        {
+            auxiliar = auxiliar2;
+            auxiliar2 = auxiliar2.anterior;
+        }        
+        return auxiliar;
+    }
+    
+    
+    public Entorno getGlobal2()
     {
         Entorno auxiliar = this;
         while(auxiliar.anterior!=null)

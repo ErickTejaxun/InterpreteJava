@@ -70,7 +70,7 @@ public class AST
     
     public Object segundaPasada(Entorno entorno)
     {
-        Entorno local = new Entorno(entorno.getGlobal(),entorno.ventana);
+        Entorno local = new Entorno(entorno.getGlobalClase(),entorno.ventana);
         Enumeration item = entorno.tabla.keys();
         while(item.hasMoreElements())
         {
