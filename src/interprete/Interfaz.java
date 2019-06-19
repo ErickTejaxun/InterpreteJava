@@ -9,7 +9,7 @@ import Utilidades.ErrorC;
 import AST.Entorno.Entorno;
 import AST.Instruccion.Instruccion;
 import AST.Entorno.Simbolo;
-import AST.Instruccion.AST;
+import AST.AST;
 import AST.Nodo;
 import Analisis.*;
 import java.awt.Color;

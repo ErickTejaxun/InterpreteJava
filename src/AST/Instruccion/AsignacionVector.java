@@ -159,7 +159,8 @@ public class AsignacionVector implements Instruccion
                 return null;
             }
         } 
-        return arregloActual.setValor(cordenadas, valor);                        
+        arregloActual.setValor(cordenadas, valor);                        
+        return null;
     }
     
 

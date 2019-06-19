@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AST.Instruccion;
+package AST;
 
 import AST.Clase.Clase;
 import AST.Expresion.Funcion.Retorno;
@@ -11,7 +11,10 @@ import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import static AST.Entorno.Simbolo.Rol.*;
 import AST.Expresion.Expresion;
+import AST.Expresion.Funcion.DeclaracionAtributo;
 import AST.Expresion.Funcion.Funcion;
+import AST.Instruccion.Bloque;
+import AST.Instruccion.Instruccion;
 import AST.Nodo;
 import interprete.Interfaz;
 import java.util.ArrayList;
@@ -80,13 +83,21 @@ public class AST
             {
                 Clase actual = (Clase)simbolo;
                 /*Tenemos que crear un nuevo entorno parcial donde guardar las mierdas de clase*/
-                for(Funcion f: actual.listaFunciones){f.ejectuar(local);}
+                for(Funcion f: actual.listaFunciones)
+                {
+                    f.ejectuar(local);
+                }  
+                /*Declaracion de cada uno de los atributos*/
+                for(DeclaracionAtributo dec: actual.listaAtributos)
+                {
+                    dec.ejectuar(local);
+                }
                 /*Ahora recorremos todos sus métodos para encontrar el principal*/
                 for(Funcion f: actual.listaFunciones)
                 {
                     if(f.isPrincipal())
                     {                        
-                        return f.getValor(local);
+                        return f.getValor(new Entorno(local,local.ventana));
                     }
                 }
             }            

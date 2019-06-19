@@ -8,8 +8,10 @@ package AST.Clase;
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import static AST.Entorno.Simbolo.Rol.*;
+import AST.Entorno.Tipo;
 import AST.Expresion.Expresion;
 import AST.Expresion.Funcion.Constructor;
+import AST.Expresion.Funcion.DeclaracionAtributo;
 import AST.Expresion.Funcion.Funcion;
 import AST.Instruccion.Instruccion;
 import AST.Nodo;
@@ -23,7 +25,8 @@ public class Clase extends Simbolo implements Instruccion, Expresion
 {    
     public ArrayList<Funcion> listaFunciones;
     public ArrayList<Constructor> listaConstructores;
-    public ArrayList<Nodo> listaAtributos;
+    public ArrayList<DeclaracionAtributo> listaAtributos;
+    public ArrayList<Atributo> atrib;
     public ArrayList<Clase> listaClaseMiembros;
     public String padre;
     public ArrayList<String> listaHijos;
@@ -31,7 +34,14 @@ public class Clase extends Simbolo implements Instruccion, Expresion
          
     public Clase ()
     {
-        
+        this.listaAtributos = new ArrayList<>();
+        this.listaConstructores = new ArrayList<>();
+        this.listaFunciones = new ArrayList<>();
+        this.listaClaseMiembros  = new ArrayList<>();
+        this.padre = "";
+        this.listaHijos  = new ArrayList<>();
+        this.modificadores = new ArrayList<>();;       
+        this.rol = CLASE;        
     }
     
     
@@ -60,6 +70,7 @@ public class Clase extends Simbolo implements Instruccion, Expresion
     public void setId(String id)
     {
         this.id = id;
+        this.tipo = new Tipo(id);
     }
     
     public void setListaFunciones(ArrayList<Funcion> listaFunciones) {
@@ -70,7 +81,7 @@ public class Clase extends Simbolo implements Instruccion, Expresion
         this.listaConstructores = listaConstructores;
     }
 
-    public void setListaAtributos(ArrayList<Nodo> listaAtributos) {
+    public void setListaAtributos(ArrayList<DeclaracionAtributo> listaAtributos) {
         this.listaAtributos = listaAtributos;
     }
 
@@ -89,7 +100,7 @@ public class Clase extends Simbolo implements Instruccion, Expresion
     
     
     
-    public void addAtributo(Nodo atrib)
+    public void addAtributo(DeclaracionAtributo atrib)
     {
         this.listaAtributos.add(atrib);
     }
@@ -131,8 +142,10 @@ public class Clase extends Simbolo implements Instruccion, Expresion
     }
 
     @Override
-    public Object getValor(Entorno ent) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object getValor(Entorno ent) 
+    {        
+        /*Este metodo lo voy a utilizar para enviar un clon: método new*/
+        return null;
     }
     
 }

@@ -26,8 +26,9 @@ public class DeclaracionAtributo implements Instruccion
     public Expresion expresion;
     public int linea, columna;
     public int dimensiones;
-    public ArrayList<Dec> declaraciones;
+    public ArrayList<Dec> listaDeclaraciones;
     public ArrayList<String> modificadores;    
+    public Declaracion declaraciones;
     
     public DeclaracionAtributo(Tipo t, String id, int d, int l,int c)
     {
@@ -38,19 +39,19 @@ public class DeclaracionAtributo implements Instruccion
         this.dimensiones = d;
     }  
     
-    public DeclaracionAtributo(ArrayList<String> lm, Tipo t, ArrayList<Dec> lista, int l, int c)
+    public DeclaracionAtributo(ArrayList<String> lm, Tipo t,Declaracion d, int l, int c)
     {
         this.tipo = t;
-        this.declaraciones = lista;
+        this.declaraciones = d;
         this.linea = l;
         this.columna = c;
         this.modificadores = lm;
     }    
     
-    public DeclaracionAtributo(Tipo t, ArrayList<Dec> lista, int l, int c)
+    public DeclaracionAtributo(Tipo t, Declaracion d, int l, int c)
     {
         this.tipo = t;
-        this.declaraciones = lista;
+        this.declaraciones = d;
         this.linea = l;
         this.columna = c;
     }
@@ -88,8 +89,8 @@ public class DeclaracionAtributo implements Instruccion
     public Object ejectuar(Entorno entorno) 
     {        
         if(declaraciones!=null)
-        {
-            for(Dec d:declaraciones)
+        {                       
+            for(Dec d: declaraciones.declaraciones)
             {
                 declaraciones(entorno, d.id, d.valor, d.dimensiones);
             }

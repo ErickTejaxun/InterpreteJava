@@ -5,7 +5,7 @@
  */
 package Debugger;
 
-import AST.Instruccion.AST;
+import AST.AST;
 import java.util.ArrayList;
 
 /**

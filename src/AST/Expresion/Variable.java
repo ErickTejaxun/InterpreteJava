@@ -27,6 +27,11 @@ public class Variable implements Expresion
     @Override
     public Object getValor(Entorno ent) 
     {
+        if(this.id.equals("this"))
+        {
+            
+        }
+        
         Simbolo s = ent.obtener(this.id);
         if(s!=null)
         {

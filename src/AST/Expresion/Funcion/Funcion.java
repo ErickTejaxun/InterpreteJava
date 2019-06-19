@@ -37,7 +37,8 @@ public class Funcion extends Simbolo implements Instruccion, Expresion
         for(ParametroFormal i:parametrosFormales)
         {   
             this.id+="$"+i.tipo.nombreTipo().toLowerCase();
-        }        
+        }    
+        this.id +="$";
         this.rol = Simbolo.Rol.FUNCION; 
         this.modificadores = mod;
         this.tipo = t;                
@@ -99,7 +100,7 @@ public class Funcion extends Simbolo implements Instruccion, Expresion
             return false;
         }
         /*Verificamos que tenga id main*/
-        if(!(id.toLowerCase().equals("main")))
+        if(!(id.toLowerCase().equals("main$")))
         {
             return false;
         }        

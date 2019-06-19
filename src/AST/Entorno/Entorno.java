@@ -5,6 +5,7 @@
  */
 package AST.Entorno;
 
+import static AST.Entorno.Simbolo.Rol.FUNCION;
 import Utilidades.ErrorC;
 import interprete.Interfaz;
 import interprete.Ventana;
@@ -40,8 +41,11 @@ public class Entorno
         /*Error de variable ya declarada.*/
         if(tmp !=null)
         {
-            Utilidades.Singlenton.registrarError(simbolo.id, simbolo.rol +" ya declarado ", ErrorC.TipoError.SEMANTICO, simbolo.linea, simbolo.columna);
-            return false;
+            if(tmp.rol==simbolo.rol)
+            {
+                Utilidades.Singlenton.registrarError(simbolo.id, simbolo.rol +" ya declarado ", ErrorC.TipoError.SEMANTICO, simbolo.linea, simbolo.columna);
+                return false;                
+            }
         }
         tabla.put(simbolo.id, simbolo);        
         return true;
@@ -124,8 +128,21 @@ public class Entorno
     
     public Simbolo getFuncion(String firma)
     {
-        /*Ahora ya tenemos el entorno globla*/              
-        return obtener(firma);
+        Entorno tmp = this;
+        while(tmp!=null)
+        {      
+            Simbolo s = tmp.tabla.get(firma);
+            if(s!=null)
+            {
+                if(s.rol == FUNCION)
+                {
+                    return s;
+                }                
+            }
+            tmp = tmp.anterior;
+        }
+        //Utilidades.Singlenton.registrarError(id,"Variable no declarada", ErrorC.TipoError.SEMANTICO, 0,0);
+        return null;
     }
     
     public Entorno getGlobalClase()

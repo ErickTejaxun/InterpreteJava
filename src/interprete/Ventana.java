@@ -6,7 +6,7 @@
 package interprete;
 
 import AST.Instruccion.Instruccion;
-import AST.Instruccion.AST;
+import AST.AST;
 import AST.Entorno.Entorno;
 
 import AST.Nodo;

@@ -5,7 +5,9 @@
  */
 package AST.Expresion;
 
+import AST.Clase.Clase;
 import AST.Entorno.Entorno;
+import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
 import AST.Expresion.Arreglo.Arreglo;
 
@@ -38,8 +40,13 @@ public class Acceso implements Expresion
                 Arreglo arr = (Arreglo)result;
                 return arr.getSizes();
             }
+        } 
+        else if(result instanceof Clase)
+        {
+            Clase simb = (Clase)result;
+            /*Buscamos el atributo*/
+            
         }
-        
         return null;
     }
 

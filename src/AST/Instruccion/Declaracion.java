@@ -12,10 +12,8 @@ import AST.Entorno.Tipo;
 import static AST.Entorno.Tipo.TypePrimitive.CHAR;
 import AST.Expresion.Arreglo.Arreglo;
 import AST.Expresion.Arreglo.ExpresionArreglo;
-
 import Utilidades.ErrorC;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *

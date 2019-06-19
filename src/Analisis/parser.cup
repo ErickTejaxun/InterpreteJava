@@ -127,6 +127,7 @@ terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved,
 terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual, potencia , tvoid, nulo;
 terminal String abstracto, caso, cat, clase, defecto, hacer, extiende, final_, graph;
 terminal String importar, instanceof_, nuevo, privado, protegido, publico, retorno;
+terminal String arroba, sobrescrito;
 /*Casteos*/
 terminal String leerarchivo,estatico, super_, switch_, este, tochar, todouble, toint, str_, try_, escribir;
 terminal String mientras, para, romper, continuar ,interrogante, dospuntos, aumento, decremento, punto;
@@ -247,12 +248,18 @@ CUERPOCLASE::= CUERPO:clase {:RESULT = clase;:}
 
 ;
 CUERPO::= 
-          CUERPO:clase FUNCION:f {: clase.addFuncion(f); RESULT = clase;:} 
-        /*| CUERPOCLASE:clase CONSTRUCTOR:f {: clase.addConstructor(f); RESULT = clase;  :}*/
-        | FUNCION:f  {:Clase c = new Clase(fright,fleft); c.addFuncion(f); RESULT = c; :}
-        /*| CONSTRUCTOR:f {: Clase c = new Clase(fright,fleft); c.addConstructor(f); RESULT = c; :}*/
-           
+          CUERPO:clase FUNCION:f {: clase.addFuncion(f); RESULT = clase;:}         
+        | CUERPO:clase DECATRIB:f puntocoma {: clase.addAtributo(f); RESULT = clase;:}                   
+        | FUNCION:f  {:Clase c = new Clase(fright,fleft); c.addFuncion(f); RESULT = c; :}    
+        | DECATRIB:atributos puntocoma{:Clase c = new Clase(atributosright,atributosleft); c.addAtributo(atributos); RESULT = c;:}
+        /*Sobrescrito*/
+        | arroba sobrescrito FUNCION:f  {:Clase c = new Clase(fright,fleft); f.setSobreescrito(true); c.addFuncion(f); RESULT = c; :}    
+        | CUERPO:clase arroba sobrescrito FUNCION:f {: f.setSobreescrito(true); clase.addFuncion(f); RESULT = clase;:}  
         ; 
+
+        /*| CUERPOCLASE:clase CONSTRUCTOR:f {: clase.addConstructor(f); RESULT = clase;  :}*/
+        /*| CONSTRUCTOR:f {: Clase c = new Clase(fright,fleft); c.addConstructor(f); RESULT = c; :}*/    
+       
 
 BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
         | llavei:l  llaved {:RESULT = new Bloque(new ArrayList<Nodo>(),lright,lleft);:}
@@ -442,10 +449,13 @@ EXP::=
         |id:v {: RESULT = new Variable(v, vright,vleft);:}
         |nuevo:n PRIMITIVO:tipo LEXP:l {: RESULT = new ExpresionArreglo(tipo,l,nright,nleft);:}
         |nuevo:n id:tipo LEXP:l {: RESULT = new ExpresionArreglo(new Tipo(tipo), l,nright,nleft);:}
+        |nuevo:n TIPO:tipo pari pard {: RESULT = new Instancia(tipo,nright, nleft);:}
+        |nuevo:n TIPO:tipo pari LEXP:lista pard {: RESULT = new Instancia(tipo, lista, nright, nleft);:}
         |pari EXP:op pard {: RESULT = op;:}
         |EXP:id LEXP:coor {: RESULT = new AccesoVector(id, coor , idright, idleft);:}   
         |EXPLICITCAST:exp {:RESULT = exp;:}
         |LLAMADA:exp {:RESULT = exp;:}
+        |este:exp {:RESULT = new Variable(exp,expright,expleft);:}
 ;
 
 LLAMADA::= 
@@ -479,12 +489,13 @@ CABECERAMET::=
       | RESULTADO:res id:nombre pari LPARFORMAL:lf pard {: Funcion f = new Funcion( new ArrayList<String>(),res,nombre, lf, resright,resleft ); RESULT = f;:}
       | LMODFICADOR:modificador id:nombre pari LPARFORMAL:formales pard {:RESULT = new Constructor(modificador,nombre,formales,nombreright,nombreleft);:}
       | id:nombre pari LPARFORMAL:formales pard  {:RESULT = new Constructor(new ArrayList<String>(),nombre,formales, nombreright,nombreleft);:}       
-      
+      /*| LMODFICADOR:modificador */
 
 ;
 
 RESULTADO::= TIPO:t {:  RESULT = t;:}
             |tvoid:t {:  RESULT = new Tipo(t);:}
+            /*|id:t {:  RESULT = new Tipo(t);:}*/
 ;
 
 LPARFORMAL::= 
@@ -514,13 +525,14 @@ MODFUNCION::=
 /*Declaración de atributos*/
 //DeclaracionAtributo(ArrayList<String> lm, Tipo t, ArrayList<Dec> lista, int l, int c)
 
-LDECATRIB::= LDECATRIB:l DECATRIB:dec {: l.add(dec); RESULT = l;:}
-            |DECATRIB:dec {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(dec); RESULT = l;:}
+DECATRIB::= LMODFICADOR:lm RESULTADO:tipo LDEC:declaraciones
+            {: 
+                Declaracion d  = new Declaracion(tipo,declaraciones,tipoleft,tiporight);     
+                RESULT = new DeclaracionAtributo(lm, d.tipo, d, lmright, lmleft); 
+            :} 
 ;
 
-
-/*DECATRIB::= LMODFICADOR:lm DECLARACION:d {: new DeclaracionAtributo(lm, tipo, lista, lmright, lmleft); RESULT = d; :} 
-;*/
+//TIPO:t LDEC:lista {: RESULT = new Declaracion(t, lista, tright, tleft); :}
 
 
 LMODATRIB::= 

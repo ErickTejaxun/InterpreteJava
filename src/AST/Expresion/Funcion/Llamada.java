@@ -85,7 +85,8 @@ public class Llamada implements Expresion
             }
 
         }     
-        /*En caso de que la firma sea esa, es decir no hay que realizar casteos*/    
+        /*En caso de que la firma sea esa, es decir no hay que realizar casteos*/
+        firma+="$";
         Simbolo f = entorno.getFuncion(firma);
         if(f!=null)
         {            

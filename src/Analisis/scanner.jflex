@@ -412,7 +412,15 @@ sinosi={sino}({comentario}|{espacio})*(si)
 "this"  {
             addLexema("simbolo", yytext(), yyline, yychar);
             return new Symbol(sym.este, yychar, yyline, yytext());
-        }  
+        }
+"@"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.arroba, yychar, yyline, yytext());
+        }          
+"Override"  {
+            addLexema("simbolo", yytext(), yyline, yychar);
+            return new Symbol(sym.sobrescrito, yychar, yyline, yytext());
+        }                  
 "toChar"  {
             addLexema("simbolo", yytext(), yyline, yychar);
             return new Symbol(sym.tochar, yychar, yyline, yytext());
