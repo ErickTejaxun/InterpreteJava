@@ -1251,7 +1251,7 @@ public class scanner implements java_cup.runtime.Scanner {
             }
           case 119: break;
           case 31: 
-            { Imprimir(yytext());
+            { //Imprimir(yytext());
             }
           case 120: break;
           case 32: 

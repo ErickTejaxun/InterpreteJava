@@ -5,10 +5,11 @@
  */
 package AST.Instruccion;
 
+import AST.Clase.Clase;
 import AST.Expresion.Funcion.Retorno;
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
-import static AST.Entorno.Simbolo.Rol.FUNCION;
+import static AST.Entorno.Simbolo.Rol.*;
 import AST.Expresion.Expresion;
 import AST.Expresion.Funcion.Funcion;
 import AST.Nodo;
@@ -74,16 +75,19 @@ public class AST
         while(item.hasMoreElements())
         {
             Object clave = item.nextElement();            
-            Simbolo simbolo = entorno.tabla.get(clave);
-            if(simbolo.rol ==FUNCION)
+            Simbolo simbolo = entorno.obtener(clave.toString());
+            if(simbolo.rol ==CLASE)
             {
-                Funcion f = (Funcion)simbolo;
-                if(f.isPrincipal())
+                Clase actual = (Clase)simbolo;
+                /*Tenemos que crear un nuevo entorno parcial donde guardar las mierdas de clase*/
+                for(Funcion f: actual.listaFunciones){f.ejectuar(local);}
+                /*Ahora recorremos todos sus métodos para encontrar el principal*/
+                for(Funcion f: actual.listaFunciones)
                 {
-                    return f.getValor(local);                    
-                }else
-                {
-                    //System.out.println("No es principal: "+f.id);
+                    if(f.isPrincipal())
+                    {                        
+                        return f.getValor(local);
+                    }
                 }
             }            
         }                           

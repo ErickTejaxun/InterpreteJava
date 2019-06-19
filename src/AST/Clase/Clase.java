@@ -7,7 +7,9 @@ package AST.Clase;
 
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
-import AST.Entorno.Tipo;
+import static AST.Entorno.Simbolo.Rol.*;
+import AST.Expresion.Expresion;
+import AST.Expresion.Funcion.Constructor;
 import AST.Expresion.Funcion.Funcion;
 import AST.Instruccion.Instruccion;
 import AST.Nodo;
@@ -17,15 +19,36 @@ import java.util.ArrayList;
  *
  * @author erick
  */
-public class Clase extends Simbolo implements Instruccion
+public class Clase extends Simbolo implements Instruccion, Expresion
 {    
     public ArrayList<Funcion> listaFunciones;
+    public ArrayList<Constructor> listaConstructores;
     public ArrayList<Nodo> listaAtributos;
     public ArrayList<Clase> listaClaseMiembros;
     public String padre;
     public ArrayList<String> listaHijos;
-    public ArrayList<String> modificadores;
-            
+    public ArrayList<String> modificadores;    
+         
+    public Clase ()
+    {
+        
+    }
+    
+    
+    public Clase(int l, int c)
+    {
+        this.listaAtributos = new ArrayList<>();
+        this.listaConstructores = new ArrayList<>();
+        this.listaFunciones = new ArrayList<>();
+        this.listaClaseMiembros  = new ArrayList<>();
+        this.padre = "";
+        this.listaHijos  = new ArrayList<>();
+        this.modificadores = new ArrayList<>();;       
+        this.linea = l;
+        this.columna = c;
+        this.rol = CLASE;
+    }
+    
     public Clase(ArrayList<String> lmod, String nombre, String padre, ArrayList<Funcion> lf)
     {
         this.modificadores = lmod;
@@ -33,11 +56,68 @@ public class Clase extends Simbolo implements Instruccion
         this.padre = padre;
         this.listaFunciones = lf;
     }
+        
+    public void setId(String id)
+    {
+        this.id = id;
+    }
     
+    public void setListaFunciones(ArrayList<Funcion> listaFunciones) {
+        this.listaFunciones = listaFunciones;
+    }
+
+    public void setListaConstructores(ArrayList<Constructor> listaConstructores) {
+        this.listaConstructores = listaConstructores;
+    }
+
+    public void setListaAtributos(ArrayList<Nodo> listaAtributos) {
+        this.listaAtributos = listaAtributos;
+    }
+
+    public void setListaClaseMiembros(ArrayList<Clase> listaClaseMiembros) {
+        this.listaClaseMiembros = listaClaseMiembros;
+    }
+
+    public void setListaHijos(ArrayList<String> listaHijos) {
+        this.listaHijos = listaHijos;
+    }
+
+    public void setModificadores(ArrayList<String> modificadores) {
+        this.modificadores = modificadores;
+    }
+    
+    
+    
+    
+    public void addAtributo(Nodo atrib)
+    {
+        this.listaAtributos.add(atrib);
+    }
+    public void addFuncion(Funcion f)
+    {
+        if(f instanceof Constructor)
+        {
+            this.listaConstructores.add((Constructor) f);
+            return;
+        }
+        
+        this.listaFunciones.add(f);      
+    }
+    public void addConstructor(Constructor c)
+    {
+        this.listaConstructores.add(c);
+    }
+
+    public void setPadre(String p)
+    {
+        this.padre = p;
+    }
+
     @Override
     public Object ejectuar(Entorno entorno) 
     {
-        return null;
+        entorno.insertar(this);
+        return this;
     }
 
     @Override
@@ -48,6 +128,11 @@ public class Clase extends Simbolo implements Instruccion
     @Override
     public int columna() {
         return columna;
+    }
+
+    @Override
+    public Object getValor(Entorno ent) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

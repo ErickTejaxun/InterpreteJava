@@ -16,6 +16,7 @@ import AST.Expresion.Arreglo.*;
 import AST.Expresion.Casteo.*;
 import AST.Expresion.Casteo.Explicito.*;
 import AST.Expresion.Funcion.*;
+import AST.Clase.*;
 
 
 parser code
@@ -168,7 +169,6 @@ non terminal ArrayList<Caso> LCASO;
 non terminal Switch SWITCH;
 non terminal ArrayList<String> LMODFICADOR;
 non terminal String MODFUNCION, MODCONST;
-non terminal DeclaracionAtributo DECATRIB;
 non terminal Tipo RESULTADO;
 non terminal ParametroFormal PARFORMAL;
 non terminal ArrayList<ParametroFormal> LPARFORMAL;
@@ -180,7 +180,14 @@ non terminal Llamada LLAMADA;
 non terminal String MODATRIB;
 non terminal ArrayList<Expresion> PARACTUALES,ACTUALES;
 
-/*non terminal ArrayList<String> LMODATRIB;*/
+/*Atributos de clase*/
+non terminal ArrayList<String> LMODATRIB;
+non terminal ArrayList<Nodo> LDECATRIB;
+non terminal DeclaracionAtributo DECATRIB;
+
+/*Produccion de clase*/
+non terminal Clase CLASE, CUERPOCLASE, CUERPO ;
+non terminal ArrayList<Nodo> LCLASE;
 /*
 precedence left interrogante, punto;
 precedence left or;
@@ -213,16 +220,38 @@ precedence left punto;
 
 start with INICIO;
 
-INICIO ::= LFUNCION:inst {: Imprimir("Correcto"); raiz = new AST(inst);; :}		
+INICIO ::= LCLASE:lista {: Imprimir("Correcto"); raiz = new AST(lista);; :}		
 		;
 
+LCLASE::= LCLASE:lista CLASE:clase{: lista.add(clase); RESULT = lista;:}
+        | CLASE:clase {: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(clase); RESULT = l;:}
+;        
 
+CLASE::= LMODFICADOR:modificador clase id:nombre llavei CUERPOCLASE:clase llaved 
+            {:
+                clase.setModificadores(modificador); 
+                clase.setId(nombre);                
+                RESULT = clase;
+            :}
+        |LMODFICADOR:modificador clase id:nombre extiende id:padre llavei CUERPOCLASE:clase llaved 
+            {:
+                clase.setModificadores(modificador); 
+                clase.setId(nombre);
+                clase.setPadre(padre);
+                RESULT = clase;
+            :}
+;
 
-LFUNCION::= 
-          LFUNCION:l FUNCION:f {:l.add(f); RESULT = l;:}          
-        | FUNCION:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}  
-        | CONSTRUCTOR:f  {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(f); RESULT = l;:}            
-        
+CUERPOCLASE::= CUERPO:clase {:RESULT = clase;:}
+            | {:RESULT = new Clase();:}
+
+;
+CUERPO::= 
+          CUERPO:clase FUNCION:f {: clase.addFuncion(f); RESULT = clase;:} 
+        /*| CUERPOCLASE:clase CONSTRUCTOR:f {: clase.addConstructor(f); RESULT = clase;  :}*/
+        | FUNCION:f  {:Clase c = new Clase(fright,fleft); c.addFuncion(f); RESULT = c; :}
+        /*| CONSTRUCTOR:f {: Clase c = new Clase(fright,fleft); c.addConstructor(f); RESULT = c; :}*/
+           
         ; 
 
 BLOQUE::= llavei LINST:l llaved {:RESULT = new Bloque(l,lright,lleft);:}
@@ -423,6 +452,7 @@ LLAMADA::=
              EXP:op punto id:t pari PARACTUALES:l pard {:RESULT = new Llamada(op,t,l, opright,opleft);:}
             |id:t pari PARACTUALES:l pard {:RESULT = new Llamada(null,t,l, tright,tleft);:}
 ;
+
 RETORNO ::= retorno:r EXPRETORNO:exp puntocoma{:RESULT = new Retorno(exp, rright, rleft);:} 
 ;
 
@@ -438,7 +468,6 @@ EXPRETORNO::=
             EXP:exp {:RESULT = exp;:}
           | nulo:r {:RESULT = new Literal(new Tipo(Tipo.TypePrimitive.NULO), null, rright, rleft);:}
 ;
-
 
 /*Declaracion de métodos*/
 FUNCION::= CABECERAMET:funcion BLOQUE:bloque {: funcion.setInstrucciones(bloque); RESULT = funcion;:}
@@ -468,7 +497,7 @@ PARFORMAL::=
          TIPO:tipo id:nombre{: RESULT = new ParametroFormal(tipo, nombre, true,0, tiporight, tipoleft);:}
         | final_:f TIPO:tipo id:nombre {: RESULT = new ParametroFormal(tipo, nombre, true,0,fright, fleft);:}
         | TIPO:tipo id:nombre NDIM:n{: RESULT = new ParametroFormal(tipo, nombre, true,n, tiporight, tipoleft);:}
-        | final_:f TIPO:tipo id:nombre NDIM:n {: RESULT = new ParametroFormal(tipo, nombre, true, n, fright, fleft);:}        
+        | final_:f TIPO:tipo id:nombre NDIM:n {: RESULT = new ParametroFormal(tipo, nombre, true, n, fright, fleft);:}             
 ;
 
 LMODFICADOR ::= 
@@ -484,21 +513,21 @@ MODFUNCION::=
 
 /*Declaración de atributos*/
 //DeclaracionAtributo(ArrayList<String> lm, Tipo t, ArrayList<Dec> lista, int l, int c)
-/*
+
 LDECATRIB::= LDECATRIB:l DECATRIB:dec {: l.add(dec); RESULT = l;:}
-            |DECATRIB:dec {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(dec); RESULT = l:}
+            |DECATRIB:dec {:ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(dec); RESULT = l;:}
 ;
-*/
-/*
-DECATRIB::= LMODFICADOR:lm DECLARACION:d {: new DeclaracionAtributo(lm, tipo, lista, lmright, lmleft); RESULT = d; :} 
+
+
+/*DECATRIB::= LMODFICADOR:lm DECLARACION:d {: new DeclaracionAtributo(lm, tipo, lista, lmright, lmleft); RESULT = d; :} 
 ;*/
 
-/*
+
 LMODATRIB::= 
           LMODATRIB:lista MODATRIB:mod {:lista.add(mod); RESULT = lista;:}
         | MODATRIB:mod {:ArrayList<String> l = new ArrayList<String>(); l.add(mod); RESULT = l;:}
 ; 
-*/       
+    
 
 MODATRIB::= 
                 final_:m {:RESULT = m;:}

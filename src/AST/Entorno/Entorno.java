@@ -124,11 +124,10 @@ public class Entorno
     
     public Simbolo getFuncion(String firma)
     {
-        /*Ahora ya tenemos el entorno globla*/
-        Entorno global = getGlobal();        
-        return global.tabla.get(firma);
+        /*Ahora ya tenemos el entorno globla*/              
+        return obtener(firma);
     }
-    
+      
     public Entorno getGlobal()
     {
         Entorno auxiliar = this;
