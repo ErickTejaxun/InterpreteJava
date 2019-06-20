@@ -138,7 +138,7 @@ public class Asignacion implements Instruccion
         {
             //System.out.println("Error, variable " +s.id + " ya declarada.");
         }*/
-        return this;
+        return null;
     }
     
 
