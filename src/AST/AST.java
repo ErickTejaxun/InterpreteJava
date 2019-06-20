@@ -72,34 +72,17 @@ public class AST
     }
     
     public Object segundaPasada(Entorno entorno)
-    {
-        Entorno local = new Entorno(entorno.getGlobalClase(),entorno.ventana);
+    {        
         Enumeration item = entorno.tabla.keys();
         while(item.hasMoreElements())
         {
+            Entorno local = new Entorno(entorno.getGlobalClase(),entorno.ventana);
             Object clave = item.nextElement();            
             Simbolo simbolo = entorno.obtener(clave.toString());
             if(simbolo.rol ==CLASE)
             {
                 Clase actual = (Clase)simbolo;
-                /*Tenemos que crear un nuevo entorno parcial donde guardar las mierdas de clase*/
-                for(Funcion f: actual.listaFunciones)
-                {
-                    f.ejectuar(local);
-                }  
-                /*Declaracion de cada uno de los atributos*/
-                for(DeclaracionAtributo dec: actual.listaAtributos)
-                {
-                    dec.ejectuar(local);
-                }
-                /*Ahora recorremos todos sus métodos para encontrar el principal*/
-                for(Funcion f: actual.listaFunciones)
-                {
-                    if(f.isPrincipal())
-                    {                        
-                        return f.getValor(new Entorno(local,local.ventana));
-                    }
-                }
+                actual.getValor(local);               
             }            
         }                           
         return null;

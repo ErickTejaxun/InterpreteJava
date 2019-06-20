@@ -84,9 +84,15 @@ public class Entorno
             }
             tmp = tmp.anterior;
         }
-        Utilidades.Singlenton.registrarError(id,"Variable no declarada", ErrorC.TipoError.SEMANTICO, 0,0);
+        //Utilidades.Singlenton.registrarError(id,"Variable no declarada", ErrorC.TipoError.SEMANTICO, 0,0);
         return null;
     }
+    
+    public void quitarSimbolo(String id)
+    {
+        this.tabla.remove(id);
+    }
+    
     
     public void ReporteEntorno()
     {
@@ -158,7 +164,7 @@ public class Entorno
     }
     
     
-    public Entorno getGlobal2()
+    public Entorno getGlobal()
     {
         Entorno auxiliar = this;
         while(auxiliar.anterior!=null)

@@ -19,6 +19,7 @@ public class Funcion extends Simbolo implements Instruccion, Expresion
     ArrayList<String> modificadores;
     public String nombre;
     public Instruccion instrucciones;
+    public boolean sobreescito = false;
     
     
     public Funcion(Tipo t, String id, int dim, int l, int c) 
@@ -46,15 +47,19 @@ public class Funcion extends Simbolo implements Instruccion, Expresion
         this.columna = c;
     }
     
+    public void setSobreescrito(boolean f)
+    {
+        this.sobreescito = f;
+    }
     
     public void setInstrucciones(Instruccion ins)
     {
         this.instrucciones = ins;
     }
 
-    @Override
+    @ Override
     public Object ejectuar(Entorno entorno) 
-    {
+    {        
         return entorno.insertar(this);        
     }
 
@@ -153,6 +158,11 @@ public class Funcion extends Simbolo implements Instruccion, Expresion
         //System.out.print(result);
         //System.out.print(")");
         return result;
+    }
+    
+    public boolean estaSobreescrito()
+    {
+        return sobreescito;
     }
     
 }

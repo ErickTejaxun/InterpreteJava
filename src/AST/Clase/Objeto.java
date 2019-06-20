@@ -21,19 +21,19 @@ import java.util.ArrayList;
  *
  * @author erick
  */
-public class Clase extends Simbolo implements Instruccion, Expresion
+public class Objeto extends Simbolo implements Instruccion, Expresion
 {    
     public ArrayList<Funcion> listaFunciones;
     public ArrayList<Constructor> listaConstructores;
     public ArrayList<DeclaracionAtributo> listaAtributos;
     public ArrayList<Atributo> atrib;
-    public ArrayList<Clase> listaClaseMiembros;
+    public ArrayList<Objeto> listaClaseMiembros;
     public String padre;
     public ArrayList<String> listaHijos;
-    public ArrayList<String> modificadores;   
-    Entorno entornoClase;
+    public ArrayList<String> listaModificadores;    
+    public String claseCreadora;
          
-    public Clase ()
+    public Objeto ()
     {
         this.listaAtributos = new ArrayList<>();
         this.listaConstructores = new ArrayList<>();
@@ -41,11 +41,11 @@ public class Clase extends Simbolo implements Instruccion, Expresion
         this.listaClaseMiembros  = new ArrayList<>();
         this.padre = "";
         this.listaHijos  = new ArrayList<>();
-        this.modificadores = new ArrayList<>();;       
+        this.listaModificadores = new ArrayList<>();;       
         this.rol = CLASE;        
     }
         
-    public Clase(int l, int c)
+    public Objeto(int l, int c)
     {
         this.listaAtributos = new ArrayList<>();
         this.listaConstructores = new ArrayList<>();
@@ -53,15 +53,15 @@ public class Clase extends Simbolo implements Instruccion, Expresion
         this.listaClaseMiembros  = new ArrayList<>();
         this.padre = "";
         this.listaHijos  = new ArrayList<>();
-        this.modificadores = new ArrayList<>();;       
+        this.listaModificadores = new ArrayList<>();;       
         this.linea = l;
         this.columna = c;
         this.rol = CLASE;
     }
     
-    public Clase(ArrayList<String> lmod, String nombre, String padre, ArrayList<Funcion> lf)
+    public Objeto(ArrayList<String> lmod, String nombre, String padre, ArrayList<Funcion> lf)
     {
-        this.modificadores = lmod;
+        this.listaModificadores = lmod;
         this.id = nombre;
         this.padre = padre;
         this.listaFunciones = lf;
@@ -85,7 +85,7 @@ public class Clase extends Simbolo implements Instruccion, Expresion
         this.listaAtributos = listaAtributos;
     }
 
-    public void setListaClaseMiembros(ArrayList<Clase> listaClaseMiembros) {
+    public void setListaClaseMiembros(ArrayList<Objeto> listaClaseMiembros) {
         this.listaClaseMiembros = listaClaseMiembros;
     }
 
@@ -94,10 +94,13 @@ public class Clase extends Simbolo implements Instruccion, Expresion
     }
 
     public void setModificadores(ArrayList<String> modificadores) {
-        this.modificadores = modificadores;
+        this.listaModificadores = modificadores;
     }
     
-    
+    public void setClaseOrigen(String clase)
+    {
+        this.claseCreadora = clase;
+    }
     
     
     public void addAtributo(DeclaracionAtributo atrib)
@@ -127,7 +130,8 @@ public class Clase extends Simbolo implements Instruccion, Expresion
     @Override
     public Object ejectuar(Entorno entorno) 
     {
-        /*Tenemos que ir a tomar todas las */        
+        /*Tenemos que ir a tomar todas las */
+        
         entorno.insertar(this);
         return this;
     }
@@ -145,7 +149,7 @@ public class Clase extends Simbolo implements Instruccion, Expresion
     @Override
     public Object getValor(Entorno entorno) 
     {        
-        this.entornoClase = entorno;
+        
         if(!padre.equals(""))
         {
             Simbolo simboloPadre = entorno.getGlobal().obtener(padre);
@@ -155,13 +159,14 @@ public class Clase extends Simbolo implements Instruccion, Expresion
             }
             else
             {
-                if(simboloPadre instanceof Clase)
+                if(simboloPadre instanceof Objeto)
                 {
-                    Clase clasePadre = (Clase)simboloPadre;
+                    Objeto clasePadre = (Objeto)simboloPadre;
                     clasePadre.getValor(entorno);
                 }
             }
-        }        
+        }
+        
         /*Tenemos que crear un nuevo entorno parcial donde guardar las mierdas de clase*/
         for(Funcion f: this.listaFunciones)
         {

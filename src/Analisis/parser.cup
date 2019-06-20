@@ -527,9 +527,16 @@ MODFUNCION::=
 
 DECATRIB::= LMODFICADOR:lm RESULTADO:tipo LDEC:declaraciones
             {: 
-                Declaracion d  = new Declaracion(tipo,declaraciones,tipoleft,tiporight);     
+                Declaracion d  = new Declaracion(tipo,declaraciones,tiporight,tipoleft);     
                 RESULT = new DeclaracionAtributo(lm, d.tipo, d, lmright, lmleft); 
             :} 
+            |RESULTADO:tipo LDEC:declaraciones
+            {: 
+                Declaracion d  = new Declaracion(tipo,declaraciones,tiporight,tipoleft);     
+                ArrayList<String> l = new ArrayList<String>();
+                l.add("public");
+                RESULT = new DeclaracionAtributo(l, d.tipo, d, tiporight,tipoleft); 
+            :}             
 ;
 
 //TIPO:t LDEC:lista {: RESULT = new Declaracion(t, lista, tright, tleft); :}
