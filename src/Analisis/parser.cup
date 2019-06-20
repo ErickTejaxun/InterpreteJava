@@ -173,22 +173,25 @@ non terminal String MODFUNCION, MODCONST;
 non terminal Tipo RESULTADO;
 non terminal ParametroFormal PARFORMAL;
 non terminal ArrayList<ParametroFormal> LPARFORMAL;
-non terminal Constructor CONSTRUCTOR;
+/*non terminal Constructor CONSTRUCTOR;*/
 non terminal Funcion FUNCION, CABECERAMET;
-non terminal ArrayList<Nodo> LFUNCION;
+/*non terminal ArrayList<Nodo> LFUNCION;*/
 non terminal Retorno RETORNO;
 non terminal Llamada LLAMADA;
 non terminal String MODATRIB;
 non terminal ArrayList<Expresion> PARACTUALES,ACTUALES;
 
 /*Atributos de clase*/
-non terminal ArrayList<String> LMODATRIB;
-non terminal ArrayList<Nodo> LDECATRIB;
+/*non terminal ArrayList<String> LMODATRIB;*/
+/*non terminal ArrayList<Nodo> LDECATRIB;*/
 non terminal DeclaracionAtributo DECATRIB;
 
 /*Produccion de clase*/
 non terminal Clase CLASE, CUERPOCLASE, CUERPO ;
 non terminal ArrayList<Nodo> LCLASE;
+/*Arreglos*/
+non terminal Expresion VALORARREGLO ;
+non terminal Expresion ACCESO, ORIGEN;
 /*
 precedence left interrogante, punto;
 precedence left or;
@@ -365,9 +368,25 @@ PRINT::= println:p pari EXP:valor pard puntocoma {:RESULT = new Imprimir(valor, 
         | print:p pari EXP:valor pard puntocoma {:RESULT = new Imprimir(valor,false,pright,pleft); :}
 ;
 
-ASIG::= id:id igual EXP:valor   {: RESULT = new Asignacion(id, valor, idright,idleft);:};
+                    /*Acceso(Expresion e, Expresion i, int l, int c)*/
 
-ASIGV::=id:id LEXP:coordenas igual EXP:valor {: RESULT = new AsignacionVector(id, coordenas, valor,  idright,idleft);:}
+ASIG::= ACCESO:origen igual EXP:valor   {: RESULT = new Asignacion( new AccesoValor (origen) , valor, origenright, origenleft);:}       
+       
+
+;
+ASIGV::= id:id LEXP:coordenas igual EXP:valor {: RESULT = new AsignacionVector(id, coordenas, valor,  idright,idleft);:}
+;
+
+ACCESO::= ACCESO:origen punto ORIGEN:destino {: RESULT = new Acceso(origen, destino, origenright, origenleft);:}
+        | ORIGEN:exp {:RESULT = exp;:}
+        | este:exp {:RESULT = new Variable(exp,expright,expleft);:}
+
+;
+        
+ORIGEN::=      id:id     {:RESULT = new Variable(id, idright, idleft);:}
+        | LLAMADA:f   {:RESULT = f;:}
+        | ORIGEN:origen LEXP:coor {: RESULT = new AccesoVector(origen , coor , origenright, origenleft);:}
+        
 ;
 
 /*Arreglos.
@@ -393,10 +412,14 @@ DEC::=
       id:id {: RESULT = new Dec(id,idright, idleft);:}
     | id:id igual EXP:valor {: RESULT = new Dec(id,valor, idright, idleft);:}
     | id:id NDIM:dim {: RESULT = new Dec(id,dim, idright, idleft);:}
-    | id:id NDIM:dim igual EXP:valor {: RESULT = new Dec(id,dim, valor, idright, idleft);:}
+    | id:id NDIM:dim igual VALORARREGLO:valor {: RESULT = new Dec(id,dim, valor, idright, idleft);:}
     | id:id NDIM:dim igual ARR:valor {: RESULT = new Dec(id,dim, new ExpresionArreglo(valor, valorright, valorleft), idright, idleft);:}
-;    
+;   
 
+VALORARREGLO::=
+         nuevo:n PRIMITIVO:tipo LEXP:l {: RESULT = new ExpresionArreglo(tipo,l,nright,nleft);:}
+        |nuevo:n id:tipo LEXP:l {: RESULT = new ExpresionArreglo(new Tipo(tipo), l,nright,nleft);:}
+;
 TIPO::= PRIMITIVO:t{:RESULT = t;:}
       | id:id {:RESULT = new Tipo(id,idright, idleft);:}
 ;
@@ -413,54 +436,64 @@ EXPRESION::=
 ;
 */
 
+
 EXP::= 
+        /*Lógicas*/
          EXP:opi and EXP:opd {: RESULT = new And(opi, opd, opiright,opileft);:}
         |EXP:opi or EXP:opd {: RESULT = new Or(opi, opd, opiright,opileft);:}
+        |EXP:opi xor EXP:opd {: RESULT = new Xor(opi,opd,opiright,opileft);:} 
+        /*Instanceof*/
+        |EXP:op instanceof_ id:tipo {:RESULT = new InstanceOf(op,tipo, opright, opleft);:}        
         |not EXP:op {: RESULT = new Not(op, opright,opleft);:}        
+        /*Relacionales*/
         |EXP:opi igualigual EXP:opd {:RESULT = new Igual(opi,opd,opiright,opileft);:}
         |EXP:opi desigual EXP:opd {:RESULT = new Desigual(opi,opd,opiright,opileft);:}
         |EXP:opi mayor EXP:opd {:RESULT = new Mayor(opi,opd,opiright,opileft);:}
         |EXP:opi mayorigual EXP:opd {:RESULT = new MayorIgual(opi,opd,opiright,opileft);:}
         |EXP:opi menor EXP:opd {:RESULT = new Menor(opi,opd,opiright,opileft);:}
         |EXP:opi menorigual EXP:opd {:RESULT = new MenorIgual(opi,opd,opiright,opileft);:}        
+        /*Ariteticas*/
         |EXP:opi suma EXP:opd {: RESULT = new Suma(opi,opd,opiright,opileft);:}       
-        |EXP:opi menos EXP:opd {: RESULT = new Resta(opi,opd,opiright,opileft);:}  
-        |EXP:opi xor EXP:opd {: RESULT = new Xor(opi,opd,opiright,opileft);:} 
+        |EXP:opi menos EXP:opd {: RESULT = new Resta(opi,opd,opiright,opileft);:}          
         |EXP:opi multi EXP:opd {: RESULT = new Multiplicacion(opi,opd,opiright,opileft);:}  
         |EXP:opi div EXP:opd {: RESULT = new Division(opi,opd,opiright,opileft);:}  
         |EXP:opi modulo EXP:opd {: RESULT = new Modulo(opi,opd,opiright,opileft);:}  
-        |TER:op {:RESULT = op;:}                
-        |menos EXP:op {: RESULT = new Menos(op, opright,opleft);:}              
-        |AUMENTO:op {:RESULT = op;:}
-        |potencia:pot pari EXP:opi coma EXP:opd pard {:RESULT = new Potencia(opi,opd,potright,potleft);:}
-        |EXP:op instanceof_ id:tipo {:RESULT = new InstanceOf(op,tipo, opright, opleft);:}
+        |potencia:pot pari EXP:opi coma EXP:opd pard {:RESULT = new Potencia(opi,opd,potright,potleft);:}        
+        |menos EXP:op {: RESULT = new Menos(op, opright,opleft);:}
+        /*Ternario*/
+        |TER:op {:RESULT = op;:}                        
+        /*Aumento ++ y --*/
+        |AUMENTO:op {:RESULT = op;:}        
         |DECREMENTO:op {:RESULT = op;:}        
+        /*Accesos*/
         |EXP:op punto tostring pari pard {:RESULT = new ToString(op,opright,opleft);:}
         |EXP:op punto tolower pari pard {:RESULT = new ToLower(op,opright,opleft);:}
-        |EXP:op punto id:atrib {:RESULT = new Acceso(op,atrib, opright,opleft);:}
         |EXP:op punto touper pari pard {:RESULT = new ToUper(op,opright,opleft);:}
+        |EXP:op punto id:atrib {:RESULT = new Acceso(op,atrib, opright,opleft);:}
+        /*Casteos*/
         |pari:t PRIMITIVO:tipo pard EXP:op {:RESULT = new Casteo(op,tipo, tright, tleft);:} 
         |pari:t id:tipo pard EXP:op {:RESULT = new Casteo(op,tipo, tright, tleft);:}
+        /*Primitivas*/
         |entero:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.INT), v, vright,vleft);:}
         |decimal:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.DOUBLE), v, vright,vleft);:}
         |booleano:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.BOOL), v, vright,vleft);:}
         |cadena:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.STRING), v, vright,vleft);:}
         |caracter:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.CHAR), v, vright,vleft);:}
-        |id:v {: RESULT = new Variable(v, vright,vleft);:}
-        |nuevo:n PRIMITIVO:tipo LEXP:l {: RESULT = new ExpresionArreglo(tipo,l,nright,nleft);:}
-        |nuevo:n id:tipo LEXP:l {: RESULT = new ExpresionArreglo(new Tipo(tipo), l,nright,nleft);:}
+        /*ACCESO*/
+        |ACCESO:v {:RESULT = v;:}
         |nuevo:n TIPO:tipo pari pard {: RESULT = new Instancia(tipo,nright, nleft);:}
         |nuevo:n TIPO:tipo pari LEXP:lista pard {: RESULT = new Instancia(tipo, lista, nright, nleft);:}
         |pari EXP:op pard {: RESULT = op;:}
-        |EXP:id LEXP:coor {: RESULT = new AccesoVector(id, coor , idright, idleft);:}   
+
         |EXPLICITCAST:exp {:RESULT = exp;:}
-        |LLAMADA:exp {:RESULT = exp;:}
-        |este:exp {:RESULT = new Variable(exp,expright,expleft);:}
+        /*|LLAMADA:exp {:RESULT = exp;:} estas están incluidas en acceso*/
+        
 ;
+/*ACCESO::= */
 
 LLAMADA::= 
-             EXP:op punto id:t pari PARACTUALES:l pard {:RESULT = new Llamada(op,t,l, opright,opleft);:}
-            |id:t pari PARACTUALES:l pard {:RESULT = new Llamada(null,t,l, tright,tleft);:}
+             /*EXP:op punto id:t pari PARACTUALES:l pard {:RESULT = new Llamada(op,t,l, opright,opleft);:}*/
+            id:t pari PARACTUALES:l pard {:RESULT = new Llamada(null,t,l, tright,tleft);:}
 ;
 
 RETORNO ::= retorno:r EXPRETORNO:exp puntocoma{:RESULT = new Retorno(exp, rright, rleft);:} 
@@ -541,12 +574,12 @@ DECATRIB::= LMODFICADOR:lm RESULTADO:tipo LDEC:declaraciones
 
 //TIPO:t LDEC:lista {: RESULT = new Declaracion(t, lista, tright, tleft); :}
 
-
+/*
 LMODATRIB::= 
           LMODATRIB:lista MODATRIB:mod {:lista.add(mod); RESULT = lista;:}
         | MODATRIB:mod {:ArrayList<String> l = new ArrayList<String>(); l.add(mod); RESULT = l;:}
 ; 
-    
+  */  
 
 MODATRIB::= 
                 final_:m {:RESULT = m;:}

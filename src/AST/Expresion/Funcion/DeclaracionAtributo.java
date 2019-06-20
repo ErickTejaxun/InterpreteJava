@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package AST.Expresion.Funcion;
+import AST.Clase.Objeto;
 import AST.Instruccion.*;
 import AST.Entorno.Simbolo;
 import AST.Expresion.Expresion;
@@ -222,7 +223,19 @@ public class DeclaracionAtributo implements Instruccion
                 return this;
             }            
         }
-        
+        if(valor instanceof Objeto)
+        {
+           Objeto nuevoObjeto = (Objeto)valor;
+           nuevoObjeto.id = id;
+           nuevoObjeto.linea = linea;
+           nuevoObjeto.columna = columna;
+           nuevoObjeto.tipo = tipo;           
+           if(!entorno.insertar(nuevoObjeto))
+           {
+               /*error */
+           }
+           return null;
+        }
         
         Simbolo s = this.dimensiones == 0 ? new Simbolo(tipo,id,valor,linea,columna):new Simbolo(tipo,id,valor,dimensiones ,linea,columna);
         if(!entorno.insertar(s))

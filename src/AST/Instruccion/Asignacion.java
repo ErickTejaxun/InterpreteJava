@@ -20,6 +20,7 @@ public class Asignacion implements Instruccion
     public String id;
     public Expresion expresion;
     public int linea, columna;
+    public Expresion destino;
     
     public Asignacion(String id, int l,int c)
     {        
@@ -36,16 +37,29 @@ public class Asignacion implements Instruccion
         this.columna = c;        
     }
         
+    public Asignacion(Expresion or, Expresion e, int l, int c)
+    {        
+        this.destino = or;
+        this.expresion = e;
+        this.linea = l;
+        this.columna = c;        
+    }   
+        
+    
+    
     @Override
     public Object ejectuar(Entorno entorno) 
     {        
-        Simbolo simbolo = entorno.obtener(this.id);
+        //Simbolo simbolo = entorno.obtener(this.id);
+        Simbolo simbolo = null;
+        Object destinoObjeto = this.destino.getValor(entorno);
+        if(destinoObjeto instanceof Simbolo){ simbolo = (Simbolo)destinoObjeto;}
         if(simbolo==null)
         {
-            Utilidades.Singlenton.registrarError(id, "La variable no ha sido declarada.", ErrorC.TipoError.SEMANTICO,linea, columna);
+            Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "Error asignacion: la variable no ha sido encontrada.", ErrorC.TipoError.SEMANTICO,linea, columna);
             return null;
         }
-                
+        
         Object valor = null;
         if(expresion!=null)
         {
@@ -57,7 +71,7 @@ public class Asignacion implements Instruccion
                     case CHAR:
                         if(expresion.getTipo().typeprimitive != CHAR)
                         {
-                            Utilidades.Singlenton.registrarError(id, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo "+simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+                            Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo "+simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
                             return null;
                         }
                     break;
@@ -68,7 +82,7 @@ public class Asignacion implements Instruccion
                                 valor =(char)valor+0;
                                 break;
                             default:
-                                Utilidades.Singlenton.registrarError(id, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo "+simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+                                Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo "+simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
                                 return null; 
                         }
                     break;
@@ -82,14 +96,14 @@ public class Asignacion implements Instruccion
                                 valor = (double) (int)valor;
                                 break;
                             default:
-                                Utilidades.Singlenton.registrarError(id, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo "+simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+                                Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo "+simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
                                 return null; 
                         }                        
                     break;   
                     default:
                         if(!expresion.getTipo().nombreTipo().equals(simbolo.tipo.nombreTipo()))
                         {
-                            Utilidades.Singlenton.registrarError(id, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo " + simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+                            Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo " + simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
                             return null;                        
                         }                    
                     break;                                                         
@@ -117,11 +131,13 @@ public class Asignacion implements Instruccion
                     break;                    
             }             
         }
+        simbolo.valor = valor;
+        /*
         Simbolo s = new Simbolo(simbolo.getTipo(),id,valor,simbolo.linea,simbolo.columna);
         if(!entorno.actualizar(s))
         {
             //System.out.println("Error, variable " +s.id + " ya declarada.");
-        }
+        }*/
         return this;
     }
     

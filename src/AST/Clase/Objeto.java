@@ -32,6 +32,7 @@ public class Objeto extends Simbolo implements Instruccion, Expresion
     public ArrayList<String> listaHijos;
     public ArrayList<String> listaModificadores;    
     public String claseCreadora;
+    Entorno entornoObjeto;
          
     public Objeto ()
     {

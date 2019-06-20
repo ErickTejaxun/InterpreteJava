@@ -23,9 +23,9 @@ public class Singlenton
     public static int linea=0;
     public static int columna=0;
     public static boolean continuarEjecucion =false;
+    public static String nombreVariable = "";
     
-    
-    
+    public static void setVariable(String d){nombreVariable = d;}            
     public static void apliarCiclo(Instruccion e)
     {
         pilaCiclos.push(e);

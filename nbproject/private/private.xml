@@ -3,13 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Clase/Clase.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Expresion/Funcion/Llamada.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Instruccion/AST.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/Analisis/parser.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Entorno/Entorno.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/interprete/Interfaz.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Entorno/Simbolo.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Instruccion/Asignacion.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/Utilidades/Singlenton.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Clase/Acceso.java</file>
         </group>
     </open-files>
 </project-private>

@@ -27,6 +27,7 @@ public class Variable implements Expresion
     @Override
     public Object getValor(Entorno ent) 
     {
+        Utilidades.Singlenton.setVariable(id);
         if(this.id.equals("this"))
         {
             
@@ -34,7 +35,7 @@ public class Variable implements Expresion
         
         Simbolo s = ent.obtener(this.id);
         if(s!=null)
-        {
+        {            
             this.tipo = s.tipo;
             return s.valor;
         }

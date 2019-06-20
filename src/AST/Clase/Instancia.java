@@ -43,7 +43,7 @@ public class Instancia implements Expresion
     {
         /*Hay que buscar */
         Simbolo sim = entorno.getGlobal().obtener(this.tipo.nombreTipo());
-        if(sim!=null)
+        if(sim==null)
         {
             Utilidades.Singlenton.registrarError(this.tipo.nombreTipo(),"No se ha encontrado la clase.", ErrorC.TipoError.SEMANTICO, linea, columna);
             return null;
@@ -55,11 +55,13 @@ public class Instancia implements Expresion
             clase.entornoClase = new Entorno(entorno.getGlobalClase(),entorno.ventana);
             clase.getValor(clase.entornoClase);
             Objeto nuevaInstancia = new Objeto();
+            nuevaInstancia.entornoObjeto = clase.entornoClase;
             nuevaInstancia.setClaseOrigen(this.tipo.nombreTipo());
             nuevaInstancia.linea = this.linea;
             nuevaInstancia.columna = this.columna;
             nuevaInstancia.listaClaseMiembros = (ArrayList<Objeto>) clase.listaClaseMiembros.clone();
             nuevaInstancia.listaModificadores = (ArrayList<String>) clase.modificadores.clone();
+            nuevaInstancia.tipo = new Tipo(clase.id);
             return nuevaInstancia;            
         }                
         return null;

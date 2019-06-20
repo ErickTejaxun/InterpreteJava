@@ -5,6 +5,7 @@
  */
 package AST.Instruccion;
 
+import AST.Clase.Objeto;
 import AST.Entorno.Simbolo;
 import AST.Expresion.Expresion;
 import AST.Entorno.Entorno;
@@ -211,6 +212,21 @@ public class Declaracion implements Instruccion
                 Utilidades.Singlenton.registrarError(id, "No coincide el número de las dimensiones del valor a asignar", ErrorC.TipoError.SEMANTICO,linea, columna);
                 return this;
             }            
+        }
+        
+        /*Verificamos que sean del mismo tipo*/
+        if(valor instanceof Objeto)
+        {
+            Objeto valorObjeto = (Objeto)valor;
+            /*Ahora verificamos que ambos sean del mismo tipo*/
+            if(!(valorObjeto.getTipo().nombreTipo().toLowerCase().equals(this.tipo.nombreTipo().toLowerCase())))
+            {
+                /*Error*/
+                Utilidades.Singlenton.registrarError(id, "No se puede convertir un valor de tipo "+valorObjeto.getTipo().nombreTipo() + " a "+tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+                return null;
+            }
+            /*Recordar que si no coinciden los tipos hay que verificar si es necesario hacer un casteo implicito.*/            
+            /*Coincidieron los tipos.*/            
         }
         
         

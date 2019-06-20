@@ -38,7 +38,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import org.fife.ui.rtextarea.*;
 import org.fife.ui.rsyntaxtextarea.*;
-
+import org.fife.ui.autocomplete.*;
 
 
 /**
@@ -770,6 +770,9 @@ public class Interfaz extends javax.swing.JFrame {
             gutter.setBookmarkIcon(new ImageIcon(getClass().getResource("/breakpoint.png")));            
             gutter.setBookmarkingEnabled(true);
             
+            CompletionProvider provider = createCompletionProvider();
+            AutoCompletion ac = new AutoCompletion(provider);
+            ac.install(editor);            
             panel.add(sp);    
             contenedorPaneles.add("Nuevo-"+contadorNuevos, panel);                        
             agregarArbolGrafico("Nuevo-"+contadorNuevos);
@@ -794,6 +797,10 @@ public class Interfaz extends javax.swing.JFrame {
             gutter.setBookmarkingEnabled(true);        
             editor.setText(data);                 
             
+            
+            CompletionProvider provider = createCompletionProvider();
+            AutoCompletion ac = new AutoCompletion(provider);
+            ac.install(editor);
             panel.add(sp);    
             contenedorPaneles.add(nombre, panel);                        
             agregarArbolGrafico(nombre);
@@ -1630,7 +1637,41 @@ public class Interfaz extends javax.swing.JFrame {
         int entero = Integer.parseInt(valor);
     }
    
-    
+   private CompletionProvider createCompletionProvider() {
+
+      // A DefaultCompletionProvider is the simplest concrete implementation
+      // of CompletionProvider. This provider has no understanding of
+      // language semantics. It simply checks the text entered up to the
+      // caret position for a match against known completions. This is all
+      // that is needed in the majority of cases.
+      DefaultCompletionProvider provider = new DefaultCompletionProvider();
+
+      // Add completions for all Java keywords. A BasicCompletion is just
+      // a straightforward word completion.
+      provider.addCompletion(new BasicCompletion(provider, "abstract"));
+      provider.addCompletion(new BasicCompletion(provider, "assert"));
+      provider.addCompletion(new BasicCompletion(provider, "break"));
+      provider.addCompletion(new BasicCompletion(provider, "case"));
+      // ... etc ...
+      provider.addCompletion(new BasicCompletion(provider, "transient"));
+      provider.addCompletion(new BasicCompletion(provider, "try"));
+      provider.addCompletion(new BasicCompletion(provider, "void"));
+      provider.addCompletion(new BasicCompletion(provider, "volatile"));
+      provider.addCompletion(new BasicCompletion(provider, "while"));
+      provider.addCompletion(new BasicCompletion(provider, "do"));
+      provider.addCompletion(new BasicCompletion(provider, "for"));
+      provider.addCompletion(new BasicCompletion(provider, "class"));
+
+      // Add a couple of "shorthand" completions. These completions don't
+      // require the input text to be the same thing as the replacement text.
+      provider.addCompletion(new ShorthandCompletion(provider, "sysout",
+            "System.out.println(", "System.out.println("));
+      provider.addCompletion(new ShorthandCompletion(provider, "syserr",
+            "System.err.println(", "System.err.println("));
+
+      return provider;
+
+   }    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrirCarpeta;
     private javax.swing.JTree arbolDirectorio;
