@@ -94,8 +94,7 @@ public class Llamada implements Expresion
             {
                 Funcion funcion = (Funcion)f;                
                 /*Agregamos los valores a los parametros formales*/
-                int cont = 0;
-                
+                int cont = 0;                
                 for(Object item:resultados)
                 {
                     ParametroFormal formal = funcion.parametrosFormales.get(cont);                    

@@ -9,6 +9,9 @@ import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
 import AST.Expresion.Expresion;
+import AST.Expresion.Funcion.Constructor;
+import AST.Expresion.Funcion.ParametroFormal;
+import AST.Expresion.Variable;
 import Utilidades.ErrorC;
 import java.util.ArrayList;
 
@@ -62,6 +65,67 @@ public class Instancia implements Expresion
             nuevaInstancia.listaClaseMiembros = (ArrayList<Objeto>) clase.listaClaseMiembros.clone();
             nuevaInstancia.listaModificadores = (ArrayList<String>) clase.modificadores.clone();
             nuevaInstancia.tipo = new Tipo(clase.id);
+            
+            /*Ahora buscamos el contrusctor, si no hay constructor, mandamos un null ;) */
+            String firma = clase.id;
+            ArrayList<Object> resultados = new ArrayList<>();
+            ArrayList<Tipo> tipos = new ArrayList<>()  ;         
+            for(Expresion e:parametrosActuales)
+            {
+                if(e instanceof Variable)
+                {
+                    Variable var = (Variable)e;
+                    if(entorno.obtener(var.id)==null)
+                    {
+                        Utilidades.Singlenton.registrarError(var.id, "Variable no declarada" , ErrorC.TipoError.SEMANTICO, var.linea, var.columna);
+                        return null;
+                    }
+                    else
+                    {
+                        Object tmp = e.getValor(entorno); 
+                        if(tmp!=null)
+                        {
+                            firma +="$"+e.getTipo().nombreTipo().toLowerCase();
+                            resultados.add(tmp);
+                        }                     
+                    }
+
+                }            
+                else
+                {
+                    Object tmp = e.getValor(entorno); 
+                    if(tmp!=null)
+                    {
+                        firma +="$"+e.getTipo().nombreTipo().toLowerCase();
+                        resultados.add(tmp);
+                    }                    
+                }
+
+            }      
+            /*Buscamos la función*/            
+            Simbolo sfuncion = nuevaInstancia.entornoObjeto.obtener(firma);
+            if(sfuncion==null)
+            {
+                Utilidades.Singlenton.registrarError(clase.id, "No se ha encontrado el constructor solicitado "+firma , ErrorC.TipoError.SEMANTICO, linea, columna);               
+                return null;
+            }
+            if(sfuncion instanceof Constructor)
+            {
+                Constructor constructor = (Constructor)sfuncion;
+                int cont = 0;                
+                for(Object item:resultados)
+                {
+                    /*String nombre = constructor.parametrosFormales.get(cont).id;
+                    Simbolo s = nuevaInstancia.entornoObjeto.obtener(nombre);
+                    s.valor = item;*/                    
+                    ParametroFormal formal = constructor.parametrosFormales.get(cont);                    
+                    formal.valor =item;
+                    cont++;
+                }                
+                /*Cremos un nuevo entorno*/
+                constructor.getValor(entorno);
+                
+            }
             return nuevaInstancia;            
         }                
         return null;

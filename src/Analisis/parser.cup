@@ -192,6 +192,8 @@ non terminal ArrayList<Nodo> LCLASE;
 /*Arreglos*/
 non terminal Expresion VALORARREGLO ;
 non terminal Expresion ACCESO, ORIGEN;
+non terminal Expresion INSTANCIA;
+non terminal Expresion VALORASIGNACION;
 /*
 precedence left interrogante, punto;
 precedence left or;
@@ -370,7 +372,7 @@ PRINT::= println:p pari EXP:valor pard puntocoma {:RESULT = new Imprimir(valor, 
 
                     /*Acceso(Expresion e, Expresion i, int l, int c)*/
 
-ASIG::= ACCESO:origen igual EXP:valor   {: RESULT = new Asignacion( new AccesoValor (origen) , valor, origenright, origenleft);:}       
+ASIG::= ACCESO:origen igual VALORASIGNACION:valor   {: RESULT = new Asignacion( new AccesoValor (origen) , valor, origenright, origenleft);:}       
        
 
 ;
@@ -410,11 +412,15 @@ LDEC::= LDEC:lista  coma DEC:dec {: lista.add(dec); RESULT = lista;:}
 
 DEC::= 
       id:id {: RESULT = new Dec(id,idright, idleft);:}
-    | id:id igual EXP:valor {: RESULT = new Dec(id,valor, idright, idleft);:}
+    | id:id igual VALORASIGNACION:valor {: RESULT = new Dec(id,valor, idright, idleft);:}
     | id:id NDIM:dim {: RESULT = new Dec(id,dim, idright, idleft);:}
     | id:id NDIM:dim igual VALORARREGLO:valor {: RESULT = new Dec(id,dim, valor, idright, idleft);:}
     | id:id NDIM:dim igual ARR:valor {: RESULT = new Dec(id,dim, new ExpresionArreglo(valor, valorright, valorleft), idright, idleft);:}
 ;   
+
+VALORASIGNACION::= 
+            EXP:exp {:RESULT = exp;:}
+         |  INSTANCIA:exp  {:RESULT = exp;:};
 
 VALORARREGLO::=
          nuevo:n PRIMITIVO:tipo LEXP:l {: RESULT = new ExpresionArreglo(tipo,l,nright,nleft);:}
@@ -481,14 +487,15 @@ EXP::=
         |caracter:v {: RESULT = new Literal(new Tipo(Tipo.TypePrimitive.CHAR), v, vright,vleft);:}
         /*ACCESO*/
         |ACCESO:v {:RESULT = v;:}
-        |nuevo:n TIPO:tipo pari pard {: RESULT = new Instancia(tipo,nright, nleft);:}
-        |nuevo:n TIPO:tipo pari LEXP:lista pard {: RESULT = new Instancia(tipo, lista, nright, nleft);:}
         |pari EXP:op pard {: RESULT = op;:}
-
         |EXPLICITCAST:exp {:RESULT = exp;:}
-        /*|LLAMADA:exp {:RESULT = exp;:} estas están incluidas en acceso*/
-        
+        /*|LLAMADA:exp {:RESULT = exp;:} estas están incluidas en acceso*/        
 ;
+
+INSTANCIA::=          
+        nuevo:n TIPO:tipo pari PARACTUALES:lista pard {: RESULT = new Instancia(tipo, lista, nright, nleft);:}
+;
+
 /*ACCESO::= */
 
 LLAMADA::= 

@@ -82,7 +82,11 @@ public class AST
             if(simbolo.rol ==CLASE)
             {
                 Clase actual = (Clase)simbolo;
-                actual.getValor(local);               
+                if(actual.existePrincipal())
+                {
+                    actual.getValor(local);
+                    break;
+                }                
             }            
         }                           
         return null;

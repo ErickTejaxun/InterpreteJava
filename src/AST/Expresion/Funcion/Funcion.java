@@ -15,8 +15,8 @@ import java.util.ArrayList;
  */
 public class Funcion extends Simbolo implements Instruccion, Expresion
 {
-    ArrayList<ParametroFormal> parametrosFormales;
-    ArrayList<String> modificadores;
+    public ArrayList<ParametroFormal> parametrosFormales;
+    public ArrayList<String> modificadores;
     public String nombre;
     public Instruccion instrucciones;
     public boolean sobreescito = false;

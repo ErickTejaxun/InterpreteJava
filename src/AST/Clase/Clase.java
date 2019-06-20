@@ -184,6 +184,36 @@ public class Clase extends Simbolo implements Instruccion, Expresion
                 f.ejectuar(entorno);
             }
         }  
+        
+        /*Tenemos que crear un nuevo entorno parcial donde guardar las mierdas de clase*/
+        for(Constructor f: this.listaConstructores)
+        {
+            if(f.nombre.equals(this.id))
+            {
+                /*Verificamos si hay que sobreescribir la funcion*/
+                if(f.estaSobreescrito())
+                {
+                    Simbolo fOriginal = entorno.getFuncion(f.id);
+                    if(fOriginal==null)
+                    {
+                        Utilidades.Singlenton.registrarError(f.nombre,"No existe el constructor que se va a sobreescribir", ErrorC.TipoError.SEMANTICO, f.linea,f.columna);
+                    }
+                    else
+                    {
+                        entorno.quitarSimbolo(f.id);
+                        f.ejectuar(entorno);
+                    }
+                } 
+                else
+                {
+                    f.ejectuar(entorno);
+                }                
+            }
+            else
+            {
+                Utilidades.Singlenton.registrarError(f.nombre,"Constructor no válido. Debe tener el mismo nombre que la clase.", ErrorC.TipoError.SEMANTICO, f.linea,f.columna);
+            }
+        }        
         /*Declaracion de cada uno de los atributos*/
         for(DeclaracionAtributo dec: this.listaAtributos)
         {
@@ -198,6 +228,18 @@ public class Clase extends Simbolo implements Instruccion, Expresion
             }
         }
         return null;
+    }
+    
+    public boolean existePrincipal()
+    {
+        for(Funcion f : this.listaFunciones)
+        {
+            if(f.isPrincipal())
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
 }
