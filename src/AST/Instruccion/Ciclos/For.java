@@ -39,21 +39,21 @@ public class For implements Instruccion
     {              
         Entorno local = new Entorno(entorno,entorno.ventana);
         /*Se genera la declaración o asignación*/
-        Inicio.ejectuar(entorno);        
+        Inicio.ejectuar(local);        
         /*Se realiza la verificación de la condición*/
-        Object condicional = condicion.getValor(entorno);                     
+        Object condicional = condicion.getValor(local);                     
         if(condicion.getTipo().isBoolean())
         {            
             while((boolean)condicional)
             {
-                local = new Entorno(entorno,entorno.ventana);
-                Object resultado = instrucciones.ejectuar(local);
+                Entorno localFor = new Entorno(local,entorno.ventana);
+                Object resultado = instrucciones.ejectuar(localFor);
                 if(resultado instanceof Break)
                 {
                     break;
                 }
-                Actualizacion.getValor(entorno);
-                condicional = condicion.getValor(entorno);
+                Actualizacion.getValor(local);
+                condicional = condicion.getValor(local);
             }
         }
         else
