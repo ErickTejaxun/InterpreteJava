@@ -194,6 +194,7 @@ non terminal Expresion VALORARREGLO ;
 non terminal Expresion ACCESO, ORIGEN;
 non terminal Expresion INSTANCIA;
 non terminal Expresion VALORASIGNACION;
+non terminal Importar IMPORTAR;
 /*
 precedence left interrogante, punto;
 precedence left or;
@@ -231,8 +232,11 @@ INICIO ::= LCLASE:lista {: Imprimir("Correcto"); raiz = new AST(lista);; :}
 
 LCLASE::= LCLASE:lista CLASE:clase{: lista.add(clase); RESULT = lista;:}
         | CLASE:clase {: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(clase); RESULT = l;:}
+        | IMPORTAR:exp puntocoma{: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(exp); RESULT = l;:}
 ;        
 
+IMPORTAR::= importar:or pari cadena:nombre pard {:RESULT = new Importar(nombre, orright, orleft);:}
+;
 CLASE::= LMODFICADOR:modificador clase id:nombre llavei CUERPOCLASE:clase llaved 
             {:
                 clase.setModificadores(modificador); 

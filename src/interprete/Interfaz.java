@@ -903,6 +903,26 @@ public class Interfaz extends javax.swing.JFrame {
         if(tipo.equals("2")){tipo=".3d";}        
         */
         String seleccionado = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
+        String directorio=direcciones.get(seleccionado); 
+        /*File chooser*/
+        JFileChooser chooser;
+        chooser = new JFileChooser(); 
+        chooser.setCurrentDirectory(new java.io.File("C:\\Users\\erick\\Desktop"));
+        String choosertitle = null;
+        chooser.setDialogTitle(choosertitle);
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);        
+        chooser.setAcceptAllFileFilterUsed(false);
+        //    
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) 
+        { 
+          directorio = chooser.getSelectedFile().toString();
+        }
+        else 
+        {
+          return;
+        }
+        
+        /*Ahora pedimos el nombre*/        
         String texto = "";
         String nombre = "";
         while(nombre.trim().equals(""))
@@ -910,9 +930,9 @@ public class Interfaz extends javax.swing.JFrame {
             nombre = JOptionPane.showInputDialog("Nombre con el que se guardará el nuevo archivo.");
         }
         nombre += tipo;
-        String directorio=direcciones.get(seleccionado); 
-        if(directorio==null){directorio= pathProyectos+"\\"+nombre;}
         
+        if(directorio==null){directorio= pathProyectos+"\\"+nombre;}
+        else{directorio= directorio+"\\"+nombre;}
         File archivo=new File(directorio);
         try (PrintWriter writer = new PrintWriter(archivo)) 
         {
@@ -989,7 +1009,9 @@ public class Interfaz extends javax.swing.JFrame {
             texto = editor.getText();
             //System.out.println(textoBuscado);
             writer.print(texto);
-        }                
+            writer.close();
+        } 
+        
         ActualizarNombres(seleccionado,nombre);        
     }  
     
@@ -1009,6 +1031,7 @@ public class Interfaz extends javax.swing.JFrame {
             texto = editor.getText();
             //System.out.println(textoBuscado);
             writer.print(texto);
+            writer.close();
         } catch (FileNotFoundException ex) 
         {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
@@ -1197,7 +1220,7 @@ public class Interfaz extends javax.swing.JFrame {
         {
             try 
             { 
-                Utilidades.Singlenton.pilaArchivos.add(pathArchivo);
+                Utilidades.Singlenton.pilaArchivos.add(pathArchivo);                
                 lexico=new scanner(new java.io.FileReader(pathArchivo));                                             
                 sintactico = new parser(lexico);                              
                 sintactico.parse();         

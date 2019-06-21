@@ -49,12 +49,11 @@ comilla = ("\"")
 cadCaracter = ("'" [^*] ~"'")|("‘" [^*] ~"’")
 direccionWindows= ("\"" ({letra}":"("\\"({id}|{espacio}|"_"|"-"|{numero})+)+"."{id}) "\"")
 
-comentario = {TraditionalComment} | {EndOfLineComment} | n
-          {DocumentationComment}
+comentario = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
 
-TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"|"/**" [^*] ~"*/" | "/*" "*"+ "/"
 EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
-DocumentationComment = "/*" "*"+ [^/*] ~"*/"
+DocumentationComment = "/*"+"*"+ [^/*] ~"*/"|"/**"+ [^/*] ~"*/"|"/**"+ [^/*] ~"**/"
 si = ("if")
 sino = ("else")
 sinosi={sino}({comentario}|{espacio})*(si)
