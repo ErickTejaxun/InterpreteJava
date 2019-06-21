@@ -225,6 +225,14 @@ public class Declaracion implements Instruccion
                 Utilidades.Singlenton.registrarError(id, "No se puede convertir un valor de tipo "+valorObjeto.getTipo().nombreTipo() + " a "+tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
                 return null;
             }
+            valorObjeto.id = this.id;
+            if(this.id == null)
+            {
+                valorObjeto.id = this.declaraciones.get(0).id;
+            }
+            
+            entorno.insertar(valorObjeto);
+            return null;
             /*Recordar que si no coinciden los tipos hay que verificar si es necesario hacer un casteo implicito.*/            
             /*Coincidieron los tipos.*/            
         }

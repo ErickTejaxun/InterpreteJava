@@ -3,9 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Instruccion/Asignacion.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/Utilidades/Singlenton.java</file>
-            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Clase/Acceso.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Instruccion/Imprimir.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Instruccion/Declaracion.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Expresion/Funcion/Llamada.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Expresion/Variable.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Clase/Instancia.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Instruccion/Bloque.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Expresion/Aritmetica/Multiplicacion.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/AST/Expresion/Funcion/Funcion.java</file>
+            <file>file:/C:/Users/erick/Documents/NetBeansProjects/InterpreteJava/src/interprete/Interfaz.java</file>
         </group>
     </open-files>
 </project-private>

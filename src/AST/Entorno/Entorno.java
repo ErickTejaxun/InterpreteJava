@@ -153,14 +153,31 @@ public class Entorno
     
     public Entorno getGlobalClase()
     {
-        Entorno auxiliar = this;
-        Entorno auxiliar2 = this;
+       
+        if(this.anterior==null)
+        {
+            return this;
+        }
+        else
+        {
+            Entorno auxiliar = this;
+            while(auxiliar.anterior.anterior !=null)
+            {
+                auxiliar = auxiliar.anterior;
+            }
+            return auxiliar;
+        }
+        /*
+        Entorno auxiliar = new Entorno(null);
+        Entorno auxiliar2 = new Entorno(null);
+        auxiliar2 = this;         
         while(auxiliar2.anterior!=null)
         {
             auxiliar = auxiliar2;
             auxiliar2 = auxiliar2.anterior;
         }        
         return auxiliar;
+        */
     }
     
     

@@ -62,7 +62,23 @@ public class Llamada implements Expresion
         Entorno entornoLLamada = new Entorno(local.getGlobalClase(),local.ventana);
         if(origen!=null)
         {
-            Object origenFuncion = origen.getValor(entorno);
+            Object origenFuncion = null; //origen.getValor(entorno);
+            if(origen instanceof Variable)
+            {
+                Variable var = (Variable)origen;
+                Simbolo s = entorno.obtener(var.id);
+                if(s instanceof Objeto)
+                {
+                    Objeto obj = (Objeto)s;
+                    origenFuncion = obj;
+                    //local = obj.entornoObjeto;
+                }   
+            }
+            else
+            {
+                origenFuncion = origen.getValor(entorno);
+            }
+            
             if(origenFuncion==null)
             {
                 Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No encontrada" , ErrorC.TipoError.SEMANTICO, linea, columna);

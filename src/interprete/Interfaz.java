@@ -1234,13 +1234,28 @@ public class Interfaz extends javax.swing.JFrame {
                 reporteCompilacion.setText(fechaHora);                  
             }            
             // Interpretamos
-            interpretar(sintactico.raiz);
+            try 
+            {
+                interpretar(sintactico.raiz);    
+                mostrarErrores();                          
+                if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "  No se han encontrado errores durante la ejecución.";}
+                else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
+                reporteCompilacion.setText(fechaHora);                  
+            } catch (Exception e) 
+                
+            {
+                mostrarErrores();                          
+                if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "  No se han encontrado errores durante la ejecución.";}
+                else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
+                reporteCompilacion.setText(fechaHora);                  
+            }
         }                 
         //imprimirTokens(lexico.listaLexemas);
-        mostrarErrores();                          
+        /*mostrarErrores();                          
         if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "  No se han encontrado errores durante la ejecución.";}
         else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
         reporteCompilacion.setText(fechaHora);        
+        */
     }
     
     public void Imprimir(String m)

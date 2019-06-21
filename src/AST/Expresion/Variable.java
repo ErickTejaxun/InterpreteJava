@@ -42,6 +42,8 @@ public class Variable implements Expresion
         Utilidades.Singlenton.registrarError(this.id, "La variable no existe en la tabla de símbolos. ", ErrorC.TipoError.SEMANTICO, linea, columna);
         return null;
     }
+    
+    
 
     @Override
     public Tipo getTipo() {

@@ -64,6 +64,7 @@ public class Instancia implements Expresion
             nuevaInstancia.columna = this.columna;
             nuevaInstancia.listaClaseMiembros = (ArrayList<Objeto>) clase.listaClaseMiembros.clone();
             nuevaInstancia.listaModificadores = (ArrayList<String>) clase.modificadores.clone();
+            nuevaInstancia.valor = nuevaInstancia;
             nuevaInstancia.tipo = new Tipo(clase.id);
             
             /*Ahora buscamos el contrusctor, si no hay constructor, mandamos un null ;) */
