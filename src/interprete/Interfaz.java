@@ -1161,6 +1161,8 @@ public class Interfaz extends javax.swing.JFrame {
     
     public void compilar() 
     {
+        /*Limpiar consola de salida*/
+        textAreaConsola.setText("");
         Utilidades.Singlenton.listaErrores.clear();
         Utilidades.Singlenton.pilaArchivos.clear();
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

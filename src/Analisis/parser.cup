@@ -372,7 +372,7 @@ PRINT::= println:p pari EXP:valor pard puntocoma {:RESULT = new Imprimir(valor, 
 
                     /*Acceso(Expresion e, Expresion i, int l, int c)*/
 
-ASIG::= ACCESO:origen igual VALORASIGNACION:valor   {: RESULT = new Asignacion( new AccesoValor (origen) , valor, origenright, origenleft);:}       
+ASIG::= ACCESO:origen igual VALORASIGNACION:valor   {: RESULT = new Asignacion(origen , valor, origenright, origenleft);:}       
        
 
 ;
@@ -386,7 +386,7 @@ ACCESO::= ACCESO:origen punto ORIGEN:destino {: RESULT = new Acceso(origen, dest
 ;
         
 ORIGEN::=      id:id     {:RESULT = new Variable(id, idright, idleft);:}
-        | LLAMADA:f   {:RESULT = f;:}
+        /*| LLAMADA:f   {:RESULT = f;:}*/
         | ORIGEN:origen LEXP:coor {: RESULT = new AccesoVector(origen , coor , origenright, origenleft);:}
         
 ;
@@ -420,7 +420,9 @@ DEC::=
 
 VALORASIGNACION::= 
             EXP:exp {:RESULT = exp;:}
-         |  INSTANCIA:exp  {:RESULT = exp;:};
+         |  INSTANCIA:exp  {:RESULT = exp;:}
+         /*| nulo:r {:RESULT = new Literal(new Tipo(Tipo.TypePrimitive.NULO), null, rright, rleft);:}*/
+;
 
 VALORARREGLO::=
          nuevo:n PRIMITIVO:tipo LEXP:l {: RESULT = new ExpresionArreglo(tipo,l,nright,nleft);:}
@@ -471,11 +473,7 @@ EXP::=
         /*Aumento ++ y --*/
         |AUMENTO:op {:RESULT = op;:}        
         |DECREMENTO:op {:RESULT = op;:}        
-        /*Accesos*/
-        |EXP:op punto tostring pari pard {:RESULT = new ToString(op,opright,opleft);:}
-        |EXP:op punto tolower pari pard {:RESULT = new ToLower(op,opright,opleft);:}
-        |EXP:op punto touper pari pard {:RESULT = new ToUper(op,opright,opleft);:}
-        |EXP:op punto id:atrib {:RESULT = new Acceso(op,atrib, opright,opleft);:}
+        |LLAMADA:exp {:RESULT = exp;:}
         /*Casteos*/
         |pari:t PRIMITIVO:tipo pard EXP:op {:RESULT = new Casteo(op,tipo, tright, tleft);:} 
         |pari:t id:tipo pard EXP:op {:RESULT = new Casteo(op,tipo, tright, tleft);:}
@@ -489,6 +487,7 @@ EXP::=
         |ACCESO:v {:RESULT = v;:}
         |pari EXP:op pard {: RESULT = op;:}
         |EXPLICITCAST:exp {:RESULT = exp;:}
+        | nulo:r {:RESULT = new Literal(new Tipo(Tipo.TypePrimitive.NULO), null, rright, rleft);:}
         /*|LLAMADA:exp {:RESULT = exp;:} estas están incluidas en acceso*/        
 ;
 
@@ -497,10 +496,10 @@ INSTANCIA::=
 ;
 
 /*ACCESO::= */
-
-LLAMADA::= 
-             /*EXP:op punto id:t pari PARACTUALES:l pard {:RESULT = new Llamada(op,t,l, opright,opleft);:}*/
-            id:t pari PARACTUALES:l pard {:RESULT = new Llamada(null,t,l, tright,tleft);:}
+//public Llamada(Expresion o, String n, ArrayList<Expresion> p, int l, int c)
+LLAMADA::=            
+            ACCESO:origen punto id:nombre pari PARACTUALES:l pard {:RESULT = new Llamada(origen,nombre, l, origenright,origenleft);:}                      
+           | id:nombre pari PARACTUALES:l pard {:RESULT = new Llamada(null, nombre, l, nombreright,nombreleft);:}                      
 ;
 
 RETORNO ::= retorno:r EXPRETORNO:exp puntocoma{:RESULT = new Retorno(exp, rright, rleft);:} 
@@ -516,7 +515,7 @@ ACTUALES::= ACTUALES:l coma EXP:exp {:l.add(exp);RESULT = l;:}
 
 EXPRETORNO::= 
             EXP:exp {:RESULT = exp;:}
-          | nulo:r {:RESULT = new Literal(new Tipo(Tipo.TypePrimitive.NULO), null, rright, rleft);:}
+          /*| nulo:r {:RESULT = new Literal(new Tipo(Tipo.TypePrimitive.NULO), null, rright, rleft);:}*/
 ;
 
 /*Declaracion de métodos*/

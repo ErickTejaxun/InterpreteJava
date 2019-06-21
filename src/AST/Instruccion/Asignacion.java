@@ -9,6 +9,7 @@ import AST.Entorno.Simbolo;
 import AST.Expresion.Expresion;
 import AST.Entorno.Entorno;
 import static AST.Entorno.Tipo.TypePrimitive.*;
+import AST.Expresion.Variable;
 import Utilidades.ErrorC;
 
 /**
@@ -52,8 +53,20 @@ public class Asignacion implements Instruccion
     {        
         //Simbolo simbolo = entorno.obtener(this.id);
         Simbolo simbolo = null;
-        Object destinoObjeto = this.destino.getValor(entorno);
-        if(destinoObjeto instanceof Simbolo){ simbolo = (Simbolo)destinoObjeto;}
+        if(this.destino instanceof Variable)
+        {
+            Variable var = (Variable) destino;
+            simbolo = entorno.obtener(var.id);
+        }
+        else
+        {
+            Object destinoObjeto = this.destino.getValor(entorno);
+            if(destinoObjeto instanceof Simbolo)
+            { 
+                simbolo = (Simbolo)destinoObjeto;
+            }
+        }
+
         if(simbolo==null)
         {
             Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "Error asignacion: la variable no ha sido encontrada.", ErrorC.TipoError.SEMANTICO,linea, columna);

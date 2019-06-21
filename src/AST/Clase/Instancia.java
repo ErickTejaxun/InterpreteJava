@@ -123,7 +123,7 @@ public class Instancia implements Expresion
                     cont++;
                 }                
                 /*Cremos un nuevo entorno*/
-                constructor.getValor(entorno);
+                constructor.getValor(new Entorno(nuevaInstancia.entornoObjeto,entorno.ventana));
                 
             }
             return nuevaInstancia;            

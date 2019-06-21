@@ -5,6 +5,7 @@
  */
 package AST.Expresion.Funcion;
 
+import AST.Clase.Objeto;
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
@@ -43,12 +44,38 @@ public class Llamada implements Expresion
         this.linea = l;
         this.columna = c;
     }
+
+    public Llamada(Expresion o, ArrayList<Expresion> lista, int l, int c) 
+    {
+        this.origen = o;
+        this.parametros = lista;
+        this.linea = l;
+        this.columna = c;
+    }
     
     
     @Override
     public Object getValor(Entorno entorno) 
     {                
         /*Hay que generar la firma para poder llamar al método*/
+        Entorno local = entorno;
+        Entorno entornoLLamada = new Entorno(local.getGlobalClase(),local.ventana);
+        if(origen!=null)
+        {
+            Object origenFuncion = origen.getValor(entorno);
+            if(origenFuncion==null)
+            {
+                Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No encontrada" , ErrorC.TipoError.SEMANTICO, linea, columna);
+                return null;
+            }
+            if(origenFuncion instanceof Objeto)
+            {                
+                Objeto objeto = (Objeto)origenFuncion;
+                local = objeto.entornoObjeto;
+                entornoLLamada = new Entorno(local,local.ventana);
+            }
+        }
+                
         String firma = nombreMetodo;
         ArrayList<Object> resultados = new ArrayList<>();
         ArrayList<Tipo> tipos = new ArrayList<>();
@@ -58,14 +85,14 @@ public class Llamada implements Expresion
             if(e instanceof Variable)
             {
                 Variable var = (Variable)e;
-                if(entorno.obtener(var.id)==null)
+                if(local.obtener(var.id)==null)
                 {
                     Utilidades.Singlenton.registrarError(var.id, "Variable no declarada" , ErrorC.TipoError.SEMANTICO, var.linea, var.columna);
                     return null;
                 }
                 else
                 {
-                    Object tmp = e.getValor(entorno); 
+                    Object tmp = e.getValor(local); 
                     if(tmp!=null)
                     {
                         firma +="$"+e.getTipo().nombreTipo().toLowerCase();
@@ -76,7 +103,7 @@ public class Llamada implements Expresion
             }            
             else
             {
-                Object tmp = e.getValor(entorno); 
+                Object tmp = e.getValor(local); 
                 if(tmp!=null)
                 {
                     firma +="$"+e.getTipo().nombreTipo().toLowerCase();
@@ -87,7 +114,7 @@ public class Llamada implements Expresion
         }     
         /*En caso de que la firma sea esa, es decir no hay que realizar casteos*/
         firma+="$";
-        Simbolo f = entorno.getFuncion(firma);
+        Simbolo f = local.getFuncion(firma);
         if(f!=null)
         {            
             if(f instanceof Funcion)
@@ -102,8 +129,9 @@ public class Llamada implements Expresion
                     cont++;
                 }                
                 /*Cremos un nuevo entorno*/
-                Entorno local = new Entorno(entorno.getGlobalClase(),entorno.ventana);
-                Object resultado =  funcion.getValor(local);
+                
+                
+                Object resultado =  funcion.getValor(entornoLLamada);
                 tipo = funcion.getTipo();
                 return resultado;
             }                

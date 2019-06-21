@@ -63,7 +63,7 @@ public class Acceso implements Expresion
             {
                 Variable var = (Variable)destino;
                 valorAtributo = instancia.entornoObjeto.obtener(var.id);
-            }                                   
+            }              
             Simbolo atributo = null;            
             if(valorAtributo instanceof Simbolo){ atributo = (Simbolo)valorAtributo;}
             
