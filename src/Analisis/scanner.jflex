@@ -174,7 +174,7 @@ sinosi={sino}({comentario}|{espacio})*(si)
             return  new Symbol(sym.tbool, yychar, yyline, yytext());
             }        
 
-"string"  {
+"String"  {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.tstring, yychar, yyline, yytext());
             }   

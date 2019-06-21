@@ -152,22 +152,20 @@ public class Entorno
     }
     
     public Entorno getGlobalClase()
-    {
-       
-        if(this.anterior==null)
+    {              
+        Entorno auxiliar = this;
+        Entorno auxiliar2 = this;          
+        while(auxiliar2.anterior!=null)
         {
-            return this;
-        }
-        else
-        {
-            Entorno auxiliar = this;
-            while(auxiliar.anterior.anterior !=null)
-            {
-                auxiliar = auxiliar.anterior;
-            }
-            return auxiliar;
-        }
-        /*
+            auxiliar = auxiliar2;
+            auxiliar2 = auxiliar2.anterior;
+        }        
+        return auxiliar;        
+    }
+    
+    
+    public Entorno getGlobalObjeto()
+    {              
         Entorno auxiliar = new Entorno(null);
         Entorno auxiliar2 = new Entorno(null);
         auxiliar2 = this;         
@@ -176,10 +174,8 @@ public class Entorno
             auxiliar = auxiliar2;
             auxiliar2 = auxiliar2.anterior;
         }        
-        return auxiliar;
-        */
-    }
-    
+        return auxiliar;        
+    }    
     
     public Entorno getGlobal()
     {

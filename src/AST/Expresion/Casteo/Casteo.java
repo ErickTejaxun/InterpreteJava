@@ -7,6 +7,7 @@ package AST.Expresion.Casteo;
 
 import AST.Entorno.Entorno;
 import AST.Entorno.Tipo;
+import static AST.Entorno.Tipo.TypePrimitive.INT;
 import AST.Expresion.Expresion;
 import Utilidades.ErrorC;
 
@@ -55,14 +56,36 @@ public class Casteo implements Expresion
                     {
                         return (char)valor + 0;
                     }
+                    else 
+                    if(expresion.getTipo().isDouble())
+                    {
+                        Double doubleTmp = (Double)valor;
+                        if(doubleTmp > Utilidades.Singlenton.maxInt)
+                        {
+                           Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), " El valor double sobrepasa el valor de un entero por el límite superior.  " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, expresion.linea(), expresion.columna()); 
+                        }
+                        else 
+                        if (doubleTmp < -1*Utilidades.Singlenton.maxInt)
+                        {
+                           Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), " El valor double sobrepasa el valor de un entero por el límite inferior.  " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, expresion.linea(), expresion.columna());  
+                        }
+                        else
+                        {
+                            String partes[] = doubleTmp.toString().split("\\.");
+                            valor = Integer.parseInt(partes[0]);
+                            tipo = new Tipo(INT);
+                            return valor;
+                        }
+                    }
+                    
                     else
                     {
-                        Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "No es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
+                        Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "Casteo explicito: no es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, expresion.linea(), expresion.columna());
                     }
                 }
                 else
                 {
-                    Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "No es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
+                    Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "Casteo explicito: no es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, expresion.linea(), expresion.columna());
                 }
                 break;
             case "double":
@@ -72,7 +95,7 @@ public class Casteo implements Expresion
                 }
                 else
                 {
-                    Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "No es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
+                    Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "Casteo explicito: no es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, expresion.linea(), expresion.columna());
                 }
             case "char":
                 if(expresion.getTipo().isNumeric()&&expresion.getTipo().isChar())
@@ -81,7 +104,7 @@ public class Casteo implements Expresion
                 }
                 else
                 {
-                    Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "No es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
+                    Utilidades.Singlenton.registrarError("Casteo a "+tipo.nombreTipo(), "Casteo explicito: no es posible converitir a entero un valor de tipo " + expresion.getTipo().nombreTipo() , ErrorC.TipoError.SEMANTICO, expresion.linea(), expresion.columna());
                 }                 
             break;
             default:

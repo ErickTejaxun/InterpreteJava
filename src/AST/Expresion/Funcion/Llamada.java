@@ -60,6 +60,10 @@ public class Llamada implements Expresion
         /*Hay que generar la firma para poder llamar al método*/
         Entorno local = entorno;
         Entorno entornoLLamada = new Entorno(local.getGlobalClase(),local.ventana);
+        
+        /*Si es un objeto el origen de los datos
+        Obtenemos el entorno de la clase.
+        */
         if(origen!=null)
         {
             Object origenFuncion = null; //origen.getValor(entorno);
@@ -88,6 +92,7 @@ public class Llamada implements Expresion
             {                
                 Objeto objeto = (Objeto)origenFuncion;
                 local = objeto.entornoObjeto;
+                local.anterior = entorno.getGlobal();
                 entornoLLamada = new Entorno(local,local.ventana);
             }
         }

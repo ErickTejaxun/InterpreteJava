@@ -37,7 +37,9 @@ public class Igual implements Expresion
         Object izquierda = opi.getValor(ent);
         tipo = new Tipo("");
         tipo.typeprimitive = BOOL;
-        if( opi.getTipo().typeprimitive != opd.getTipo().typeprimitive)
+        Tipo t1 = opi.getTipo();
+        Tipo t2 = opd.getTipo();
+        if( t1.typeprimitive != t2.typeprimitive)
         {
             if(isNumeric(opi) && isNumeric(opd))
             {
@@ -54,12 +56,15 @@ public class Igual implements Expresion
         switch(opi.getTipo().nombreTipo().toLowerCase())
         {
             case "string":
-                switch(opd.getTipo().nombreTipo().toLowerCase())
-                {
-                    case "string":                        
-                        return derecha.toString().equals(izquierda.toString());
-                }
-                break;
+                return derecha.toString().equals(izquierda.toString());
+            case "int":
+                return (int)izquierda == (int)derecha;
+            case "double":
+                return (double)izquierda == (double)derecha;
+            case "boolean":
+                return (boolean)izquierda == (boolean)derecha;
+            case "char":
+                return (boolean)izquierda == (boolean)derecha;
         }
         return derecha == izquierda;                
     }
