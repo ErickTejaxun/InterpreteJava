@@ -253,10 +253,14 @@ public class NodoNario
         }
         else
         {
-            int hijos = 0;
+            int numeroHijos = 0;
+            for(NodoNario hijo: hijos)
+            {
+                numeroHijos += hijo.contarElementos();
+            }
+            return numeroHijos;
 
-        }
-        return 0;
+        }        
     }
     
     public ArrayList<NodoNario> getArrayLinealizado()

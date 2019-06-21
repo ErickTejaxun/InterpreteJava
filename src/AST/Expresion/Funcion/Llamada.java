@@ -106,14 +106,14 @@ public class Llamada implements Expresion
             if(e instanceof Variable)
             {
                 Variable var = (Variable)e;
-                if(local.obtener(var.id)==null)
+                if(entorno.obtener(var.id)==null)
                 {
                     Utilidades.Singlenton.registrarError(var.id, "Variable no declarada" , ErrorC.TipoError.SEMANTICO, var.linea, var.columna);
                     return null;
                 }
                 else
                 {
-                    Object tmp = e.getValor(local); 
+                    Object tmp = e.getValor(entorno); 
                     if(tmp!=null)
                     {
                         firma +="$"+e.getTipo().nombreTipo().toLowerCase();
@@ -124,7 +124,7 @@ public class Llamada implements Expresion
             }            
             else
             {
-                Object tmp = e.getValor(local); 
+                Object tmp = e.getValor(entorno); 
                 if(tmp!=null)
                 {
                     firma +="$"+e.getTipo().nombreTipo().toLowerCase();
@@ -259,16 +259,5 @@ public class Llamada implements Expresion
     @Override
     public Tipo getTipo() {
         return tipo;
-    }
-    
-    public int factorial(int n) 
-    {
-        int a = 1932053504;
-        return n == 0 ? 1 : n * factorial(n - 1);
-    }
-    
-    public int fibonaci(int n){
-        return  (n==1 || n==2) ? 1 : fibonaci(n-1) + fibonaci(n-2);
-    }     
-    
+    }          
 }

@@ -8,6 +8,7 @@ package AST.Clase;
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
+import static AST.Entorno.Tipo.TypePrimitive.INT;
 import AST.Expresion.Arreglo.Arreglo;
 import AST.Expresion.Expresion;
 import AST.Expresion.Variable;
@@ -48,10 +49,21 @@ public class Acceso implements Expresion
         Object originData = origen.getValor(ent);
         if(originData instanceof Arreglo)
         {
+            if(nombreAtributo==null)
+            {
+                nombreAtributo ="";
+                if(destino instanceof Variable)
+                {
+                    Variable var = (Variable)destino;
+                    nombreAtributo = var.id;
+                    tipo = var.tipo;
+                }
+            }
             if(nombreAtributo.equals("length"))
             {
-                Arreglo arr = (Arreglo)originData;
-                return arr.getSizes();
+                Arreglo arr = (Arreglo)originData;  
+                tipo = new Tipo(INT);
+                return arr.getSize();
             }
         } 
         else if(originData instanceof Objeto)

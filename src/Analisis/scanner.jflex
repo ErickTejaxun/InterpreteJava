@@ -169,7 +169,7 @@ sinosi={sino}({comentario}|{espacio})*(si)
             return  new Symbol(sym.tchar, yychar, yyline, yytext());
             }
 
-"bool"   {
+"boolean"   {
             addLexema("reservada", yytext(), yyline, yychar);
             return  new Symbol(sym.tbool, yychar, yyline, yytext());
             }        
