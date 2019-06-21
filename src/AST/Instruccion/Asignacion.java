@@ -116,8 +116,11 @@ public class Asignacion implements Instruccion
                     default:
                         if(!expresion.getTipo().nombreTipo().equals(simbolo.tipo.nombreTipo()))
                         {
-                            Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo " + simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
-                            return null;                        
+                            if(!expresion.getTipo().nombreTipo().equals("NULO"))
+                            {
+                                Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo " + simbolo.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+                                return null;
+                            }                                                                                
                         }                    
                     break;                                                         
                 }                 

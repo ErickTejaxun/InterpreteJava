@@ -42,7 +42,8 @@ public class While implements Instruccion
             while((boolean)condicional)
             {
                 Object resultado = instrucciones.ejectuar(local);
-                if(resultado instanceof Break)
+                if(resultado!=null){return resultado;}
+                /*if(resultado instanceof Break)
                 {
                     break;
                 }
@@ -50,6 +51,11 @@ public class While implements Instruccion
                 {
                     continue;
                 }
+                if(resultado instanceof Continuar)
+                {
+                    continue;
+                }*/               
+                
                 condicional = condicion.getValor(entorno);
             }
         }
@@ -57,7 +63,7 @@ public class While implements Instruccion
         {
             Utilidades.Singlenton.registrarError("While", "La condición debe ser una expresión de tipo booleano." , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
-        return this;
+        return null;
     }
 
     @Override

@@ -37,6 +37,10 @@ public class Desigual implements Expresion
         Object izquierda = opi.getValor(ent);
         tipo = new Tipo("");
         tipo.typeprimitive = BOOL;
+        if(derecha==null && izquierda==null)
+        {
+            return false;            
+        }
         if( opi.getTipo().typeprimitive != opd.getTipo().typeprimitive)
         {
             if(isNumeric(opi) && isNumeric(opd))
