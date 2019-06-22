@@ -31,10 +31,20 @@ public class Retorno implements Expresion
         this.linea = l;
         this.columna = c;
     }
+    public Retorno(int l, int c)
+    {
+        this.linea = l;
+        this.columna = c;
+        this.expresion = null;
+    }
     
     @Override
     public Object getValor(Entorno ent) 
     {
+        if(expresion==null)
+        {
+            return null;
+        }
         Object resultado = expresion.getValor(ent);
         tipo = expresion.getTipo();
         return resultado;

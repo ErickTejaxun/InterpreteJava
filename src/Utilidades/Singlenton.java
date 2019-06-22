@@ -24,6 +24,7 @@ public class Singlenton
     public static int columna=0;
     public static boolean continuarEjecucion =false;
     public static String nombreVariable = "";
+    public static ArrayList<Integer> breakPoints = new ArrayList<Integer>();
     
     public static void setVariable(String d){nombreVariable = d;}            
     public static void apliarCiclo(Instruccion e)

@@ -168,7 +168,7 @@ non terminal ForEach FOREACH;
 non terminal Caso CASO, DEFECTO;
 non terminal ArrayList<Caso> LCASO;
 non terminal Switch SWITCH;
-non terminal ArrayList<String> LMODFICADOR;
+non terminal ArrayList<String> LMODFICADOR, CLASEMODIFICADORES;
 non terminal String MODFUNCION, MODCONST;
 non terminal Tipo RESULTADO;
 non terminal ParametroFormal PARFORMAL;
@@ -230,20 +230,23 @@ start with INICIO;
 INICIO ::= LCLASE:lista {: Imprimir("Correcto"); raiz = new AST(lista);; :}		
 		;
 
-LCLASE::= LCLASE:lista CLASE:clase{: lista.add(clase); RESULT = lista;:}
+LCLASE::= 
+         LCLASE:lista CLASE:clase{: lista.add(clase); RESULT = lista;:}
+        |LCLASE:lista IMPORTAR:clase puntocoma {: lista.add(clase); RESULT = lista;:}
         | CLASE:clase {: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(clase); RESULT = l;:}
         | IMPORTAR:exp puntocoma{: ArrayList<Nodo> l = new ArrayList<Nodo>(); l.add(exp); RESULT = l;:}
 ;        
 
-IMPORTAR::= importar:or pari cadena:nombre pard {:RESULT = new Importar(nombre, orright, orleft);:}
+IMPORTAR::= importar:or  cadena:nombre  {:RESULT = new Importar(nombre, orright, orleft);:}
 ;
-CLASE::= LMODFICADOR:modificador clase id:nombre llavei CUERPOCLASE:clase llaved 
+
+CLASE::= CLASEMODIFICADORES:modificador clase id:nombre llavei CUERPOCLASE:clase llaved 
             {:
                 clase.setModificadores(modificador); 
                 clase.setId(nombre);                
                 RESULT = clase;
             :}
-        |LMODFICADOR:modificador clase id:nombre extiende id:padre llavei CUERPOCLASE:clase llaved 
+        |CLASEMODIFICADORES:modificador clase id:nombre extiende id:padre llavei CUERPOCLASE:clase llaved 
             {:
                 clase.setModificadores(modificador); 
                 clase.setId(nombre);
@@ -252,6 +255,9 @@ CLASE::= LMODFICADOR:modificador clase id:nombre llavei CUERPOCLASE:clase llaved
             :}
 ;
 
+CLASEMODIFICADORES::= LMODFICADOR:l {:RESULT = l;:}
+                    | {:RESULT = new ArrayList<String>(); :}
+;
 CUERPOCLASE::= CUERPO:clase {:RESULT = clase;:}
             | {:RESULT = new Clase();:}
 
@@ -507,6 +513,7 @@ LLAMADA::=
 ;
 
 RETORNO ::= retorno:r EXPRETORNO:exp puntocoma{:RESULT = new Retorno(exp, rright, rleft);:} 
+          | retorno:r puntocoma {: RESULT = new Retorno( rright, rleft);:}
 ;
 
 /*Lista de parametros actuales para llamadas a funciones*/

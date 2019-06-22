@@ -12,6 +12,7 @@ import AST.Entorno.Simbolo;
 import AST.AST;
 import AST.Nodo;
 import Analisis.*;
+import Debugger.Hilo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
@@ -33,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -59,7 +61,7 @@ public class Interfaz extends javax.swing.JFrame {
     public String fechaHora = "";
     String pathProyectos = "C:\\Users\\erick\\Desktop\\Java";
     public Entorno entornoGlobal;
-    
+    DefaultCompletionProvider provider;
     
     
     /**
@@ -603,6 +605,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void botonCompilar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompilar1ActionPerformed
         // TODO add your handling code here:
+        iniciarDepuracion();
     }//GEN-LAST:event_botonCompilar1ActionPerformed
 
     /**
@@ -786,7 +789,8 @@ public class Interfaz extends javax.swing.JFrame {
 
             JPanel panel = new JPanel();
             panel.setLayout(new java.awt.BorderLayout());
-            RSyntaxTextArea editor = new RSyntaxTextArea(30,60);            
+            RSyntaxTextArea editor = new RSyntaxTextArea(30,60);  
+            
             editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
             //editor.setCodeFoldingEnabled(true);
             RTextScrollPane sp = new RTextScrollPane(editor);            
@@ -1676,6 +1680,10 @@ public class Interfaz extends javax.swing.JFrame {
         double decimal = Double.parseDouble(valor);
         int entero = Integer.parseInt(valor);
     }
+   public void addIntelgentSense(String valor)
+   {
+       provider.addCompletion(new BasicCompletion(provider, valor));
+   }
    
    private CompletionProvider createCompletionProvider() {
 
@@ -1684,7 +1692,7 @@ public class Interfaz extends javax.swing.JFrame {
       // language semantics. It simply checks the text entered up to the
       // caret position for a match against known completions. This is all
       // that is needed in the majority of cases.
-      DefaultCompletionProvider provider = new DefaultCompletionProvider();
+      provider = new DefaultCompletionProvider();
 
       // Add completions for all Java keywords. A BasicCompletion is just
       // a straightforward word completion.
@@ -1701,7 +1709,18 @@ public class Interfaz extends javax.swing.JFrame {
       provider.addCompletion(new BasicCompletion(provider, "do"));
       provider.addCompletion(new BasicCompletion(provider, "for"));
       provider.addCompletion(new BasicCompletion(provider, "class"));
-
+        provider.addCompletion(new BasicCompletion(provider, "if"));
+        provider.addCompletion(new BasicCompletion(provider, "public"));
+        provider.addCompletion(new BasicCompletion(provider, "private"));
+        provider.addCompletion(new BasicCompletion(provider, "static"));
+        provider.addCompletion(new BasicCompletion(provider, "return"));
+        provider.addCompletion(new BasicCompletion(provider, "String"));
+        provider.addCompletion(new BasicCompletion(provider, "double"));
+        provider.addCompletion(new BasicCompletion(provider, "boolean"));
+        provider.addCompletion(new BasicCompletion(provider, "char"));
+        provider.addCompletion(new BasicCompletion(provider, "new"));
+        provider.addCompletion(new BasicCompletion(provider, "toInt"));
+        provider.addCompletion(new BasicCompletion(provider, "toString"));
       // Add a couple of "shorthand" completions. These completions don't
       // require the input text to be the same thing as the replacement text.
       provider.addCompletion(new ShorthandCompletion(provider, "sysout",
@@ -1711,7 +1730,53 @@ public class Interfaz extends javax.swing.JFrame {
 
       return provider;
 
-   }    
+   }  
+   
+   public void iniciarDepuracion()
+   {
+       //Obtenemos break points
+       obtenerBreakPoints();       
+   }
+   public void obtenerBreakPoints()
+   {
+       //Primero obtenemos el arrayde los break points.
+       String nombreArchivo = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
+       Component cont = contenedorPaneles.getSelectedComponent();
+       if(cont instanceof JPanel)
+       {
+           JPanel panel = (JPanel)cont;
+           Component componentes[] = panel.getComponents();
+           if(componentes[0] instanceof RTextScrollPane)
+           {
+               RTextScrollPane scroll = (RTextScrollPane)componentes[0];                
+                Gutter gutter = scroll.getGutter();
+                GutterIconInfo puntos[] =  gutter.getBookmarks();
+                Utilidades.Singlenton.breakPoints = new ArrayList<>();                
+                /*Componente text area*/
+                Component itemScroll[] = scroll.getComponents();
+                for(Component com : itemScroll)
+                {
+                    //Component xxx[] = com.getComponents();                    
+                }
+                
+                for(GutterIconInfo punto : puntos)
+                {                    
+                   try 
+                   {
+                       int linea =scroll.getTextArea().getLineOfOffset(punto.getMarkedOffset())+1;
+                       Utilidades.Singlenton.breakPoints.add(linea);
+                       ImprimirLn(linea+"");
+                   } 
+                   catch (BadLocationException ex) 
+                   {
+                       Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                   }                                        
+                }
+           }           
+       }   
+   
+   }
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrirCarpeta;
     private javax.swing.JTree arbolDirectorio;
