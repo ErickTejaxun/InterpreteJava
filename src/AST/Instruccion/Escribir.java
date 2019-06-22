@@ -126,7 +126,8 @@ public class Escribir implements Instruccion, Runnable
         
     }
     
-    public void iniciarHilo(){
+    public void iniciarHilo()
+    {
         hilo=new Thread(this);
         hilo.start();
         hiloIniciado=true;

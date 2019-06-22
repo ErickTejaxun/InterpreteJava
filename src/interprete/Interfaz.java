@@ -36,6 +36,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Highlighter;
@@ -116,7 +117,8 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         slideVelocidad = new javax.swing.JSlider();
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
+        panelReporte = new javax.swing.JPanel();
+        labelReporte = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaErrores = new javax.swing.JTable();
@@ -225,6 +227,11 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         jButton2.setText("Pausar");
 
         jButton3.setText("Continuar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelEdicionLayout = new javax.swing.GroupLayout(panelEdicion);
         panelEdicion.setLayout(panelEdicionLayout);
@@ -291,18 +298,31 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         jPanel1.setBackground(new java.awt.Color(204, 255, 102));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        labelReporte.setBackground(new java.awt.Color(255, 0, 51));
+        labelReporte.setForeground(new java.awt.Color(0, 102, 102));
+        labelReporte.setText("jLabel2");
+
+        javax.swing.GroupLayout panelReporteLayout = new javax.swing.GroupLayout(panelReporte);
+        panelReporte.setLayout(panelReporteLayout);
+        panelReporteLayout.setHorizontalGroup(
+            panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1207, Short.MAX_VALUE)
+            .addGroup(panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelReporteLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(labelReporte, javax.swing.GroupLayout.DEFAULT_SIZE, 1187, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelReporteLayout.setVerticalGroup(
+            panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 316, Short.MAX_VALUE)
+            .addGroup(panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelReporteLayout.createSequentialGroup()
+                    .addGap(0, 22, Short.MAX_VALUE)
+                    .addComponent(labelReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        jTabbedPane1.addTab("Reportes", jPanel2);
+        jTabbedPane1.addTab("Reportes", panelReporte);
 
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
@@ -603,7 +623,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_botonBuscarActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        iniciarDebuger();
+        abrirAST();
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
@@ -660,6 +680,10 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
                 //jbLanzarHilo.setText("Detener hilo");
             }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Utilidades.Singlenton.continuarEjecucion = true;
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1317,20 +1341,33 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         */
     }
     
+    public void abrirAST()
+    {
+        
+    }
+    
     public void generarGrafica(String pathArchivo)
     {
-        scannerReporte lexico;
-        parserReporte sintactico = null;
+        scannerReporte lexicoGrafica;
+        parserReporte sintacticoGrafica = null;
         try 
         { 
             Utilidades.Singlenton.pilaArchivos.add(pathArchivo);                
-            lexico=new scannerReporte(new java.io.FileReader(pathArchivo));                                             
-            sintactico = new parserReporte(lexico);                              
-            sintactico.parse();
-            if(sintactico.raiz!=null)
+            lexicoGrafica=new scannerReporte(new java.io.FileReader(pathArchivo));                                             
+            sintacticoGrafica = new parserReporte(lexicoGrafica);                              
+            sintacticoGrafica.parse();
+            if(sintacticoGrafica.raiz!=null)
             {
                 dibujador dib = new dibujador();
-                dib.generarGrafica(sintactico.raiz);
+                dib.generarGrafica(sintacticoGrafica.raiz);
+                /*Ahora lo agregamos al label.*/
+                JLabel etiqueta = labelReporte;
+                etiqueta.setBackground(Color.BLACK);
+                etiqueta.setBounds(0,0,panelReporte.getWidth(),panelReporte.getHeight());
+                String ruta = PathActual()+"\\ast.jpg";
+                ImageIcon icono =   new ImageIcon(ruta); 
+                ImageIcon iconoEscala = new ImageIcon(icono.getImage().getScaledInstance(etiqueta.getHeight(), etiqueta.getWidth(), java.awt.Image.SCALE_DEFAULT));
+                etiqueta.setIcon(iconoEscala);                                 
             }            
         } 
         catch (Exception ex) 
@@ -1891,7 +1928,6 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -1902,12 +1938,14 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel labelReporte;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuEjecucion;
     private javax.swing.JMenuItem menuGuardar;
     private javax.swing.JPanel panelDirectorio;
     private javax.swing.JPanel panelEdicion;
     private javax.swing.JPanel panelEditor;
+    private javax.swing.JPanel panelReporte;
     private javax.swing.JTextArea reporteCompilacion;
     private javax.swing.JSlider slideVelocidad;
     private javax.swing.JTable tablaErrores;
@@ -1933,23 +1971,36 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         seguirHilo=estado;
     }   
     
-    public void resaltarLinea(int linea)
+    public boolean resaltarLinea(int linea) 
     {
        //Primero obtenemos el arrayde los break points.
        String nombreArchivo = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
-       RTextArea areaActual = tablaEditores.get(nombreArchivo);
+       RTextArea areaActual = tablaEditores.get(nombreArchivo);       
        //areaActual.setLocation(punto.getMarkedOffset);
        int i= 0;
-       for(Integer p :Utilidades.Singlenton.breakPoints)
+       /*Limpiamos todos los resaltados*/
+       /*for(Integer p :Utilidades.Singlenton.breakPoints)
        {
+           areaActual.addLineHighlight(linea -1 , Color.WHITE);           
+       }*/
+       for(Integer p :Utilidades.Singlenton.breakPoints)
+       {        
            if(p==linea)
            {
                break;
            }
            i++;
+       }   
+       if(i<Utilidades.Singlenton.breakPoints.size())
+       {
+           try {
+               areaActual.addLineHighlight(linea -1 , Color.RED);
+           } catch (BadLocationException ex) {
+               Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           return true;
        }
-       GutterIconInfo gutter=  Utilidades.Singlenton.puntos.get(i);        
-       
+       return false;
        
     }
 }

@@ -23,10 +23,13 @@ public class Singlenton
     public static long minInt = -2147483648;
     public static int linea=0;
     public static int columna=0;
-    public static boolean continuarEjecucion =false;
+    public static boolean continuarEjecucion =true;
     public static String nombreVariable = "";
     public static ArrayList<Integer> breakPoints = new ArrayList<Integer>();
     public static ArrayList<GutterIconInfo> puntos = new ArrayList<>();
+    
+    
+    
     
     public static void addPunto(GutterIconInfo p)
     {

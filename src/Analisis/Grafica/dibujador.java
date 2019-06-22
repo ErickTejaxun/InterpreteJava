@@ -56,7 +56,7 @@ public class dibujador
               Runtime rt = Runtime.getRuntime();
 
               rt.exec( cmd );
-              
+              //"\\ast.jpg";
     }
     public String dibujarArbol(NodoReporte raiz)
     {

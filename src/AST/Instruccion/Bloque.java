@@ -46,7 +46,7 @@ public class Bloque implements Instruccion, Runnable
             {
                 if(Utilidades.Singlenton.isBreakPoint(nodo.linea()))
                 {
-                    entorno.ventana.resaltarLinea(nodo.linea());
+                    pararHIlo(!entorno.ventana.resaltarLinea(nodo.linea()));
                 }
                 Thread.sleep(entorno.ventana.getVelocidad());                
                 if(nodo instanceof Instruccion)
@@ -123,17 +123,29 @@ public class Bloque implements Instruccion, Runnable
     @Override
     public void run() 
     {
-        
+        pararHIlo(Utilidades.Singlenton.continuarEjecucion );
     }
     
-    public void iniciarHilo(){
+    public void iniciarHilo()
+    {
         hilo=new Thread(this);
         hilo.start();
         hiloIniciado=true;
     }
     /*método para parar el hilo*/
-    public void pararHIlo(boolean estado){
-        seguirHilo=estado;
+    public void pararHIlo(boolean estado)
+    {
+        Utilidades.Singlenton.continuarEjecucion = estado;
+        if(Utilidades.Singlenton.continuarEjecucion==true)
+        {
+            hilo.suspend();
+        }
+        else
+        {
+            hilo.start();
+        }        
+        seguirHilo=Utilidades.Singlenton.continuarEjecucion;
+        
     }      
     
 }
