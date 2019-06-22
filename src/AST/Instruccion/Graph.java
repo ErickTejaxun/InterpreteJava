@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author erick
  */
-public class Bloque implements Instruccion, Runnable
+public class Graph implements Instruccion, Runnable
 {
     public ArrayList<Nodo> instrucciones;
     public int linea, columna;
@@ -29,7 +29,7 @@ public class Bloque implements Instruccion, Runnable
     Thread hilo;
     int cont=0;    
     
-    public Bloque(ArrayList<Nodo> list, int l, int c)
+    public Graph(ArrayList<Nodo> list, int l, int c)
     {
         this.instrucciones = list;
         this.linea = l;
@@ -52,10 +52,10 @@ public class Bloque implements Instruccion, Runnable
                 if(nodo instanceof Instruccion)
                 {
                     Entorno local = global;
-                    if(nodo instanceof Bloque)
+                    if(nodo instanceof Graph)
                     {
                         local = new Entorno(global, global.ventana);
-                        return ((Bloque)nodo).ejectuar(local);                    
+                        return ((Graph)nodo).ejectuar(local);                    
                     }
                     
                     Object resultado = (((Instruccion) nodo).ejectuar(local));                        
@@ -99,7 +99,7 @@ public class Bloque implements Instruccion, Runnable
                 }
             } catch (InterruptedException ex) 
             {
-                Logger.getLogger(Bloque.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Graph.class.getName()).log(Level.SEVERE, null, ex);
             }            
         }        
         return null;

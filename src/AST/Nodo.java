@@ -9,9 +9,10 @@ package AST;
  *
  * @author erick
  */
-public  interface Nodo 
+public  interface Nodo
 {    
     int linea();
     int columna();
+   
     //public Object ejecutar(Entorno entorno);
 }

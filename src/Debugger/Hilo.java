@@ -6,26 +6,51 @@
 package Debugger;
 
 import AST.AST;
-import java.util.ArrayList;
+import interprete.Interfaz;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
  *
  * @author erick
  */
 public class Hilo implements Runnable
-{
-  public ArrayList<Integer> breakPoints;
-  public AST programa;
-    
-  public Hilo(ArrayList<Integer> p, AST raiz)
-  {
-      this.breakPoints = p;
-      this.programa = raiz;
-  }
-  @Override
-  public void run()
-  {      
-      /*Ejecutamos */
-      
-  }
+{  
+    public AST programa;
+    public Interfaz ventana;  
+    public RTextScrollPane scrollPanel;
+
+    public Hilo(AST raiz)
+    {      
+        this.programa = raiz;
+    }
+
+    public Hilo(AST programa, Interfaz ventana, RTextScrollPane scrollPanel) {
+        this.programa = programa;
+        this.ventana = ventana;
+        this.scrollPanel = scrollPanel;
+    }
+  
+    public Hilo(Interfaz ventana, RTextScrollPane scrollPanel) {       
+        this.ventana = ventana;
+        this.scrollPanel = scrollPanel;
+    }  
+  
+    @Override
+    public void run()
+    {            
+        /*Ejecutamos */
+        for(int linea: Utilidades.Singlenton.breakPoints)
+        {
+            esperarXsegundos(ventana.getVelocidad());
+            System.out.println(linea);
+        }
+    }
+  
+    private void esperarXsegundos(int segundos) {
+            try {
+                    Thread.sleep(segundos * 20);
+            } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+            }
+    }  
 }

@@ -12,6 +12,9 @@ import AST.Entorno.Simbolo;
 import AST.AST;
 import AST.Nodo;
 import Analisis.*;
+import Analisis.Grafica.dibujador;
+import Analisis.Grafica.parserReporte;
+import Analisis.Grafica.scannerReporte;
 import Debugger.Hilo;
 import java.awt.Color;
 import java.awt.Component;
@@ -35,6 +38,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Highlighter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -47,7 +51,7 @@ import org.fife.ui.autocomplete.*;
  *
  * @author erick
  */
-public class Interfaz extends javax.swing.JFrame {
+public class Interfaz extends javax.swing.JFrame implements Runnable{
 
     public int contadorNuevos=1;
     public Hashtable<String,String> archivos  = new Hashtable<>();
@@ -62,6 +66,11 @@ public class Interfaz extends javax.swing.JFrame {
     String pathProyectos = "C:\\Users\\erick\\Desktop\\Java";
     public Entorno entornoGlobal;
     DefaultCompletionProvider provider;
+    boolean seguirHilo=false;
+    boolean hiloIniciado=false;
+    Thread hilo;
+    int cont=0;
+    public Hashtable<String, RSyntaxTextArea> tablaEditores = new Hashtable<>();
     
     
     /**
@@ -104,6 +113,7 @@ public class Interfaz extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        slideVelocidad = new javax.swing.JSlider();
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
@@ -206,6 +216,11 @@ public class Interfaz extends javax.swing.JFrame {
         });
 
         jButton1.setText("Next");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Pausar");
 
@@ -222,13 +237,18 @@ public class Interfaz extends javax.swing.JFrame {
                     .addComponent(botonCompilar, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                     .addComponent(botonCompilar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelEdicionLayout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEdicionLayout.createSequentialGroup()
+                        .addComponent(slideVelocidad, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)))
                 .addGap(9, 9, 9)
                 .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelEdicionLayout.createSequentialGroup()
@@ -247,10 +267,12 @@ public class Interfaz extends javax.swing.JFrame {
             panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelEdicionLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botonCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(textoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(botonCompilar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(slideVelocidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(2, 2, 2)
                 .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textoRemplazar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -561,7 +583,19 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void botonCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompilarActionPerformed
-        compilar(); 
+       iniciarHilo();
+       Utilidades.Singlenton.breakPoints.clear();
+       Utilidades.Singlenton.puntos.clear();
+       slideVelocidad.setValue(0);
+       if(seguirHilo)
+       {
+           pararHIlo(false);
+           //jbLanzarHilo.setText("Reanudar hilo");
+       }else
+       {
+           pararHIlo(true);
+           //jbLanzarHilo.setText("Detener hilo");
+       }         
     }//GEN-LAST:event_botonCompilarActionPerformed
 
     private void botonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarActionPerformed
@@ -606,7 +640,26 @@ public class Interfaz extends javax.swing.JFrame {
     private void botonCompilar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompilar1ActionPerformed
         // TODO add your handling code here:
         iniciarDepuracion();
+        iniciarHilo();
+        if(seguirHilo)
+        {
+            pararHIlo(false);        
+        }else
+        {
+            pararHIlo(true);        
+        }
     }//GEN-LAST:event_botonCompilar1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+                 iniciarHilo();
+            if(seguirHilo){
+                pararHIlo(false);
+                //jbLanzarHilo.setText("Reanudar hilo");
+            }else{
+                pararHIlo(true);
+                //jbLanzarHilo.setText("Detener hilo");
+            }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -789,8 +842,8 @@ public class Interfaz extends javax.swing.JFrame {
 
             JPanel panel = new JPanel();
             panel.setLayout(new java.awt.BorderLayout());
-            RSyntaxTextArea editor = new RSyntaxTextArea(30,60);  
-            
+            RSyntaxTextArea editor = new RSyntaxTextArea(30,60);              
+            tablaEditores.put(nombre, editor);
             editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
             //editor.setCodeFoldingEnabled(true);
             RTextScrollPane sp = new RTextScrollPane(editor);            
@@ -1239,8 +1292,10 @@ public class Interfaz extends javax.swing.JFrame {
             }            
             // Interpretamos
             try 
-            {
+            {                
+                if(sintactico.raiz!=null){generarGrafica(pathArchivo);}
                 interpretar(sintactico.raiz);    
+                /*Generar gráfica*/                
                 mostrarErrores();                          
                 if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "  No se han encontrado errores durante la ejecución.";}
                 else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
@@ -1260,6 +1315,33 @@ public class Interfaz extends javax.swing.JFrame {
         else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
         reporteCompilacion.setText(fechaHora);        
         */
+    }
+    
+    public void generarGrafica(String pathArchivo)
+    {
+        scannerReporte lexico;
+        parserReporte sintactico = null;
+        try 
+        { 
+            Utilidades.Singlenton.pilaArchivos.add(pathArchivo);                
+            lexico=new scannerReporte(new java.io.FileReader(pathArchivo));                                             
+            sintactico = new parserReporte(lexico);                              
+            sintactico.parse();
+            if(sintactico.raiz!=null)
+            {
+                dibujador dib = new dibujador();
+                dib.generarGrafica(sintactico.raiz);
+            }            
+        } 
+        catch (Exception ex) 
+        {
+
+            System.out.println(ex.getMessage());  
+            mostrarErrores();                          
+            if(Utilidades.Singlenton.listaErrores.isEmpty()){fechaHora+= "  No se han encontrado errores durante la ejecución.";}
+            else{fechaHora+= "  Se han encontrado "+Utilidades.Singlenton.listaErrores.size()+" error(es) durante la ejecución.";}
+            reporteCompilacion.setText(fechaHora);                  
+        }         
     }
     
     public void Imprimir(String m)
@@ -1740,15 +1822,18 @@ public class Interfaz extends javax.swing.JFrame {
    public void obtenerBreakPoints()
    {
        //Primero obtenemos el arrayde los break points.
+       Utilidades.Singlenton.breakPoints.clear();
+       Utilidades.Singlenton.puntos.clear();
        String nombreArchivo = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
        Component cont = contenedorPaneles.getSelectedComponent();
        if(cont instanceof JPanel)
        {
            JPanel panel = (JPanel)cont;
+           RTextScrollPane scroll;
            Component componentes[] = panel.getComponents();
            if(componentes[0] instanceof RTextScrollPane)
            {
-               RTextScrollPane scroll = (RTextScrollPane)componentes[0];                
+               scroll = (RTextScrollPane)componentes[0];                 
                 Gutter gutter = scroll.getGutter();
                 GutterIconInfo puntos[] =  gutter.getBookmarks();
                 Utilidades.Singlenton.breakPoints = new ArrayList<>();                
@@ -1773,9 +1858,14 @@ public class Interfaz extends javax.swing.JFrame {
                    }                                        
                 }
            }           
-       }   
-   
+       }
+                 
    }
+   public int getVelocidad()
+   {
+       return slideVelocidad.getValue();
+   }
+   
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrirCarpeta;
@@ -1819,10 +1909,47 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JPanel panelEdicion;
     private javax.swing.JPanel panelEditor;
     private javax.swing.JTextArea reporteCompilacion;
+    private javax.swing.JSlider slideVelocidad;
     private javax.swing.JTable tablaErrores;
     private javax.swing.JTable tabladeSimbolos;
     private javax.swing.JTextArea textAreaConsola;
     private javax.swing.JTextField textoBusqueda;
     private javax.swing.JTextField textoRemplazar;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() 
+    {        
+        compilar();
+    }
+    /*método para iniciar el hilo*/
+    public void iniciarHilo(){
+        hilo=new Thread(this);
+        hilo.start();
+        hiloIniciado=true;
+    }
+    /*método para parar el hilo*/
+    public void pararHIlo(boolean estado){
+        seguirHilo=estado;
+    }   
+    
+    public void resaltarLinea(int linea)
+    {
+       //Primero obtenemos el arrayde los break points.
+       String nombreArchivo = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
+       RTextArea areaActual = tablaEditores.get(nombreArchivo);
+       //areaActual.setLocation(punto.getMarkedOffset);
+       int i= 0;
+       for(Integer p :Utilidades.Singlenton.breakPoints)
+       {
+           if(p==linea)
+           {
+               break;
+           }
+           i++;
+       }
+       GutterIconInfo gutter=  Utilidades.Singlenton.puntos.get(i);        
+       
+       
+    }
 }

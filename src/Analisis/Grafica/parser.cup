@@ -1,0 +1,728 @@
+package Analisis.Grafica;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import Utilidades.ErrorC;
+
+
+parser code
+{:	   	
+
+
+	public NodoReporte raiz = null;
+
+	/*@Override
+	public void syntax_error(Symbol cur_token) 
+	{        
+		List<Integer> listaIdTokens = expected_token_ids();
+		LinkedList<String> listaNombres = new LinkedList<String>();
+		for (Integer expected : listaIdTokens) 
+		{			
+			listaNombres.add(symbl_name_from_id(expected));
+		}		
+		Utilidades.Singlenton.registrarError(String.valueOf(cur_token.value), 
+			String.valueOf(cur_token.value) + ". Se esperaba :"+listaNombres.toString(), ErrorC.TipoError.LEXICO, cur_token.right+1, cur_token.left+1);
+		/*listaErrores.add(
+					listaErrores.add(new ErrorC(ErrorC.TipoError.SINTACTICO,
+								String.valueOf(cur_token.value) + ". Se esperaba :"+listaNombres.toString(),
+								cur_token.right+1,
+								cur_token.left+1));
+                
+	}*/
+
+
+    public void report_error(String message, Object info) 
+    {
+        int linea = 0;
+        int columna = 0;
+        java_cup.runtime.Symbol s = null;
+        StringBuilder m = new StringBuilder("Error Sintactico");
+
+        if (info instanceof java_cup.runtime.Symbol) 
+        {
+            s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) 
+            {                
+                columna = s.left+1;
+                if (s.right>= 0)
+                {
+                    linea = s.right+ 1;
+                }                    
+            }
+        }
+
+        m.append(" Se esperaba: "+message);
+        //System.err.println(m.toString());
+        //System.out.println("Error");
+        //System.out.println("Error linea:"+linea+", col:"+columna);
+        LinkedList<String> toks = new LinkedList();
+
+        if(!expected_token_ids().isEmpty())
+        {
+            Imprimir("No esta vacia "+ expected_token_ids().size());		  
+            for(int w=0; w<expected_token_ids().size(); w++)
+            { 
+                if(expected_token_ids().get(w) !=sym.error)
+                {
+                    int tok = (int)expected_token_ids().get(w);                        
+                    toks.add( symbol_name_from_id(tok) );
+                }
+            }
+        }
+
+        Imprimir(expected_token_ids().size());
+      
+        for(int w=0; w<expected_token_ids().size(); w++)
+        { 
+            if(expected_token_ids().get(w)!=sym.error)
+            {
+                int tok = (int)expected_token_ids().get(w);
+                toks.add( symbol_name_from_id(tok) );
+            }
+        }
+        String esperados = "";
+        for(String id : toks)
+        {
+            if(!esperados.equals(""))
+            {
+                esperados += ", ";
+            }
+            esperados += id;
+            
+        }        
+        Utilidades.Singlenton.registrarError(s.value.toString(), "Se esperaba .. " +esperados, ErrorC.TipoError.SINTACTICO, linea, columna);		                  
+    }	
+
+    public String symbol_name_from_id(int id){
+        return sym.terminalNames[id];
+    }
+
+	/*public void addError(Symbol s)
+	{
+		listaErrores.add(new ErrorC("Sintactico",s.rights.right+1,ConvertirObjectToString(s.value)));
+	}*/
+	public void Imprimir(Object cad)
+	{
+		System.out.println(cad.toString());
+	}	
+:}
+
+
+terminal String tint, tdouble, tchar, tbool, tstring, puntocoma, llavei, llaved, pari, pard, id, corchetei, corcheted, igual, print, println, coma;
+terminal String igualigual, desigual, mayor, menor, menorigual, mayorigual, potencia , tvoid, nulo;
+terminal String abstracto, caso, cat, clase, defecto, hacer, extiende, final_, graph;
+terminal String importar, instanceof_, nuevo, privado, protegido, publico, retorno;
+terminal String arroba, sobrescrito;
+/*Casteos*/
+terminal String leerarchivo,estatico, super_, switch_, este, tochar, todouble, toint, str_, try_, escribir;
+terminal String mientras, para, romper, continuar ,interrogante, dospuntos, aumento, decremento, punto;
+terminal String not, and, or, si, sinosi, sino, tostring, tolower, touper;
+terminal String suma, menos, multi, div, xor, printable, modulo;
+terminal String cadena;
+terminal char caracter;
+terminal int entero;
+terminal double decimal;
+terminal boolean booleano;
+
+non terminal NodoReporte BLOQUE;
+non terminal NodoReporte LINST;
+non terminal NodoReporte INST;
+non terminal NodoReporte DECLARACION;
+non terminal NodoReporte EXP, AUMENTO, DECREMENTO, EXPLICITCAST;
+non terminal NodoReporte;
+non terminal NodoReporte PRIMITIVO;
+non terminal NodoReporte PRINT;
+non terminal NodoReporte PRINTABLE;
+non terminal NodoReporte ASIG;
+non terminal NodoReporte WHILE;
+non terminal NodoReporte DOWHILE;
+non terminal NodoReporte BREAK;
+non terminal NodoReporte CONTINUE;
+non terminal NodoReporte IF, ELSE;
+non terminal NodoReporte TER;
+non terminal NodoReporte FOR;
+non terminal NodoReporte ACTUALIZACION, EXPRETORNO;
+non terminal Integer NDIM;
+non terminal NodoReporte LEXP;
+non terminal NodoReporte ASIGV;
+non terminal NodoReporte ITEM,LITEM,ARR;
+non terminal NodoReporte TIPO;
+non terminal NodoReporte  LDEC;
+non terminal NodoReporte DEC;
+non terminal NodoReporte FOREACH;
+non terminal NodoReporte CASO, DEFECTO;
+non terminal NodoReporte LCASO;
+non terminal NodoReporte SWITCH;
+non terminal NodoReporte LMODFICADOR, CLASEMODIFICADORES;
+non terminal NodoReporte MODFUNCION, MODCONST;
+non terminal NodoReporte RESULTADO;
+non terminal NodoReporte PARFORMAL;
+non terminal NodoReporte LPARFORMAL;
+/*non terminal Constructor CONSTRUCTOR;*/
+non terminal NodoReporte FUNCION, CABECERAMET;
+/*non terminal ArrayList<Nodo> LFUNCION;*/
+non terminal NodoReporte RETORNO;
+non terminal NodoReporte LLAMADA;
+non terminal NodoReporte MODATRIB;
+non terminal NodoReporte PARACTUALES,ACTUALES;
+
+/*Atributos de clase*/
+/*non terminal ArrayList<String> LMODATRIB;*/
+/*non terminal ArrayList<Nodo> LDECATRIB;*/
+non terminal NodoReporte DECATRIB;
+
+/*Produccion de clase*/
+non terminal NodoReporte CLASE, CUERPOCLASE, CUERPO ;
+non terminal NodoReporte LCLASE;
+/*Arreglos*/
+non terminal NodoReporte VALORARREGLO ;
+non terminal NodoReporte ACCESO, ORIGEN;
+non terminal NodoReporte INSTANCIA;
+non terminal NodoReporte VALORASIGNACION;
+non terminal NodoReporte IMPORTAR;
+non terminal INICIO;
+/*
+precedence left interrogante, punto;
+precedence left or;
+precedence left and;
+precedence left xor;
+precedence left igualigual, desigual;
+precedence left menor, mayor, mayorigual, menorigual, instanceof_;
+precedence left suma, menos;
+precedence left multi, div, modulo;
+precedence left not;
+precedence left aumento, decremento ;
+*/
+
+precedence right interrogante, dospuntos;
+precedence left or;
+precedence left and;
+precedence left xor;
+precedence left igualigual, desigual;
+precedence left menor, menorigual, mayor, mayorigual, instanceof_;
+precedence left suma, menos;
+precedence left div, multi, modulo;
+precedence left not;
+precedence right nuevo;
+precedence nonassoc aumento, decremento, not;
+precedence nonassoc pard , pari;
+precedence nonassoc corcheted , corchetei;
+precedence left punto;
+
+
+
+start with INICIO;
+
+INICIO ::= LCLASE:lista {: raiz = lista;:}		
+		;
+
+LCLASE::= 
+         LCLASE:lista CLASE:clase{: lista.add(clase); RESULT = lista;:}
+        |LCLASE:lista IMPORTAR:clase puntocoma {: lista.add(clase); RESULT = lista;:}
+        |CLASE:clase {:RESULT = new NodoReporte("Inicio","Inicio",claseright, claseleft);RESULT.add(clase);:}
+        |IMPORTAR:exp puntocoma{:RESULT = new NodoReporte("Inicio","Inicio",expright, expleft);RESULT.add(exp);:}
+;        
+
+IMPORTAR::= importar:or  cadena:nombre  {:RESULT = new NodoReporte("importar",nombre, orright, orleft);:}
+;
+
+CLASE::= CLASEMODIFICADORES:modificador clase id:nombre llavei CUERPOCLASE:clase llaved 
+            {:
+                clase.add(modificador); 
+                clase.add(new NodoReporte("id",nombre,nombreright,nombreleft));
+                RESULT = clase;
+            :}
+        |CLASEMODIFICADORES:modificador clase id:nombre extiende id:padre llavei CUERPOCLASE:clase llaved 
+            {:
+                clase.add(modificador); 
+                clase.add(new NodoReporte("id",nombre,nombreright,nombreleft));
+                clase.add(new NodoReporte("padre",padre,padreright,padreleft));
+                RESULT = clase;
+            :}
+;
+
+CLASEMODIFICADORES::= LMODFICADOR:l {:RESULT = l;:}
+                    | {: RESULT = new NodoReporte("modificadores","modifidores",0,0); :}
+;
+CUERPOCLASE::= CUERPO:clase {:RESULT = clase;:}
+            | {:RESULT = new NodoReporte("clase",0,0);:}
+
+;
+CUERPO::= 
+          CUERPO:clase FUNCION:f {: clase.add(f); RESULT = clase;:}         
+        | CUERPO:clase DECATRIB:f puntocoma {: clase.add(f); RESULT = clase;:}                   
+        | FUNCION:f  {:RESULT = new NodoReporte("clase",fright,fleft); RESULT.add(f);:}    
+        | DECATRIB:atributos puntocoma{:RESULT = new NodoReporte("clase",atributosright,atributosleft); RESULT.add(atributos);:}
+        | CUERPO:clase arroba:a sobrescrito FUNCION:f {: f.pop(new NodoReporte("override",aright, aleft)); RESULT = clase; RESULT.add(f);:}  
+        /*Sobrescrito*/
+        | arroba:a sobrescrito FUNCION:f  {:f.pop(new NodoReporte("override",aright, aleft)); RESULT = new NodoReporte("clase",aright,aleft); RESULT.add(f);:}            
+        ; 
+
+        /*| CUERPOCLASE:clase CONSTRUCTOR:f {: clase.addConstructor(f); RESULT = clase;  :}*/
+        /*| CONSTRUCTOR:f {: Clase c = new Clase(fright,fleft); c.addConstructor(f); RESULT = c; :}*/    
+       
+
+BLOQUE::= llavei LINST:l llaved {:RESULT = new NodoReporte("bloque",lright, lleft); RESULT.add(l);:}
+        | llavei:l  llaved {:RESULT = new NodoReporte("bloque",lright, lleft); :}
+		;
+
+LINST::= LINST:lista INST:inst {: lista.add(inst); RESULT = lista;:}
+	    |INST:inst {: RESULT = new NodoReporte("lista","lista",instright, instleft); RESULT.add(inst);:} ;
+
+INST ::= 
+	  DECLARACION:inst puntocoma {: RESULT = inst; :}    
+    | ASIG:inst  puntocoma {:RESULT = inst;:}      
+	| BLOQUE:inst {: RESULT = inst; :}
+	| PRINT:inst{: RESULT = inst; :}
+    | PRINTABLE:inst{:RESULT = inst;:}    
+    | WHILE:inst {:RESULT = inst;:}
+    | DOWHILE:inst {:RESULT = inst;:}
+    | FOR:inst{:RESULT = inst;:}
+    | BREAK:inst {:RESULT = inst;:}
+    | CONTINUE:inst {:RESULT = inst;:}
+    | IF:inst{:RESULT = inst;:}
+    | AUMENTO:inst puntocoma {:RESULT = inst;:}
+    | DECREMENTO:inst puntocoma {:RESULT = inst;:}
+    | ASIGV:inst puntocoma {:RESULT = inst;:}
+    | FOREACH:inst {:RESULT = inst;:}
+    | SWITCH:inst {:RESULT = inst;:}
+    | RETORNO:inst {:RESULT = inst;:}
+    | LLAMADA:inst puntocoma {:RESULT = inst;:}
+	;
+
+/*Casteos Explicitos*/
+EXPLICITCAST::= str_:t pari EXP:expresion pard {: RESULT = new NodoReporte("tostr", tright, tleft); RESULT.add(expresion);:}
+            |  todouble:t pari EXP:expresion pard {: RESULT = new NodoReporte("todouble", tright, tleft);RESULT.add(expresion);:}
+            |  tochar:t pari EXP:expresion pard {: RESULT = new NodoReporte("tochar", tright, tleft);RESULT.add(expresion);:} 
+            |  toint:t pari EXP:expresion pard {: RESULT = new NodoReporte("toint", tright, tleft);RESULT.add(expresion);:}
+;
+
+ACTUALIZACION::= AUMENTO :inst {:RESULT =inst;:}
+                |DECREMENTO :inst {:RESULT =inst;:}
+;
+
+/*Seleccion
+(Expresion cond, ArrayList<Caso> lista, int l, int c)
+*/
+
+SWITCH::= switch_:i pari EXP:condicion pard llavei LCASO:lista llaved
+            {:
+                RESULT = new NodoReporte("switch","switch", iright, ileft);
+                RESULT.add(lista);
+            :}
+            | switch_:i pari EXP:condicion pard llavei LCASO:lista DEFECTO:defecto llaved 
+            {:
+                lista.add(defecto);
+                RESULT = new NodoReporte("switch","switch", iright, ileft);
+                RESULT.add(lista);
+            :}
+;
+
+LCASO::= LCASO:l CASO:caso {:RESULT = l; RESULT.add(caso);:}
+        |CASO:caso {:RESULT = new NodoReporte("casos","casos",casoright,casoleft); RESULT.add(caso);:}
+;
+
+CASO::= caso:i EXP:condicion dospuntos LINST:linst {:RESULT = new NodoReporte("DEFECTO","defecto",iright,ileft); RESULT.add(condicion);RESULT.add(linst);:}
+;
+
+DEFECTO::= defecto:i dospuntos LINST:linst {:RESULT = new NodoReporte("DEFECTO","defecto",iright,ileft); RESULT.add(linst);:}
+;
+
+IF::= si:si pari EXP:condicion pard BLOQUE:bloque {:RESULT = new NodoReporte("if", "if", siright, sileft); RESULT.add(condicion); RESULT.add(bloque);:}
+    | si:si pari EXP:condicion pard BLOQUE:bloque sino ELSE:inst2 {: RESULT = new NodoReporte("if", "if", siright, sileft); RESULT.add(condicion); RESULT.add(bloque); RESULT.add(inst2);:}
+;
+
+ELSE::= IF:inst  {:RESULT = inst;:}
+      | BLOQUE:bloque {: RESULT=bloque; :}
+;
+
+CONTINUE::= continuar:inst puntocoma {: RESULT = new NodoReporte("continue","continue",instright, instleft);:}
+;
+
+BREAK::= romper:inst puntocoma {: RESULT = new NodoReporte("break","break",instright, instleft);:}
+;
+
+WHILE::= mientras:inst pari EXP:condicion pard BLOQUE:bloque 
+            {:
+                 RESULT = new NodoReporte("while","while",instright, instleft);
+                 RESULT.add(condicion);
+                 RESULT.add(bloque);
+            :}
+;
+
+DOWHILE::=  hacer:i BLOQUE:bloque mientras:inst pari EXP:condicion pard puntocoma
+        {:
+            RESULT = new NodoReporte("dowhile","dowhile", iright, ileft);
+            RESULT.add(bloque);
+            //RESULT.add(inst);
+            RESULT.add(condicion);
+        :}
+;
+
+/*FOREACH ForEach(Tipo t, String i, Expresion o, int l, int c)*/
+FOREACH::= para:para pari TIPO:t id:id dospuntos EXP:origen pard BLOQUE:bloque
+        {:
+            RESULT = new NodoReporte("foreach","foreach",pararight, paraleft);
+            RESULT.add(t);
+            RESULT.add(new NodoReporte("id",id,idright, idleft));
+            RESULT.add(origen);
+            RESULT.add(bloque);
+        :}
+;
+
+FOR::= 
+      para:para pari DECLARACION:dec puntocoma EXP:condicion puntocoma ACTUALIZACION:act  pard BLOQUE:bloque
+    {: 
+        RESULT = new NodoReporte("for","for",pararight, paraleft);
+        RESULT.add(dec);
+        RESULT.add(condicion);
+        RESULT.add(act);
+        RESULT.add(bloque);
+    :}
+    | para:para pari ASIG:dec puntocoma EXP:condicion puntocoma ACTUALIZACION:act  pard BLOQUE:bloque
+    {: 
+        RESULT = new NodoReporte("for","for",pararight, paraleft);
+        RESULT.add(dec);
+        RESULT.add(condicion);
+        RESULT.add(act);
+        RESULT.add(bloque);
+    :}
+;
+
+PRINTABLE::= printable:p pari pard puntocoma {:RESULT = new NodoReporte("printable","printable",pright,pleft); :}
+;
+
+PRINT::= println:p pari EXP:valor pard puntocoma {:RESULT = new NodoReporte("println","println", pright,pleft); RESULT.add(valor); :}
+        | print:p pari EXP:valor pard puntocoma {:RESULT = new NodoReporte("print","print", pright,pleft); RESULT.add(valor);  :}
+;
+
+                    /*Acceso(Expresion e, Expresion i, int l, int c)*/
+
+ASIG::= ACCESO:origen igual VALORASIGNACION:valor   
+        {: 
+            RESULT = new NodoReporte("asigancion","asignacion", origenright, origenleft);
+            RESULT.add(origen);
+            RESULT.add(valor);
+        :}       
+       
+
+;
+ASIGV::= id:id LEXP:coordenas igual EXP:valor 
+        {: 
+            RESULT = new NodoReporte("AsignacionV", "AsignacionV",  idright,idleft); 
+            RESULT.add(new NodoReporte("ID",id, idright, idleft));
+            RESULT.add(coordenas);
+            RESULT.add(valor);
+        :}
+;
+
+ACCESO::= ACCESO:origen punto ORIGEN:destino {: RESULT = new NodoReporte("acceso", "acceso", origenright, origenleft); RESULT.add(origen); RESULT.add(destino);:}
+        | ORIGEN:exp {:RESULT = exp;:}
+        | este:exp {:RESULT = new NodoReporte("acceso","acceso",expright, expleft); RESULT.add(new NodoReporte("ID",exp,expright,expleft));:}
+
+;
+        
+ORIGEN::=      id:id     {:RESULT = new NodoReporte("Origen", "Origen", idright, idleft); RESULT.add(new NodoReporte("ID",id,idright,idleft));:}
+        /*| LLAMADA:f   {:RESULT = f;:}*/
+        | ORIGEN:origen LEXP:coor {: RESULT = new NodoReporte("Origen" , "Origen", origenright, origenleft); RESULT.add(origen); RESULT.add(coor);:}
+        
+;
+
+/*Arreglos.
+DECLARACION::=  
+	    TIPO:t id:id  {: RESULT = new Declaracion(t, id , tright,tleft); :}
+	   |TIPO:t id:id  igual EXP:valor  {: RESULT = new Declaracion(t, id, valor, tright,tleft); :}
+       
+       |TIPO:t id:id NDIM:n {: RESULT = new Declaracion(t, id , n, tright,tleft); :}    
+       |TIPO:t id:id NDIM:n igual EXP:valor {: RESULT = new Declaracion(t, id , n, valor, tright,tleft); :}                
+       |TIPO:t id:id NDIM:n igual ARR:valor {: RESULT = new Declaracion(t, id , n, new ExpresionArreglo(valor, valorright, valorleft), tright,tleft); :}
+	   ;
+*/
+
+
+DECLARACION::= TIPO:t LDEC:lista {: RESULT = lista; RESULT.pop(t); :} ;
+
+
+LDEC::= LDEC:lista  coma DEC:dec {:RESULT = lista; RESULT.add(dec);:}
+        |DEC:dec {: RESULT = new NodoReporte("Declaracion","Declaracion",decright, decleft); RESULT.add(dec);:}
+;
+
+DEC::= 
+      id:id {: RESULT = new NodoReporte("Dec",id, idright, idleft);:}
+    | id:id igual VALORASIGNACION:valor {: RESULT = new NodoReporte("Dec",id,idright, idleft); RESULT.add(valor);:}
+    | id:id NDIM:dim {: RESULT = new NodoReporte("Dec",id,idright, idleft); RESULT.add(new NodoReporte("Dimensiones",dim+"",dimright, dimleft)); :}
+    | id:id NDIM:dim igual VALORARREGLO:valor {: RESULT = new NodoReporte("Dec",id,idright, idleft); RESULT.add(new NodoReporte("Dimensiones",dim+"",dimright, dimleft)); RESULT.add(valor);:}
+    | id:id NDIM:dim igual ARR:valor {: RESULT = new NodoReporte("Dec",id,idright, idleft); RESULT.add(new NodoReporte("Dimensiones",dim+"",dimright, dimleft)); RESULT.add(valor);:}
+;   
+
+VALORASIGNACION::= 
+              EXP:exp {:RESULT = exp;:}
+           |  INSTANCIA:exp  {:RESULT = exp;:}
+         /*| nulo:r {:RESULT = new NodoReporte(new NodoReporte(Tipo.TypePrimitive.NULO), null, rright, rleft);:}*/
+;
+
+VALORARREGLO::=
+         nuevo:n PRIMITIVO:tipo LEXP:l {: RESULT = new NodoReporte("New","Objeto",nright,nleft); RESULT.add(tipo); RESULT.add(l);:}
+        |nuevo:n id:tipo LEXP:l {: RESULT = new NodoReporte("New",tipo,nright, nleft); RESULT.add(l);:}
+;
+TIPO::= PRIMITIVO:t{:RESULT = t;:}
+      | id:id {:RESULT = new NodoReporte("Tipo", id, idright, idleft);:}
+;
+
+/*Dimensiones*/
+NDIM::= NDIM:n corchetei corcheted {:RESULT = n+1;:}
+        |corchetei corcheted {: RESULT = 1;:}
+;  
+
+/*
+EXPRESION::= 
+            EXP:exp {:RESULT = exp;:}
+          | RETORNO:r {:RESULT = r;:}
+;
+*/
+
+
+EXP::= 
+        /*Lógicas*/
+         EXP:opi and EXP:opd {: RESULT = new NodoReporte("and","and",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}
+        |EXP:opi or EXP:opd {: RESULT = new NodoReporte("or","or",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}
+        |EXP:opi xor EXP:opd {: RESULT = new NodoReporte("xor","xor",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:} 
+        /*Instanceof*/
+        |EXP:opi instanceof_ id:tipo {:RESULT = new NodoReporte("instanceof",tipo,opiright,opileft); RESULT.add(opi);;:}        
+        |not EXP:opi {: RESULT = new NodoReporte("not","not",opiright,opileft); RESULT.add(opi);:}        
+        /*Relacionales*/
+        |EXP:opi igualigual EXP:opd {:RESULT = new NodoReporte("igual","igual",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}
+        |EXP:opi desigual EXP:opd {:RESULT = new NodoReporte("desigual","desigual",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}
+        |EXP:opi mayor EXP:opd {:RESULT = new NodoReporte("mayor","mayor",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}
+        |EXP:opi mayorigual EXP:opd {:RESULT = new NodoReporte("mayorigual","mayorigual",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}
+        |EXP:opi menor EXP:opd {:RESULT = new NodoReporte("menor","menor",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}
+        |EXP:opi menorigual EXP:opd {:RESULT = new NodoReporte("menorigual","menorigual",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}        
+        /*Ariteticas*/
+        |EXP:opi suma EXP:opd {: RESULT = new NodoReporte("suma","suma",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}       
+        |EXP:opi menos EXP:opd {: RESULT = new NodoReporte("menos","resta",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}          
+        |EXP:opi multi EXP:opd {: RESULT = new NodoReporte("multi","multi",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}  
+        |EXP:opi div EXP:opd {: RESULT = new NodoReporte("%","%",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}  
+        |EXP:opi modulo EXP:opd {: RESULT = new NodoReporte("pow","pow",opiright,opileft); RESULT.add(opi); RESULT.add(opd);:}  
+        |potencia:pot pari EXP:opi coma EXP:opd pard {:RESULT = new NodoReporte("pow","pow",potright,potleft); RESULT.add(opi); RESULT.add(opd);:}
+        |menos EXP:op {: RESULT = new NodoReporte("menos","menos", opright,opleft); RESULT.add(op);:}
+        /*Ternario*/
+        |TER:op {:RESULT = op;:}                        
+        /*Aumento ++ y --*/
+        |AUMENTO:op {:RESULT = op;:}        
+        |DECREMENTO:op {:RESULT = op;:}        
+        |LLAMADA:exp {:RESULT = exp;:}
+        /*Casteos*/
+        |pari:t PRIMITIVO:tipo pard EXP:op {:RESULT = new NodoReporte("casteo","implicito",tright, tleft);RESULT.add(tipo); RESULT.add(op);:} 
+        |pari:t id:tipo pard EXP:op {:RESULT = new NodoReporte("casteo",tipo, tright, tleft); RESULT.add(op);:}
+        /*Primitivas*/
+        |entero:v {: RESULT = new NodoReporte("entero",v+"",vright, vleft);:}
+        |decimal:v {: RESULT = new NodoReporte("decimal",v+"",vright, vleft);:}
+        |booleano:v {: RESULT = new NodoReporte("booleano",v+"",vright, vleft);:}
+        |cadena:v {: RESULT = new NodoReporte("cadena",v+"",vright, vleft);:}
+        |caracter:v {: RESULT = new NodoReporte("character",v+"",vright, vleft);:}
+        /*ACCESO*/
+        |ACCESO:v {:RESULT = v;:}
+        |pari EXP:op pard {: RESULT = op;:}
+        |EXPLICITCAST:exp {:RESULT = exp;:}
+        | nulo:r {:RESULT = new NodoReporte("Nulo","Nulo",rright, rleft);:}
+        /*|LLAMADA:exp {:RESULT = exp;:} estas están incluidas en acceso*/        
+;
+
+INSTANCIA::=          
+        nuevo:n TIPO:tipo pari PARACTUALES:lista pard {: RESULT = new NodoReporte("Instancia","Instancia", nright, nleft); RESULT.add(tipo); RESULT.add(lista);:}
+;
+
+/*ACCESO::= */
+//public Llamada(Expresion o, String n, ArrayList<Expresion> p, int l, int c)
+LLAMADA::=            
+            ACCESO:origen punto id:nombre pari PARACTUALES:l pard {: RESULT = new NodoReporte("Llamada",nombre, nombreright, nombreleft); RESULT.add(origen); RESULT.add(l); :}                      
+           | id:nombre pari PARACTUALES:l pard {:RESULT = new NodoReporte("Llamada",nombre,nombreright,nombreleft); RESULT.add(l);:}                      
+;
+
+RETORNO ::= retorno:r EXPRETORNO:exp puntocoma{:RESULT = new NodoReporte("Retorno", "Return", rright, rleft); RESULT.add(exp);:} 
+          | retorno:r puntocoma {: RESULT = new NodoReporte("Retorno","Retorno",rright, rleft);:}
+;
+
+/*Lista de parametros actuales para llamadas a funciones*/
+PARACTUALES::= ACTUALES:l{:RESULT = l;:}
+            | {:RESULT = new NodoReporte("PActuales","Actuales",0, 0);:}
+;            
+ACTUALES::= ACTUALES:l coma EXP:exp {:RESULT = l; RESULT.add(exp);:}
+              |EXP:exp {:RESULT = new NodoReporte("PActuales","Actuales",expright, expleft); RESULT.add(exp);:}
+;
+
+EXPRETORNO::= 
+            EXP:exp {:RESULT = exp;:}
+          /*| nulo:r {:RESULT = new NodoReporte(new NodoReporte(Tipo.TypePrimitive.NULO), null, rright, rleft);:}*/
+;
+
+/*Declaracion de métodos*/
+FUNCION::= CABECERAMET:funcion BLOQUE:bloque {: RESULT = funcion; RESULT.add(bloque);:}
+            | CABECERAMET:funcion puntocoma {:RESULT = funcion;:}
+;
+
+CABECERAMET::= 
+        LMODFICADOR:m RESULTADO:res id:nombre pari LPARFORMAL:lf pard 
+        {: 
+            RESULT = new NodoReporte("Funcion",nombre, nombreright, nombreleft);
+            RESULT.add(m);
+            RESULT.add(res);
+            RESULT.add(lf);
+        :}
+      | RESULTADO:res id:nombre pari LPARFORMAL:lf pard 
+      {: 
+        RESULT = new NodoReporte("Funcion",nombre, nombreright, nombreleft);
+        RESULT.add(res);
+        RESULT.add(lf);
+      :}
+      | LMODFICADOR:modificador id:nombre pari LPARFORMAL:formales pard 
+      {:
+        RESULT = new NodoReporte("Funcion",nombre, nombreright, nombreleft); 
+        RESULT.add(modificador);
+        RESULT.add(formales);
+        :}
+      | id:nombre pari LPARFORMAL:formales pard  {:RESULT = new NodoReporte("Constructor",nombre, nombreright, nombreleft); RESULT.add(formales);:}       
+      /*| LMODFICADOR:modificador */
+
+;
+
+RESULTADO::= TIPO:t {:  RESULT = t;:}
+            |tvoid:t {:  RESULT = new NodoReporte("Tipo",t, tright, tleft);:}
+            /*|id:t {:  RESULT = new Tipo(t);:}*/
+;
+
+LPARFORMAL::= 
+         LPARFORMAL:lista coma PARFORMAL:par {:RESULT = lista; RESULT.add(par);:}
+        |PARFORMAL:par {:RESULT =  new NodoReporte("LFormal","LFormal",parright,parleft);:}
+        |{: RESULT =  new NodoReporte("LFormal","LFormal",0,0);:}
+;
+
+PARFORMAL::=  
+         TIPO:tipo id:nombre
+         {: 
+            RESULT = new NodoReporte("PFormal", nombre, tiporight, tipoleft);
+            RESULT.add(tipo);
+        :}
+        | final_:f TIPO:tipo id:nombre 
+        {: 
+            RESULT = new NodoReporte("PFormal", nombre, fright, fleft);
+            RESULT.add(new NodoReporte("modificador",f,fright,fleft));
+            RESULT.add(tipo);            
+        :}
+        | TIPO:tipo id:nombre NDIM:n
+        {: 
+            RESULT = new NodoReporte("PFormal", nombre, tiporight, tipoleft);
+            RESULT.add(tipo);
+            RESULT.add(new NodoReporte("tamano",n+"",nright, nleft));
+            
+            :}
+        | final_:f TIPO:tipo id:nombre NDIM:n 
+        {: 
+            RESULT = new NodoReporte("PFormal", nombre, fright, fleft); 
+            RESULT.add(new NodoReporte("modificador",f,fright,fleft));
+            RESULT.add(new NodoReporte("dimensiones",n+"",nright,nleft));
+             
+        :}             
+;
+
+LMODFICADOR ::= 
+              LMODFICADOR:l MODFUNCION:m {: RESULT = l ; RESULT.add(m); :}
+            | MODFUNCION:m {: RESULT = new NodoReporte("LMOD","LMOD", mright, mleft); RESULT.add(m);:}
+;
+
+MODFUNCION::=                
+               MODATRIB:m {:RESULT = m;:}
+            |  abstracto:m {:RESULT = new NodoReporte("modificador",m,mright,mleft);:}
+;
+/*Fin declaración de métodos*/
+
+/*Declaración de atributos*/
+//DeclaracionAtributo(ArrayList<String> lm, Tipo t, ArrayList<Dec> lista, int l, int c)
+
+DECATRIB::= LMODFICADOR:lm RESULTADO:tipo LDEC:declaraciones
+            {: 
+                RESULT = new NodoReporte("Atributo","Dec",tiporight, tipoleft);
+                RESULT.add(lm);
+                RESULT.add(tipo);   
+                RESULT.add(declaraciones);
+            :} 
+            |RESULTADO:tipo LDEC:declaraciones
+            {: 
+                RESULT = new NodoReporte("Atributo","Dec",tiporight, tipoleft);
+                RESULT.add(tipo);   
+                RESULT.add(declaraciones);
+            :}             
+;
+
+//TIPO:t LDEC:lista {: RESULT = new Declaracion(t, lista, tright, tleft); :}
+
+/*
+LMODATRIB::= 
+          LMODATRIB:lista MODATRIB:mod {:lista.add(mod); RESULT = lista;:}
+        | MODATRIB:mod {:ArrayList<String> l = new ArrayList<String>(); l.add(mod); RESULT = l;:}
+; 
+  */  
+
+MODATRIB::= 
+                final_:m {:RESULT = new NodoReporte("modificador",m,mright,mleft);:}
+            |  estatico:m {:  RESULT = new NodoReporte("modificador",m,mright,mleft);:}            
+            |  MODCONST:m {:RESULT = m;:}            
+;
+
+/*Fin de atributos*/
+
+
+/*Inicio constructores*/
+//Funcion(ArrayList<String> mod, String id, ArrayList<ParametroFormal> lpf , int l, int c)
+/*CONSTRUCTOR::= 
+        MODCONST:modificador id:nombre pari LPARFORMAL:formales pard BLOQUE:bloque {:RESULT = new Constructor(mod,nombre,formales,bloque, nombreright,nombreleft);:}
+       |id:nombre pari LPARFORMAL:formales pard BLOQUE:bloque {:RESULT = new Constructor(new ArrayList<String>(),nombre,formales,bloque, nombreright,nombreleft);:} 
+;
+*/
+MODCONST::= 
+               publico:m {:RESULT = new NodoReporte("modificador",m,mright,mleft);:}
+            |  protegido:m {:RESULT = new NodoReporte("modificador",m,mright,mleft);:}
+            |  privado:m {:RESULT = new NodoReporte("modificador",m,mright,mleft);:}
+;            
+/*Fin declaración de constructores*/
+
+
+LEXP::= LEXP:l corchetei EXP:exp corcheted{:RESULT = l;  RESULT.add(exp);:}
+        | corchetei:x EXP:exp corcheted {: RESULT = new NodoReporte("LEXP","LEXP",xright,xleft); RESULT.add(exp);:}
+;
+
+ARR::= llavei LITEM:nodo llaved {: RESULT = nodo;:}
+;
+
+LITEM::= LITEM:nodo coma ITEM:item {: nodo.add(item); RESULT = nodo; :}
+        |ITEM:item  {: RESULT= new NodoReporte("Elementos","item",itemright,itemleft); RESULT.add(item); :}
+;
+
+ITEM::= EXP:exp {: RESULT = exp;:} 
+        |ARR:exp {: RESULT = exp;:} 
+;
+
+AUMENTO::= EXP:op aumento {:RESULT = new NodoReporte("Aumento","Postfijo",opright, opleft); RESULT.add(op);:}
+          |aumento EXP:op {:RESULT = new NodoReporte("Aumento","Prefijo",opright, opleft); RESULT.add(op);:}
+            ;
+DECREMENTO::= EXP:op decremento {:RESULT = new NodoReporte("Decremento","Postfijo" ,opright, opleft); RESULT.add(op);:}
+              |decremento EXP:op {:RESULT = new NodoReporte("Decremento","Prefijo",opright, opleft); RESULT.add(op);:}
+;
+
+TER::= EXP:c interrogante EXP:v dospuntos EXP:f
+        {:                         
+            RESULT = new NodoReporte("Ternario","Ternario",cright, cleft); 
+            RESULT.add(c);
+            RESULT.add(v);
+            RESULT.add(f);
+        :}
+;
+
+PRIMITIVO ::=   
+        tint:t {:RESULT =  new NodoReporte(t,t,tright,tleft);:}
+		|tchar:t {:RESULT =     new NodoReporte(t,t,tright,tleft);:}
+        |tdouble:t {:RESULT =    new NodoReporte(t,t,tright,tleft);:}
+		|tbool:t {:RESULT =    new NodoReporte(t,t,tright,tleft);:}
+		|tstring:t {:RESULT =   new NodoReporte(t,t,tright,tleft);:}		
+;

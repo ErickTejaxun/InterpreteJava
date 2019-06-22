@@ -8,6 +8,7 @@ package Utilidades;
 import AST.Instruccion.Instruccion;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.fife.ui.rtextarea.GutterIconInfo;
 
 /**
  *
@@ -25,8 +26,26 @@ public class Singlenton
     public static boolean continuarEjecucion =false;
     public static String nombreVariable = "";
     public static ArrayList<Integer> breakPoints = new ArrayList<Integer>();
+    public static ArrayList<GutterIconInfo> puntos = new ArrayList<>();
     
-    public static void setVariable(String d){nombreVariable = d;}            
+    public static void addPunto(GutterIconInfo p)
+    {
+        puntos.add(p);
+    }        
+    public static void setVariable(String d){nombreVariable = d;}   
+    
+    public static boolean isBreakPoint(int i)
+    {
+        for(Integer e: breakPoints)
+        {
+            if(e==i)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public static void apliarCiclo(Instruccion e)
     {
         pilaCiclos.push(e);
