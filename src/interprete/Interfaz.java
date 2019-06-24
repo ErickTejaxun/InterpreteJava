@@ -72,7 +72,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     Thread hilo;
     int cont=0;
     public Hashtable<String, RSyntaxTextArea> tablaEditores = new Hashtable<>();
-    
+    public Position posicionListener = new Position(this);
     
     /**
      * Creates new form interfaz
@@ -115,9 +115,11 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         slideVelocidad = new javax.swing.JSlider();
+        lblposicion = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         panelReporte = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
         labelReporte = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -225,6 +227,11 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         });
 
         jButton2.setText("Pausar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Continuar");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -238,7 +245,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         panelEdicionLayout.setHorizontalGroup(
             panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(contenedorPaneles)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEdicionLayout.createSequentialGroup()
+            .addGroup(panelEdicionLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(botonCompilar, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
@@ -266,8 +273,13 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
                         .addComponent(textoRemplazar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(botonRemplazar1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonRemplazar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelEdicionLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(botonRemplazar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelEdicionLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(lblposicion, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelEdicionLayout.setVerticalGroup(
@@ -275,6 +287,9 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
             .addGroup(panelEdicionLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEdicionLayout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(lblposicion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelEdicionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(botonBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(textoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -298,29 +313,15 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         jPanel1.setBackground(new java.awt.Color(204, 255, 102));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
-        labelReporte.setBackground(new java.awt.Color(255, 0, 51));
-        labelReporte.setForeground(new java.awt.Color(0, 102, 102));
-        labelReporte.setText("jLabel2");
+        panelReporte.setLayout(new javax.swing.BoxLayout(panelReporte, javax.swing.BoxLayout.LINE_AXIS));
 
-        javax.swing.GroupLayout panelReporteLayout = new javax.swing.GroupLayout(panelReporte);
-        panelReporte.setLayout(panelReporteLayout);
-        panelReporteLayout.setHorizontalGroup(
-            panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1207, Short.MAX_VALUE)
-            .addGroup(panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panelReporteLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(labelReporte, javax.swing.GroupLayout.DEFAULT_SIZE, 1187, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        panelReporteLayout.setVerticalGroup(
-            panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 316, Short.MAX_VALUE)
-            .addGroup(panelReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelReporteLayout.createSequentialGroup()
-                    .addGap(0, 22, Short.MAX_VALUE)
-                    .addComponent(labelReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
+        labelReporte.setText("jLabel2");
+        labelReporte.setMaximumSize(new java.awt.Dimension(1000, 1000));
+        labelReporte.setMinimumSize(new java.awt.Dimension(1000, 1000));
+        labelReporte.setPreferredSize(new java.awt.Dimension(1000, 1000));
+        jScrollPane6.setViewportView(labelReporte);
+
+        panelReporte.add(jScrollPane6);
 
         jTabbedPane1.addTab("Reportes", panelReporte);
 
@@ -363,7 +364,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1187, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1297, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -391,7 +392,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1187, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1297, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -424,7 +425,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1197, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1307, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -685,6 +686,10 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         Utilidades.Singlenton.continuarEjecucion = true;
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        compilar();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -833,6 +838,13 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
             }        
     }
     
+    /*Método para obtener la línea actual*/
+    
+    
+    public void setPosicion(int l, int c)
+    {
+        this.lblposicion.setText("Linea:"+(l+1) +" Columna:"+c);
+    }
  
     //Este metodo creará una nuevo panel con su editor en blanco.
     public void nuevoArchivo()
@@ -845,7 +857,8 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
             editor.setCodeFoldingEnabled(true);            
             RTextScrollPane sp = new RTextScrollPane(editor);            
             sp.setIconRowHeaderEnabled(true);
-                                                
+            editor.addCaretListener(posicionListener);  
+            
             Gutter gutter = sp.getGutter();                                
             gutter.setBookmarkIcon(new ImageIcon(getClass().getResource("/breakpoint.png")));            
             gutter.setBookmarkingEnabled(true);
@@ -869,6 +882,8 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
             RSyntaxTextArea editor = new RSyntaxTextArea(30,60);              
             tablaEditores.put(nombre, editor);
             editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+            editor.addCaretListener(posicionListener);
+            
             //editor.setCodeFoldingEnabled(true);
             RTextScrollPane sp = new RTextScrollPane(editor);            
             sp.setIconRowHeaderEnabled(true);
@@ -965,7 +980,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     
     public void guardarArchivoNuevo() throws FileNotFoundException
     {        
-        String tipo = ".java";       
+        String tipo = ".coline";       
         /*
         String[] options = {".gcc", ".3d","cancelar"};
         int x = -1;
@@ -1589,7 +1604,8 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
          {
            e.printStackTrace();
          }
-         return path+"\\Proyectos";
+         //return path+"\\Proyectos";
+         return path;
     } 
     
         public double factorial(double num)
@@ -1937,8 +1953,10 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelReporte;
+    private javax.swing.JLabel lblposicion;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuEjecucion;
     private javax.swing.JMenuItem menuGuardar;

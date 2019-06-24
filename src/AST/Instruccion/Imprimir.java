@@ -67,12 +67,12 @@ public class Imprimir implements Instruccion
         if(salto)
         {
             e.ventana.ImprimirLn(c);
-            System.out.println(c);
+            //System.out.println(c);
         }
         else
         {
             e.ventana.Imprimir(c);
-            System.out.print(c);
+            //System.out.print(c);
         }
     }
 

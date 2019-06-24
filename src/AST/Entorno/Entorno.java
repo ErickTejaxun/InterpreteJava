@@ -8,9 +8,12 @@ package AST.Entorno;
 import static AST.Entorno.Simbolo.Rol.FUNCION;
 import Utilidades.ErrorC;
 import interprete.Interfaz;
-import interprete.Ventana;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -106,7 +109,7 @@ public class Entorno
         }*/
     }
 
-    public String Tabla()
+    public String Tabla() throws IOException
     {
         Entorno auxiliar = this;
         String reporte ="";
@@ -128,8 +131,83 @@ public class Entorno
                 }
             }             
             auxiliar = auxiliar.anterior;
-        }        
+        }       
+
+        generarGrafica();
         return reporte;
+    }
+    
+    public String Grafica()
+    {
+        String cadena = "digraph D {";
+        cadena+="node [shape=plaintext fontname=\"Sans serif\" fontsize=\"8\"];";
+        /*Aquí comienza la gráfica*/
+        Entorno auxiliar = this;        
+        while(auxiliar!=null)
+        {            
+            cadena+=auxiliar.hashCode()+"[ label=<";
+            cadena+="<table border=\"1\" cellborder=\"0\" cellspacing=\"1\">";
+            Enumeration num = auxiliar.tabla.keys();
+            while(num.hasMoreElements())
+            {
+                Object clave = num.nextElement();
+                Simbolo s = auxiliar.tabla.get(clave);
+                cadena+="<tr>"
+                        + "<td align=\"left\">"+s.id+"</td>"
+                        + "<td align=\"left\">"+s.tipo.nombreTipo()+"</td>"
+                        + "<td align=\"left\">"+s.rol+"</td>"
+                        + "<td align=\"left\">"+s.valor+"</td>"
+                        + "<td align=\"left\">"+s.dimensiones+"</td>"
+                        + "<td align=\"left\">"+s.linea+"</td>"
+                        + "<td align=\"left\">"+s.columna+"</td>"
+                        + "</tr>";
+            }         
+            cadena+=" </table>>];";
+            auxiliar = auxiliar.anterior;
+        }
+        auxiliar = this;
+        while(auxiliar.anterior!=null)
+        {
+            cadena+= auxiliar.hashCode()+"        -> "+auxiliar.anterior.hashCode()+";";
+            auxiliar = auxiliar.anterior;
+        }                
+        cadena +="}";    
+        return cadena;
+    }
+    
+    public void generarGrafica() throws IOException 
+    {
+        System.out.println("Graficando");
+
+        String dotPath = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";        
+        String direccionSalida = this.ventana.PathActual()+"\\entorno.jpg";
+        String direccionEntrada = this.ventana.PathActual()+"\\entorno.txt";
+        //System.out.println("Graficando");
+        String cadena = Grafica();
+        //System.out.println(cadena);
+        /*---------------------------------------------------------------------------------*/
+        try (  PrintWriter writer = new PrintWriter(direccionEntrada)) {
+            writer.print(cadena);            
+        } 
+        /*---------------------------------------------------------------------------------*/
+        
+        
+        String tParam = "-Tpng";
+        String tOParam = "-o";
+        
+        //dot -Tpng ast.txt -o ast.jpg
+
+        String[] cmd = new String[5];
+              cmd[0] = dotPath;
+              cmd[1] = tParam;
+              cmd[2] = direccionEntrada;
+              cmd[3] = tOParam;
+              cmd[4] = direccionSalida;
+
+              Runtime rt = Runtime.getRuntime();
+
+              rt.exec( cmd );
+              //"\\ast.jpg";
     }
     
     public Simbolo getFuncion(String firma)

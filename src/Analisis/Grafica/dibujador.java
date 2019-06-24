@@ -20,17 +20,16 @@ public class dibujador
     {
     }
     public void generarGrafica(NodoReporte raiz) throws IOException 
-    {
-        
-
+    {        
         String dotPath = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";        
         String direccionSalida = PathActual()+"\\ast.jpg";
         String direccionEntrada = PathActual()+"\\ast.txt";
+        String contenido = dibujarArbol(raiz);
         
         String cadena = "digraph G\n" +
                         "{\n" +
                         //"rankdir=LR;"+
-                        dibujarArbol(raiz)+
+                        contenido+                
                         "}";
         cadena = cadena.replace("\"\"","\"");
         cadena = cadena.replace("\\","\\\\");
@@ -57,7 +56,75 @@ public class dibujador
 
               rt.exec( cmd );
               //"\\ast.jpg";
+             generarGraficaDependencia(raiz);
     }
+    
+    public void generarGraficaDependencia(NodoReporte raiz) throws IOException 
+    {        
+        String dotPath = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";        
+        String direccionSalida = PathActual()+"\\gd.jpg";
+        String direccionEntrada = PathActual()+"\\gd.txt";
+        String contenido = dibujarArbolDep(raiz);
+        
+        String cadena = "digraph G\n" +
+                        "{\n" +
+                        //"rankdir=LR;"+
+                        contenido+                
+                        "}";
+        cadena = cadena.replace("\"\"","\"");
+        cadena = cadena.replace("\\","\\\\");
+        /*---------------------------------------------------------------------------------*/
+        try (  PrintWriter writer = new PrintWriter(direccionEntrada)) {
+            writer.print(cadena);            
+        } 
+        /*---------------------------------------------------------------------------------*/
+        
+        
+        String tParam = "-Tpng";
+        String tOParam = "-o";
+        
+        //dot -Tpng ast.txt -o ast.jpg
+
+        String[] cmd = new String[5];
+              cmd[0] = dotPath;
+              cmd[1] = tParam;
+              cmd[2] = direccionEntrada;
+              cmd[3] = tOParam;
+              cmd[4] = direccionSalida;
+
+              Runtime rt = Runtime.getRuntime();
+
+              rt.exec( cmd );
+              //"\\ast.jpg";
+    }    
+    
+    public String dibujarArbolDep(NodoReporte raiz)
+    {
+        String cadena = "N"+raiz.hashCode()+"[label=\""+raiz.getValue()+"\"]; \n";
+        
+        if(!raiz.getHijos().isEmpty())
+        {
+            for(int cont = 0; cont<raiz.getHijos().size();cont++)
+            {
+                cadena = cadena +"N"+raiz.getHijos().get(cont).hashCode()+"[label=\""+raiz.getHijos().get(cont).getValue()+"\"]; \n";
+                //a -> b[label="0.2",weight="0.2"];
+            }
+            for(int cont = 0; cont<raiz.getHijos().size();cont++)
+            {
+                cadena = cadena +"N"+raiz.hashCode()+"->"  +"N"+raiz.getHijos().get(cont).hashCode()+" [dir=none] ; \n";
+                /*Para quitar las dependencias, quitar la siguiente linea*/
+                cadena +="N"+raiz.getHijos().get(cont).hashCode()+"->"  +"N"+raiz.hashCode()+"  ; \n";
+            }
+            //[dir=forward color=\"red\"]
+            for(int cont = 0; cont<raiz.getHijos().size();cont++)
+            {
+                cadena = cadena + dibujarArbolDep(raiz.getHijos().get(cont));                
+            }            
+        }               
+        return cadena;
+    }    
+    
+    
     public String dibujarArbol(NodoReporte raiz)
     {
         String cadena = "N"+raiz.hashCode()+"[label=\""+raiz.getValue()+"\"]; \n";
@@ -72,7 +139,8 @@ public class dibujador
             for(int cont = 0; cont<raiz.getHijos().size();cont++)
             {
                 cadena = cadena +"N"+raiz.hashCode()+"->"  +"N"+raiz.getHijos().get(cont).hashCode()+" ; \n";
-                //a -> b[label="0.2",weight="0.2"];
+                /*Para quitar las dependencias, quitar la siguiente linea*/
+                //cadena +="N"+raiz.getHijos().get(cont).hashCode()+"->"  +"N"+raiz.hashCode()+" ; \n";
             }
             
             for(int cont = 0; cont<raiz.getHijos().size();cont++)

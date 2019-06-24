@@ -6,6 +6,9 @@
 package AST.Instruccion;
 
 import AST.Entorno.Entorno;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,7 +30,12 @@ public class ImprimirT implements Instruccion
     public Object ejectuar(Entorno entorno) 
     {
         entorno.ventana.Imprimir("\nID\tTIPO\tVALOR\tROL\tDIMENSIONES\tLINEA\tCOLUMNA");
-        entorno.ventana.Imprimir(entorno.Tabla());
+        try 
+        {
+            entorno.ventana.Imprimir(entorno.Tabla());
+        } catch (IOException ex) {
+            Logger.getLogger(ImprimirT.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return null;
     }
 
