@@ -23,7 +23,13 @@ public class Hilo implements Runnable
     {      
         this.programa = raiz;
     }
-
+    
+    public Hilo(AST r, Interfaz f)
+    {
+        this.programa = r;
+        this.ventana = f;
+    }
+    
     public Hilo(AST programa, Interfaz ventana, RTextScrollPane scrollPanel) {
         this.programa = programa;
         this.ventana = ventana;
@@ -39,11 +45,7 @@ public class Hilo implements Runnable
     public void run()
     {            
         /*Ejecutamos */
-        for(int linea: Utilidades.Singlenton.breakPoints)
-        {
-            esperarXsegundos(ventana.getVelocidad());
-            System.out.println(linea);
-        }
+        programa.ejecutar(ventana);
     }
   
     private void esperarXsegundos(int segundos) {

@@ -6,6 +6,7 @@
 package Utilidades;
 
 import AST.Instruccion.Instruccion;
+import static Utilidades.Singlenton.ModoEjecucion.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.fife.ui.rtextarea.GutterIconInfo;
@@ -27,9 +28,22 @@ public class Singlenton
     public static String nombreVariable = "";
     public static ArrayList<Integer> breakPoints = new ArrayList<Integer>();
     public static ArrayList<GutterIconInfo> puntos = new ArrayList<>();
+    public enum ModoEjecucion{NORMAL,PASOPASO,DEBUG};
+    public static ModoEjecucion modoEjecucion = NORMAL;
     
     
-    
+    public static void setModoNormal()
+    {
+        modoEjecucion = NORMAL;
+    }
+    public static void setModoBreak()
+    {
+        modoEjecucion = DEBUG;
+    }    
+    public static void setModoPasoPaso()
+    {
+        modoEjecucion = PASOPASO;
+    }
     
     public static void addPunto(GutterIconInfo p)
     {
@@ -43,6 +57,7 @@ public class Singlenton
         {
             if(e==i)
             {
+                continuarEjecucion =!continuarEjecucion;
                 return true;
             }
         }

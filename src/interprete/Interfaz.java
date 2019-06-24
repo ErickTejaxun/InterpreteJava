@@ -69,10 +69,18 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     DefaultCompletionProvider provider;
     boolean seguirHilo=false;
     boolean hiloIniciado=false;
-    Thread hilo;
+    public Thread hilo;
     int cont=0;
     public Hashtable<String, RSyntaxTextArea> tablaEditores = new Hashtable<>();
     public Position posicionListener = new Position(this);
+    public int anterior = 0;
+    public int velocidadActual = 0;
+    /*
+    0 = ejecución normal.
+    1 = ejecución automatica
+    2 = ejecución con breakpoints    
+    */
+    
     
     /**
      * Creates new form interfaz
@@ -605,6 +613,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
 
     private void botonCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompilarActionPerformed
        iniciarHilo();
+       Utilidades.Singlenton.setModoNormal();
        Utilidades.Singlenton.breakPoints.clear();
        Utilidades.Singlenton.puntos.clear();
        slideVelocidad.setValue(0);
@@ -660,6 +669,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
 
     private void botonCompilar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCompilar1ActionPerformed
         // TODO add your handling code here:
+        Utilidades.Singlenton.setModoBreak();
         iniciarDepuracion();
         iniciarHilo();
         if(seguirHilo)
@@ -672,22 +682,15 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     }//GEN-LAST:event_botonCompilar1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-                 iniciarHilo();
-            if(seguirHilo){
-                pararHIlo(false);
-                //jbLanzarHilo.setText("Reanudar hilo");
-            }else{
-                pararHIlo(true);
-                //jbLanzarHilo.setText("Detener hilo");
-            }
+        saltarAlSiguiente();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Utilidades.Singlenton.continuarEjecucion = true;
+        pararHIlo(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        compilar();
+        pararHIlo(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -728,6 +731,13 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
         });
     }
 
+    
+    public void saltarAlSiguiente()
+    {
+        velocidadActual = slideVelocidad.getValue();
+        slideVelocidad.setValue(0);
+        hilo.resume();
+    }
     public void abrirArchivo() throws FileNotFoundException
     {
 
@@ -1916,7 +1926,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
    }
    public int getVelocidad()
    {
-       return slideVelocidad.getValue();
+       return slideVelocidad.getValue()*10;
    }
    
    
@@ -1987,9 +1997,35 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     /*método para parar el hilo*/
     public void pararHIlo(boolean estado){
         seguirHilo=estado;
+        if(estado)
+        {
+            hilo.suspend();   
+        }        
+        else
+        {
+            hilo.resume();
+        }
     }   
     
     public boolean resaltarLinea(int linea) 
+    {
+       //Primero obtenemos el arrayde los break points.
+        String nombreArchivo = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
+        RTextArea areaActual = tablaEditores.get(nombreArchivo);        
+        try 
+        {
+            areaActual.removeAllLineHighlights();
+            areaActual.addLineHighlight(linea , Color.RED);           
+        } 
+        catch (BadLocationException ex) 
+        {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       return false;
+       
+    }
+    
+    public boolean resaltarLineaBreakPoint(int linea) 
     {
        //Primero obtenemos el arrayde los break points.
        String nombreArchivo = contenedorPaneles.getTitleAt(contenedorPaneles.getSelectedIndex());
@@ -2020,5 +2056,6 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
        }
        return false;
        
-    }
+    }    
+    
 }
