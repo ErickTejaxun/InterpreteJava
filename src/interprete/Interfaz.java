@@ -1391,9 +1391,9 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
                 etiqueta.setBackground(Color.BLACK);
                 etiqueta.setBounds(0,0,panelReporte.getWidth(),panelReporte.getHeight());
                 String ruta = PathActual()+"\\ast.jpg";
-                ImageIcon icono =   new ImageIcon(ruta); 
-                ImageIcon iconoEscala = new ImageIcon(icono.getImage().getScaledInstance(etiqueta.getHeight(), etiqueta.getWidth(), java.awt.Image.SCALE_DEFAULT));
-                etiqueta.setIcon(iconoEscala);                                 
+//                ImageIcon icono =   new ImageIcon(ruta); 
+//                ImageIcon iconoEscala = new ImageIcon(icono.getImage().getScaledInstance(etiqueta.getHeight(), etiqueta.getWidth(), java.awt.Image.SCALE_DEFAULT));
+//                etiqueta.setIcon(iconoEscala);                                 
             }            
         } 
         catch (Exception ex) 

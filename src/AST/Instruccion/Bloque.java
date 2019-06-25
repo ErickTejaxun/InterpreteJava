@@ -44,28 +44,9 @@ public class Bloque implements Instruccion, Runnable
         Entorno global = entorno;// new Entorno(null);                
         for(Nodo nodo: instrucciones)
         {
-            try 
-            {
-                if(Utilidades.Singlenton.modoEjecucion == DEBUG)
-                {                                            
-                    entorno.ventana.entorno = entorno;
-                    if(Utilidades.Singlenton.isBreakPoint(nodo.linea()))
-                    {
-                        entorno.ventana.resaltarLinea(nodo.linea()-1);
-                        
-                        entorno.ventana.pararHIlo(true);
-                    }
-                    entorno.ventana.resaltarLinea(nodo.linea());
-                    entorno.ventana.hilo.sleep(entorno.ventana.getVelocidad());                       
-                }                
-            } 
-            catch (InterruptedException ex) 
-            {
-                Logger.getLogger(Bloque.class.getName()).log(Level.SEVERE, null, ex);
-            }
             
             if(nodo instanceof Instruccion) 
-            {
+            {                                
                 Entorno local = global;
                 if(nodo instanceof Bloque)
                 {
@@ -74,7 +55,7 @@ public class Bloque implements Instruccion, Runnable
                 }
 
                 Object resultado = (((Instruccion) nodo).ejectuar(local));
-                
+                evaluarBreakPoint(entorno, nodo);
                 if(resultado !=null)
                 {
                     if(resultado instanceof Retorno)
@@ -116,6 +97,30 @@ public class Bloque implements Instruccion, Runnable
         return null;
     }
 
+    public void evaluarBreakPoint(Entorno entorno, Nodo nodo)
+    {
+        try 
+        {
+            if(Utilidades.Singlenton.modoEjecucion == DEBUG)
+            {                                            
+                entorno.ventana.entorno = entorno;
+                if(Utilidades.Singlenton.isBreakPoint(nodo.linea()))
+                {
+                    entorno.ventana.resaltarLinea(nodo.linea()-1);
+
+                    entorno.ventana.pararHIlo(true);
+                }
+                entorno.ventana.resaltarLinea(nodo.linea());
+                entorno.ventana.hilo.sleep(entorno.ventana.getVelocidad());                       
+            }                
+        } 
+        catch (InterruptedException ex) 
+        {
+            Logger.getLogger(Bloque.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }
+    
+    
     @Override
     public int linea() {
         return linea;

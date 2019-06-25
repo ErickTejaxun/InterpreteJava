@@ -5,12 +5,14 @@
  */
 package AST.Instruccion;
 
+import AST.Clase.Objeto;
 import AST.Entorno.Simbolo;
 import AST.Expresion.Expresion;
 import AST.Entorno.Entorno;
 import static AST.Entorno.Tipo.TypePrimitive.*;
 import AST.Expresion.Variable;
 import Utilidades.ErrorC;
+import java.util.Enumeration;
 
 /**
  *
@@ -147,7 +149,41 @@ public class Asignacion implements Instruccion
                     break;                    
             }             
         }
-        simbolo.valor = valor;
+        if(valor instanceof Objeto)
+        {
+            Objeto objetoOrigen = (Objeto)valor;
+            if(objetoOrigen.tipo.nombreTipo().equals(simbolo.getTipo().nombreTipo()))
+            {
+                if(simbolo instanceof Objeto)
+                {
+                    Objeto objetoDestino = (Objeto)valor;
+//                    Enumeration num = objetoOrigen.entornoObjeto.tabla.keys();
+//                    while(num.hasMoreElements())
+//                    {
+//                        Object clave = num.nextElement();
+//                        Simbolo sOrigen = objetoOrigen.entornoObjeto.obtener(clave.toString());
+//                        Simbolo sDestino = objetoDestino.entornoObjeto.obtener(clave.toString());
+//                        sDestino.valor = sOrigen.valor;
+//                    }
+                    
+                    
+                    objetoDestino.entornoObjeto = objetoOrigen.entornoObjeto;
+                    objetoDestino.valor = objetoOrigen.valor;
+                }                          
+                else
+                {
+                    Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo " + objetoOrigen.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+                }
+            }else
+            {
+                Utilidades.Singlenton.registrarError(Utilidades.Singlenton.nombreVariable, "No se le puede asignar un valor de tipo "+ expresion.getTipo().nombreTipo() +" a un tipo " + objetoOrigen.tipo.nombreTipo(), ErrorC.TipoError.SEMANTICO,linea, columna);
+            }
+        }
+        else
+        {
+            simbolo.valor = valor;
+        }
+        
         /*
         Simbolo s = new Simbolo(simbolo.getTipo(),id,valor,simbolo.linea,simbolo.columna);
         if(!entorno.actualizar(s))

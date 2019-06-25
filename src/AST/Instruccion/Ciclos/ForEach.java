@@ -12,7 +12,6 @@ import AST.Expresion.Arreglo.Arreglo;
 import AST.Expresion.Arreglo.NodoNario;
 import AST.Expresion.Expresion;
 import AST.Instruccion.Bloque;
-import AST.Instruccion.Declaracion;
 import AST.Instruccion.Instruccion;
 import Utilidades.ErrorC;
 import java.util.ArrayList;
@@ -53,9 +52,26 @@ public class ForEach implements Instruccion
                 Simbolo s  = new Simbolo(tipo, id, item.valor, linea, columna);
                 local.insertar(s);
                 instrucciones.ejectuar(local);                
-                //Declaracion(Tipo t, String id, int d, Expresion e, int l,int c)
                 //Declaracion dec = new Declaracion(this.tipo,id,item.valor,linea,columna);
             }            
+        }else
+        if(resultado instanceof Simbolo)
+        {
+            Simbolo simbolo = (Simbolo)resultado;
+            if(simbolo.valor instanceof Arreglo)
+            {
+                Arreglo arregloTmp = (Arreglo)simbolo.valor;
+                ArrayList<NodoNario> arrayLineal = arregloTmp.getArrayLinealizado();            
+                for(NodoNario item : arrayLineal)
+                {
+                    Entorno local = new Entorno(entorno,entorno.ventana);
+                    Simbolo s  = new Simbolo(tipo, id, item.valor, linea, columna);
+                    local.insertar(s);
+                    instrucciones.ejectuar(local);                
+                    //Declaracion(Tipo t, String id, int d, Expresion e, int l,int c)
+                    //Declaracion dec = new Declaracion(this.tipo,id,item.valor,linea,columna);
+                }                
+            }
         }
         else
         {

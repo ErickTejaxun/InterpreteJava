@@ -6,8 +6,10 @@
 package AST.Expresion.Aritmetica;
 
 import AST.Entorno.Entorno;
+import AST.Entorno.Simbolo;
 import AST.Entorno.Tipo;
 import static AST.Entorno.Tipo.TypePrimitive.*;
+import AST.Expresion.Arreglo.Arreglo;
 import AST.Expresion.Expresion;
 import Utilidades.ErrorC;
 
@@ -20,7 +22,7 @@ public class Suma implements Expresion
     public int linea, columna;
     public Tipo tipo;
     public Expresion operadori, operadord;
-    public Object valor;
+    public Object valori;
     public Suma(Expresion i, Expresion d, int l, int c)
     {
         this.operadori = i;
@@ -44,25 +46,47 @@ public class Suma implements Expresion
                 case STRING:
                     if(valori==null){valori="Nulo";}
                     if(valord==null){valord="Nulo";}                    
-                    valor =  valori.toString() + valord.toString();
+
+                    
+                    
+                    if(valori instanceof Simbolo)
+                    {
+                        Simbolo s = (Simbolo)valori;
+                        if(s.tipo.typeClass.equals(""))
+                        {
+                            valori = s.valor.toString();
+                        }                        
+                    }
+
+                    if(valord instanceof Simbolo)
+                    {
+                        Simbolo s = (Simbolo)valord;
+                        if(s.tipo.typeClass.equals(""))
+                        {
+                            valord = s.valor.toString();
+                        }                        
+                    }                                       
+                    
+                    
+                    this.valori =  valori.toString() + valord.toString();
                     break;
                 case DOUBLE:
                     if(operadori.getTipo().typeprimitive == CHAR)
                     {
-                        valor = (char)valori + (Double)valord;
+                        this.valori = (char)valori + (Double)valord;
                     }
                     else
                     if(operadord.getTipo().typeprimitive == CHAR)
                     {
-                        valor = (Double)valori + (char)valord;
+                        this.valori = (Double)valori + (char)valord;
                     }
                     else
                     {
-                        valor = Double.parseDouble(valori.toString()) + Double.parseDouble(valord.toString());
+                        this.valori = Double.parseDouble(valori.toString()) + Double.parseDouble(valord.toString());
                     }                                        
                 break;
                 case INT:  
-                    valor = (operadori.getTipo().typeprimitive == CHAR ? (char)valori:(int)valori)+( operadord.getTipo().typeprimitive == CHAR? (char)valord:(int)valord);
+                    this.valori = (operadori.getTipo().typeprimitive == CHAR ? (char)valori:(int)valori)+( operadord.getTipo().typeprimitive == CHAR? (char)valord:(int)valord);
                     /*if(operadori.getTipo() == CHAR)
                     {
                         valor = (char)valori + (int)valord;
@@ -79,7 +103,7 @@ public class Suma implements Expresion
                 break;
                 case CHAR:
                      tipo.typeprimitive = INT;
-                     valor = (char)valori + (char)valord;
+                     this.valori = (char)valori + (char)valord;
                 break;
             }            
         }
@@ -87,7 +111,7 @@ public class Suma implements Expresion
         {
             Utilidades.Singlenton.registrarError("Suma", "No se puede operar tipos " + operadori.getTipo() + " + " +operadord.getTipo() , ErrorC.TipoError.SEMANTICO, linea, columna);
         }
-        return valor;
+        return this.valori;
     }
 
     

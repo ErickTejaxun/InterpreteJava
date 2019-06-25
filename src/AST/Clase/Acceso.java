@@ -46,7 +46,27 @@ public class Acceso implements Expresion
     @Override
     public Object getValor(Entorno ent) 
     {
-        Object originData = origen.getValor(ent);
+        Object originData = null;
+
+        if(origen instanceof Variable)
+        {
+            Variable var = (Variable)origen;
+            if(var.id.equals("this"))
+            {
+                Objeto obj = new Objeto();
+                obj.entornoObjeto =ent.anterior;
+                originData = obj;                    
+            }
+            else
+            {
+                originData = origen.getValor(ent);
+            }            
+        } 
+        else
+        {
+            originData = origen.getValor(ent);
+        }
+        
         if(originData instanceof Arreglo)
         {
             if(nombreAtributo==null)

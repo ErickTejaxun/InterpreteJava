@@ -35,8 +35,16 @@ public class Igual implements Expresion
     {               
         Object derecha = opd.getValor(ent);
         Object izquierda = opi.getValor(ent);
-        tipo = new Tipo("");
-        tipo.typeprimitive = BOOL;
+        tipo = new Tipo(BOOL); 
+        
+        if(derecha==null)
+        {
+            return izquierda==null;
+        }   
+        if(izquierda==null)
+        {
+            return derecha == null;
+        }                        
         Tipo t1 = opi.getTipo();
         Tipo t2 = opd.getTipo();
         if( t1.typeprimitive != t2.typeprimitive)

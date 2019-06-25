@@ -170,7 +170,21 @@ public class Entorno
                     {
                         Object claveI = enumerador.nextElement();
                         Simbolo sActual = entornoA.obtener(claveI.toString());
-                        atributos+="{"+ sActual.id +","+sActual.tipo.nombreTipo()+","+sActual.valor+"}";
+                        if(sActual.rol==Simbolo.Rol.VARIABLE)
+                        {
+                            Object valorAtributo=sActual.valor;
+                            if(valorAtributo instanceof Simbolo)
+                            {
+                                Simbolo simV = (Simbolo)valorAtributo;
+                                valorAtributo = simV.valor;
+                            }
+                            if(valorAtributo instanceof Arreglo)
+                            {
+                                Arreglo simV = (Arreglo)valorAtributo;
+                                valorAtributo = simV.getCadena();
+                            }                        
+                            atributos+="{"+ sActual.id +","+sActual.tipo.nombreTipo()+","+valorAtributo+"}";                            
+                        }
                     }
                     valor = atributos;
                 }
@@ -178,6 +192,11 @@ public class Entorno
                 {
                     Arreglo arr = (Arreglo)valor;
                     valor = arr.getCadena();
+                }
+                if(valor instanceof Simbolo)
+                {
+                    Simbolo simb = (Simbolo)valor;
+                    valor = simb.valor;
                 }
                 tablaSimbolos.addRow(new Object[]
                 {
