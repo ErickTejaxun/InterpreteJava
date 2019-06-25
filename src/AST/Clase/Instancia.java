@@ -7,6 +7,7 @@ package AST.Clase;
 
 import AST.Entorno.Entorno;
 import AST.Entorno.Simbolo;
+import static AST.Entorno.Simbolo.Rol.VARIABLE;
 import AST.Entorno.Tipo;
 import AST.Expresion.Expresion;
 import AST.Expresion.Funcion.Constructor;
@@ -66,6 +67,7 @@ public class Instancia implements Expresion
             nuevaInstancia.listaModificadores = (ArrayList<String>) clase.modificadores.clone();
             nuevaInstancia.valor = nuevaInstancia;
             nuevaInstancia.tipo = new Tipo(clase.id);
+            nuevaInstancia.rol = VARIABLE;
             
             /*Ahora buscamos el contrusctor, si no hay constructor, mandamos un null ;) */
             String firma = clase.id;

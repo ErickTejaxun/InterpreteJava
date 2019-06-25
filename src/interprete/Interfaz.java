@@ -75,6 +75,7 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     public Position posicionListener = new Position(this);
     public int anterior = 0;
     public int velocidadActual = 0;
+    public Entorno entorno=null;
     /*
     0 = ejecución normal.
     1 = ejecución automatica
@@ -1998,8 +1999,16 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
     public void pararHIlo(boolean estado){
         seguirHilo=estado;
         if(estado)
-        {
-            hilo.suspend();   
+        {                           
+            if(entorno!=null)
+            {
+                try {
+                    entorno.reporteEnTabla();
+                } catch (IOException ex) {
+                    Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }        
+            hilo.suspend();
         }        
         else
         {
@@ -2056,6 +2065,11 @@ public class Interfaz extends javax.swing.JFrame implements Runnable{
        }
        return false;
        
-    }    
+    }   
+    
+    public void setModelTablaSimbolos(DefaultTableModel m)
+    {
+        this.tabladeSimbolos.setModel(m);
+    }
     
 }

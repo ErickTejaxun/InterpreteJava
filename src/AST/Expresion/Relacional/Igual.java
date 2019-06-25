@@ -64,7 +64,7 @@ public class Igual implements Expresion
             case "boolean":
                 return (boolean)izquierda == (boolean)derecha;
             case "char":
-                return (boolean)izquierda == (boolean)derecha;
+                return (Character)izquierda == (Character)derecha;
         }
         return derecha == izquierda;                
     }

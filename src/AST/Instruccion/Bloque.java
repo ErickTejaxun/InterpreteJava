@@ -47,15 +47,16 @@ public class Bloque implements Instruccion, Runnable
             try 
             {
                 if(Utilidades.Singlenton.modoEjecucion == DEBUG)
-                {                    
+                {                                            
+                    entorno.ventana.entorno = entorno;
+                    if(Utilidades.Singlenton.isBreakPoint(nodo.linea()))
+                    {
+                        entorno.ventana.resaltarLinea(nodo.linea()-1);
                         
-                        if(Utilidades.Singlenton.isBreakPoint(nodo.linea()))
-                        {
-                            entorno.ventana.resaltarLinea(nodo.linea()-1);
-                            entorno.ventana.pararHIlo(true);
-                        }
-                        entorno.ventana.resaltarLinea(nodo.linea());
-                        entorno.ventana.hilo.sleep(entorno.ventana.getVelocidad());                       
+                        entorno.ventana.pararHIlo(true);
+                    }
+                    entorno.ventana.resaltarLinea(nodo.linea());
+                    entorno.ventana.hilo.sleep(entorno.ventana.getVelocidad());                       
                 }                
             } 
             catch (InterruptedException ex) 

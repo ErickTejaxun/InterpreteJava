@@ -16,8 +16,8 @@ public class Simbolo
     public String id;        
     public Tipo tipo;
     public Object valor;
-    public enum Rol{VAR, FUNCION, METODO, OBJETO, CLASE, ARREGLO,CONSTRUCTOR};
-    public Rol rol= VAR;
+    public enum Rol{VARIABLE, FUNCION, METODO, OBJETO, CLASE, ARREGLO,CONSTRUCTOR};
+    public Rol rol= VARIABLE;
     public int linea, columna;     
     public int dimensiones;
     

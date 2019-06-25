@@ -75,6 +75,18 @@ public class Acceso implements Expresion
             {
                 Variable var = (Variable)destino;
                 valorAtributo = instancia.entornoObjeto.obtener(var.id);
+                if(valorAtributo instanceof Objeto)
+                { 
+                    Objeto vObjeto = (Objeto)valorAtributo;
+                    tipo = vObjeto.tipo;
+                    return vObjeto;
+                }
+                if(valorAtributo instanceof Simbolo)
+                {
+                    Simbolo s = (Simbolo)valorAtributo;
+                    tipo = s.tipo;
+                    return  valorAtributo;
+                }
                 Utilidades.Singlenton.setVariable(var.id);
             }              
             Simbolo atributo = null;            

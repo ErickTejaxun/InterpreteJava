@@ -6,6 +6,7 @@
 package AST.Instruccion;
 
 import AST.Entorno.Entorno;
+import AST.Entorno.Simbolo;
 import AST.Expresion.Arreglo.Arreglo;
 import AST.Expresion.Expresion;
 
@@ -51,7 +52,23 @@ public class Imprimir implements Instruccion
                 }
                 else
                 {
-                    Imprimir(entorno,valor.toString());
+                    if(valor instanceof Simbolo)
+                    {
+                        Simbolo s = (Simbolo)valor;
+                        if(s.tipo.typeClass.equals(""))
+                        {
+                            Imprimir(entorno,s.valor.toString());
+                        }
+                        else
+                        {
+                            Imprimir(entorno,valor.toString());
+                        }
+                    }
+                    else
+                    {
+                        Imprimir(entorno,valor.toString());                        
+                    }
+                    
                 }                
             }                           
             else

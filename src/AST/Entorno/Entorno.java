@@ -5,7 +5,9 @@
  */
 package AST.Entorno;
 
+import AST.Clase.Objeto;
 import static AST.Entorno.Simbolo.Rol.FUNCION;
+import AST.Expresion.Arreglo.Arreglo;
 import Utilidades.ErrorC;
 import interprete.Interfaz;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -135,6 +138,62 @@ public class Entorno
 
         generarGrafica();
         return reporte;
+    }
+    
+    
+    public void reporteEnTabla() throws IOException
+    {
+        DefaultTableModel tablaSimbolos = new DefaultTableModel();        
+        tablaSimbolos.addColumn("ID");        
+        tablaSimbolos.addColumn("Tipo");
+        tablaSimbolos.addColumn("Rol");
+        tablaSimbolos.addColumn("Valor"); 
+        tablaSimbolos.addColumn("Linea");                 
+        tablaSimbolos.addColumn("Columna");                               
+              
+        Entorno auxiliar = this;        
+        while(auxiliar!=null)
+        {           
+            Enumeration num = auxiliar.tabla.keys();
+            while(num.hasMoreElements())
+            {
+                Object clave = num.nextElement();
+                Simbolo s = auxiliar.tabla.get(clave);
+                Object valor = s.valor;
+                if(valor instanceof Objeto)
+                {
+                    Objeto obj = (Objeto)valor;
+                    Entorno entornoA = obj.entornoObjeto;
+                    Enumeration enumerador = entornoA.tabla.keys();
+                    String atributos = "";
+                    while(enumerador.hasMoreElements())
+                    {
+                        Object claveI = enumerador.nextElement();
+                        Simbolo sActual = entornoA.obtener(claveI.toString());
+                        atributos+="{"+ sActual.id +","+sActual.tipo.nombreTipo()+","+sActual.valor+"}";
+                    }
+                    valor = atributos;
+                }
+                if(valor instanceof Arreglo)
+                {
+                    Arreglo arr = (Arreglo)valor;
+                    valor = arr.getCadena();
+                }
+                tablaSimbolos.addRow(new Object[]
+                {
+                    s.id,
+                    s.tipo.nombreTipo(),
+                    s.rol,
+                    valor,
+                    s.linea,
+                    s.columna
+                }                    
+                );
+            }             
+            auxiliar = auxiliar.anterior;
+        }        
+        ventana.setModelTablaSimbolos(tablaSimbolos);  
+         generarGrafica();   
     }
     
     public String Grafica()
